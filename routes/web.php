@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
+<<<<<<< HEAD
     return redirect('/dashboard');
 });
 
@@ -29,3 +30,7 @@ Route::get('/reports', function () {
 Route::get('/customers', function () {
     return view('customers');
 })->name('customers');
+=======
+    return view('welcome');
+});
+>>>>>>> 6671f1bdff6255797dc5a6b3ad4b754c9d1d667e
