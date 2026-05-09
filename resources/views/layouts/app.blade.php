@@ -3,183 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Dagangin POS</title>
+    <title>Dagangin POS - From Broole</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        body{
-            background:#f7f5f3;
+        body {
+            background: #f7f5f3;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; 
         }
 
-        .sidebar-gradient{
-            background: linear-gradient(180deg,#7b0000,#8d0000);
+        .sidebar-gradient {
+            background: linear-gradient(180deg, #7b0000, #8d0000);
+        }
+
+        /* TRANSISI SIDEBAR */
+        aside {
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* EFEK ZOOM OUT 90% & PERBAIKAN RUANG PUTIH */
+        #main-container {
+            transform: scale(0.9);
+            transform-origin: top left;
+            width: 111.12%; 
+            height: 111.12%; 
+            display: flex;
+        }
+
+        /* SEMBUNYIKAN TEKS SAAT COLLAPSED */
+        aside.collapsed .hide-on-collapse {
+            display: none;
+        }
+
+        /* PUSATKAN ICON SAAT COLLAPSED */
+        aside.collapsed .menu-item {
+            justify-content: center;
+            padding-left: 0;
+            padding-right: 0;
         }
     </style>
 </head>
+<body class="h-screen w-screen overflow-hidden">
 
-<body>
+<div id="main-container">
 
-<div class="flex min-h-screen">
+    <aside id="sidebar" class="w-[280px] sidebar-gradient text-white flex flex-col justify-between relative shadow-2xl shrink-0 h-full">
+        
+        <button id="toggle-btn" class="absolute -right-5 top-14 bg-white text-[#7b0000] rounded-full p-2 shadow-xl border border-gray-100 z-50 hover:scale-110 active:scale-95 transition-all">
+            <i id="toggle-icon" data-lucide="chevron-left" class="w-5 h-5"></i>
+        </button>
 
-    {{-- SIDEBAR --}}
-    <aside class="w-[320px] sidebar-gradient text-white flex flex-col justify-between">
-
-        <div>
-
-            {{-- LOGO --}}
+        <div class="overflow-y-auto no-scrollbar">
             <div class="px-8 pt-8 pb-10">
-
                 <div class="flex items-center gap-4">
-
-                    <div class="bg-white text-[#7b0000] w-14 h-14 rounded-2xl flex items-center justify-center">
-                        <i data-lucide="store" class="w-7 h-7"></i>
+                    <div class="bg-white text-[#7b0000] min-w-[50px] h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-lg">
+                        <i data-lucide="store" class="w-6 h-6"></i>
                     </div>
-
-                    <div>
-                        <h1 class="text-5xl font-black leading-none">
-                            Dagangin
-                        </h1>
-
-                        <p class="uppercase text-sm opacity-70 tracking-widest">
-                            Modern Steward
-                        </p>
+                    <div class="hide-on-collapse">
+                        <h1 class="text-2xl font-black leading-none whitespace-nowrap">From Broole</h1>
+                        <p class="uppercase text-[8px] opacity-80 tracking-widest mt-1">FROM BROOLE TO YOU</p>
                     </div>
-
                 </div>
-
             </div>
 
-            {{-- MENU --}}
-            <div class="px-6 space-y-3">
-
-                <a href="/dashboard"
-                   class="bg-white/10 border-r-4 border-white flex items-center gap-4 px-6 py-5 rounded-2xl text-2xl font-bold">
-
-                    <i data-lucide="layout-dashboard"></i>
-                    Dashboard
+            <div class="px-5 space-y-1.5">
+                <a href="{{ route('dashboard') }}" 
+                   class="menu-item flex items-center gap-4 px-5 py-3 rounded-2xl text-lg transition-all 
+                   {{ Route::is('dashboard') ? 'bg-white/10 border-r-4 border-white font-bold' : 'opacity-70 hover:bg-white/10' }}">
+                    <i data-lucide="layout-dashboard" class="shrink-0 w-5 h-5"></i>
+                    <span class="hide-on-collapse whitespace-nowrap">Dashboard</span>
                 </a>
 
-                <a href="#"
-                   class="flex items-center gap-4 px-6 py-5 rounded-2xl text-2xl opacity-80 hover:bg-white/10">
-
-                    <i data-lucide="calculator"></i>
-                    Point of Sale
+                <a href="{{ route('pos') }}" 
+                   class="menu-item flex items-center gap-4 px-5 py-3 rounded-2xl text-lg transition-all 
+                   {{ Route::is('pos') ? 'bg-white/10 border-r-4 border-white font-bold' : 'opacity-70 hover:bg-white/10' }}">
+                    <i data-lucide="calculator" class="shrink-0 w-5 h-5"></i>
+                    <span class="hide-on-collapse whitespace-nowrap">Point of Sale</span>
                 </a>
 
-                <a href="#"
-                   class="flex items-center gap-4 px-6 py-5 rounded-2xl text-2xl opacity-80 hover:bg-white/10">
-
-                    <i data-lucide="package"></i>
-                    Inventory
+                <a href="{{ route('inventory') }}" 
+                   class="menu-item flex items-center gap-4 px-5 py-3 rounded-2xl text-lg transition-all 
+                   {{ Route::is('inventory') ? 'bg-white/10 border-r-4 border-white font-bold' : 'opacity-70 hover:bg-white/10' }}">
+                    <i data-lucide="package" class="shrink-0 w-5 h-5"></i>
+                    <span class="hide-on-collapse whitespace-nowrap">Inventory</span>
                 </a>
 
-                <a href="#"
-                   class="flex items-center gap-4 px-6 py-5 rounded-2xl text-2xl opacity-80 hover:bg-white/10">
-
-                    <i data-lucide="receipt"></i>
-                    Orders
+                <a href="{{ route('orders') }}" 
+                   class="menu-item flex items-center gap-4 px-5 py-3 rounded-2xl text-lg transition-all 
+                   {{ Route::is('orders') ? 'bg-white/10 border-r-4 border-white font-bold' : 'opacity-70 hover:bg-white/10' }}">
+                    <i data-lucide="receipt" class="shrink-0 w-5 h-5"></i>
+                    <span class="hide-on-collapse whitespace-nowrap">Orders</span>
                 </a>
 
-                <a href="#"
-                   class="flex items-center gap-4 px-6 py-5 rounded-2xl text-2xl opacity-80 hover:bg-white/10">
-
-                    <i data-lucide="users"></i>
-                    Customers
+                <a href="{{ route('customers') }}" 
+                   class="menu-item flex items-center gap-4 px-5 py-3 rounded-2xl text-lg transition-all 
+                   {{ Route::is('customers') ? 'bg-white/10 border-r-4 border-white font-bold' : 'opacity-70 hover:bg-white/10' }}">
+                    <i data-lucide="users" class="shrink-0 w-5 h-5"></i>
+                    <span class="hide-on-collapse whitespace-nowrap">Customers</span>
                 </a>
 
-                <a href="#"
-                   class="flex items-center gap-4 px-6 py-5 rounded-2xl text-2xl opacity-80 hover:bg-white/10">
-
-                    <i data-lucide="bar-chart-3"></i>
-                    Reports
+                <a href="{{ route('reports') }}" 
+                   class="menu-item flex items-center gap-4 px-5 py-3 rounded-2xl text-lg transition-all 
+                   {{ Route::is('reports') ? 'bg-white/10 border-r-4 border-white font-bold' : 'opacity-70 hover:bg-white/10' }}">
+                    <i data-lucide="bar-chart-3" class="shrink-0 w-5 h-5"></i>
+                    <span class="hide-on-collapse whitespace-nowrap">Reports</span>
                 </a>
-
             </div>
 
-            {{-- OPEN REGISTER --}}
-            <div class="px-6 mt-10">
-
-                <button class="bg-white text-[#7b0000] w-full py-6 rounded-3xl text-2xl font-bold shadow-xl">
-                    + Open Register
+            <div class="px-5 mt-8">
+                <button class="bg-white text-[#7b0000] w-full py-4 rounded-2xl text-lg font-bold shadow-xl flex items-center justify-center gap-2 overflow-hidden hover:bg-gray-50 transition-colors">
+                    <i data-lucide="plus" class="shrink-0 w-5 h-5"></i>
+                    <span class="hide-on-collapse whitespace-nowrap">Open Register</span>
                 </button>
-
             </div>
-
         </div>
 
-
-        {{-- BOTTOM --}}
         <div class="p-6">
-
-            <div class="bg-white/10 rounded-3xl p-5 flex items-center gap-4">
-
-                <img
-                    src="https://i.pravatar.cc/100"
-                    class="w-16 h-16 rounded-2xl"
-                >
-
-                <div>
-                    <h3 class="text-2xl font-bold">
-                        Ahmad's Coffee
-                    </h3>
-
-                    <p class="opacity-70">
-                        Store Manager
-                    </p>
+            <div class="bg-white/10 rounded-3xl p-4 flex items-center gap-4 overflow-hidden">
+                <img src="https://i.pravatar.cc/100" class="w-10 h-10 rounded-2xl shrink-0">
+                <div class="hide-on-collapse">
+                    <h3 class="text-base font-bold whitespace-nowrap">Ahmad's Coffee</h3>
+                    <p class="text-[10px] opacity-70">Store Manager</p>
                 </div>
-
             </div>
-
         </div>
-
     </aside>
 
-
-    {{-- MAIN --}}
-    <main class="flex-1 p-8 overflow-auto">
-
-        {{-- NAVBAR --}}
-        <div class="flex justify-between items-center mb-8">
-
-            <h1 class="text-5xl font-black text-[#7b0000]">
-                Dashboard
+    <main class="flex-1 p-12 overflow-auto h-full">
+        <div class="flex justify-between items-center mb-10">
+            <h1 class="text-5xl font-black text-[#7b0000] tracking-tight capitalize">
+                {{ Request::segment(1) }}
             </h1>
-
+            
             <div class="flex items-center gap-6">
-
-                <div class="bg-white px-6 py-4 rounded-full w-[600px] shadow-sm border">
-
-                    <input
-                        type="text"
-                        placeholder="Search everything..."
-                        class="outline-none w-full text-xl"
-                    >
-
+                <div class="bg-white px-8 py-4 rounded-full w-[450px] shadow-sm border border-gray-100 focus-within:border-[#7b0000] transition-all">
+                    <input type="text" placeholder="Search everything..." class="outline-none w-full text-xl bg-transparent">
                 </div>
-
-                <div class="flex items-center gap-5">
-
-                    <i data-lucide="bell" class="w-7 h-7"></i>
-                    <i data-lucide="refresh-cw" class="w-7 h-7"></i>
-
+                <div class="flex items-center gap-6 text-gray-400">
+                    <i data-lucide="bell" class="w-7 h-7 cursor-pointer hover:text-[#7b0000] transition-colors"></i>
+                    <i data-lucide="refresh-cw" class="w-7 h-7 cursor-pointer hover:text-[#7b0000] transition-colors"></i>
                 </div>
-
             </div>
-
         </div>
 
-        @yield('content')
-
+        <div class="content-wrapper">
+            @yield('content')
+        </div>
     </main>
 
 </div>
 
 <script>
     lucide.createIcons();
-</script>
 
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('toggle-btn');
+    const toggleIcon = document.getElementById('toggle-icon');
+
+    toggleBtn.addEventListener('click', () => {
+        const isCollapsed = sidebar.classList.toggle('collapsed');
+
+        if (isCollapsed) {
+            sidebar.classList.replace('w-[280px]', 'w-[95px]');
+            toggleIcon.setAttribute('data-lucide', 'chevron-right');
+        } else {
+            sidebar.classList.replace('w-[95px]', 'w-[280px]');
+            toggleIcon.setAttribute('data-lucide', 'chevron-left');
+        }
+        
+        lucide.createIcons();
+    });
+</script>
 </body>
 </html>
