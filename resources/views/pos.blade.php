@@ -1,32 +1,32 @@
-@extends('layouts.app')
+@extends('partials.sidebar')
 
 @section('content')
 
-<div class="flex gap-4 items-start">
+<div class="flex gap-6">
 
-    {{-- LEFT SIDE --}}
-    <div class="flex-1 space-y-4">
+    {{-- LEFT CONTENT --}}
+    <div class="flex-1">
 
         {{-- CATEGORY --}}
-        <div class="flex gap-3 overflow-x-auto pb-1">
+        <div class="flex gap-4 mb-8 overflow-x-auto">
 
-            <button class="bg-[#7b0000] text-white px-5 py-2 rounded-full text-sm font-semibold whitespace-nowrap">
+            <button class="bg-[#7b0000] text-white px-7 py-3 rounded-full text-sm font-bold whitespace-nowrap">
                 All Products
             </button>
 
-            <button class="bg-white border px-5 py-2 rounded-full text-sm whitespace-nowrap">
+            <button class="bg-white border border-gray-200 px-7 py-3 rounded-full text-sm whitespace-nowrap">
                 Coffee & Espresso
             </button>
 
-            <button class="bg-white border px-5 py-2 rounded-full text-sm whitespace-nowrap">
+            <button class="bg-white border border-gray-200 px-7 py-3 rounded-full text-sm whitespace-nowrap">
                 Tea & Matcha
             </button>
 
-            <button class="bg-white border px-5 py-2 rounded-full text-sm whitespace-nowrap">
+            <button class="bg-white border border-gray-200 px-7 py-3 rounded-full text-sm whitespace-nowrap">
                 Bakery & Pastry
             </button>
 
-            <button class="bg-white border px-5 py-2 rounded-full text-sm whitespace-nowrap">
+            <button class="bg-white border border-gray-200 px-7 py-3 rounded-full text-sm whitespace-nowrap">
                 Merchandise
             </button>
 
@@ -34,27 +34,30 @@
 
 
 
-        {{-- PRODUCTS --}}
-        <div class="grid grid-cols-3 xl:grid-cols-4 gap-4 items-start">
+        {{-- PRODUCT GRID --}}
+        <div class="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6">
 
             {{-- MANUAL ENTRY --}}
-            <div class="border-2 border-dashed border-[#e5cfcf] rounded-3xl p-5 flex flex-col items-center justify-center text-center h-[300px] bg-white">
+            <a href="{{ route('products.create') }}"
+               class="border-2 border-dashed border-[#edd4d4] rounded-[30px] bg-white h-[280px] flex flex-col items-center justify-center text-center hover:bg-[#fff9f9] transition">
 
-                <div class="w-16 h-16 bg-[#f5e6e6] rounded-full flex items-center justify-center mb-5">
+                <div class="w-20 h-20 rounded-full bg-[#f8e9e9] flex items-center justify-center mb-6">
 
-                    <i data-lucide="plus" class="w-7 h-7 text-[#7b0000]"></i>
+                    <i data-lucide="plus"
+                       class="w-10 h-10 text-[#7b0000]">
+                    </i>
 
                 </div>
 
-                <h3 class="font-bold text-2xl text-[#7b0000] mb-3">
+                <h3 class="text-[20px] font-black text-[#7b0000] mb-3">
                     Manual Entry
                 </h3>
 
-                <p class="text-gray-500 text-sm">
+                <p class="text-gray-400 text-base leading-relaxed px-8">
                     Add custom item not in catalog
                 </p>
 
-            </div>
+            </a>
 
 
 
@@ -82,45 +85,31 @@
                         'img'=>'https://images.unsplash.com/photo-1511920170033-f8396924c348?q=80&w=1200&auto=format&fit=crop'
                     ],
                     [
-                        'name'=>'Butter Croissant',
-                        'category'=>'Bakery',
-                        'price'=>'Rp 22.000',
-                        'sku'=>'BK-01',
-                        'img'=>'https://images.unsplash.com/photo-1555507036-ab794f4afe5a?q=80&w=1200&auto=format&fit=crop'
-                    ],
-                    [
                         'name'=>'Matcha Latte',
                         'category'=>'Tea & Matcha',
                         'price'=>'Rp 30.000',
                         'sku'=>'MT-02',
                         'img'=>'https://images.unsplash.com/photo-1515823064-d6e0c04616a7?q=80&w=1200&auto=format&fit=crop'
                     ],
-                    [
-                        'name'=>'Espresso',
-                        'category'=>'Coffee',
-                        'price'=>'Rp 20.000',
-                        'sku'=>'CF-09',
-                        'img'=>'https://images.unsplash.com/photo-1497636577773-f1231844b336?q=80&w=1200&auto=format&fit=crop'
-                    ],
                 ];
             @endphp
 
 
 
+            {{-- PRODUCT CARD --}}
             @foreach($products as $product)
 
-            {{-- PRODUCT CARD --}}
-            <div class="bg-white rounded-3xl overflow-hidden shadow-sm border hover:shadow-md transition flex flex-col">
+            <div class="bg-white rounded-[30px] overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition">
 
                 {{-- IMAGE --}}
                 <div class="relative">
 
                     <img
                         src="{{ $product['img'] }}"
-                        class="w-full h-[160px] object-cover"
+                        class="w-full h-[170px] object-cover"
                     >
 
-                    <div class="absolute top-3 right-3 bg-[#f5d9d9] text-[#7b0000] text-[10px] font-bold px-3 py-1 rounded-full">
+                    <div class="absolute top-3 right-3 bg-[#ffe4e4] text-[#7b0000] text-[11px] font-bold px-4 py-2 rounded-full">
                         In Stock
                     </div>
 
@@ -129,40 +118,38 @@
 
 
                 {{-- CONTENT --}}
-                <div class="p-4 flex flex-col flex-1 justify-between">
+                <div class="p-5">
 
-                    <div>
-
-                        {{-- CATEGORY --}}
-                        <p class="uppercase tracking-widest text-[10px] text-gray-400 font-bold mb-2">
-                            {{ $product['category'] }}
-                        </p>
-
-
-                        {{-- TITLE --}}
-                        <h3 class="font-bold text-[16px] leading-tight min-h-[60px]">
-
-                            {{ $product['name'] }}
-
-                        </h3>
-
-                    </div>
+                    {{-- CATEGORY --}}
+                    <p class="uppercase tracking-[3px] text-[10px] text-gray-400 font-bold mb-3">
+                        {{ $product['category'] }}
+                    </p>
 
 
 
-                    {{-- PRICE --}}
-                    <div class="flex justify-between items-end pt-4">
+                    {{-- PRODUCT NAME --}}
+                    <h3 class="text-[16px] leading-tight font-black mb-6 min-h-[50px]">
 
-                        {{-- LEFT --}}
-                        <p class="text-[#7b0000] text-[18px] font-black leading-none">
+                        {{ $product['name'] }}
+
+                    </h3>
+
+
+
+                    {{-- BOTTOM --}}
+                    <div class="flex justify-between items-end">
+
+                        {{-- PRICE --}}
+                        <p class="text-[#7b0000] text-[14px] font-black">
                             {{ $product['price'] }}
                         </p>
 
 
-                        {{-- RIGHT --}}
-                        <div class="text-right leading-tight">
 
-                            <p class="text-[10px] text-gray-400 font-semibold uppercase">
+                        {{-- SKU --}}
+                        <div class="text-right">
+
+                            <p class="text-[10px] text-gray-400 uppercase font-bold">
                                 SKU:
                             </p>
 
@@ -186,91 +173,51 @@
 
 
 
-    {{-- RIGHT SIDE --}}
-    <div class="w-[320px] bg-white rounded-3xl border shadow-sm p-5 sticky top-5">
+    {{-- RIGHT PANEL --}}
+    <div class="w-[300px] bg-white rounded-[30px] border border-gray-200 shadow-sm p-6 h-fit sticky top-5">
 
-        <div class="mb-6">
+        {{-- HEADER --}}
+        <div class="mb-8">
 
-            <h2 class="text-3xl font-black text-[#7b0000] mb-2">
+            <h2 class="text-[28px] leading-none font-black text-[#7b0000] mb-3">
                 Current Order
             </h2>
 
-            <p class="uppercase tracking-widest text-[10px] text-gray-400 font-bold">
-                Order #POS-8291 • Dine In
+            <p class="uppercase tracking-[3px] text-[10px] text-gray-400 font-bold">
+                ORDER #POS-8291 • DINE IN
             </p>
 
         </div>
 
 
 
-        {{-- ORDER ITEMS --}}
-        <div class="space-y-5">
+        {{-- ORDER ITEM --}}
+        <div class="flex gap-4 mb-8">
 
-            {{-- ITEM --}}
-            <div class="flex gap-3">
+            <img
+                src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1200&auto=format&fit=crop"
+                class="w-16 h-16 rounded-2xl object-cover"
+            >
 
-                <img
-                    src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1200&auto=format&fit=crop"
-                    class="w-16 h-16 rounded-2xl object-cover"
-                >
+            <div class="flex-1">
 
-                <div class="flex-1">
+                <h3 class="font-black text-[16px] leading-tight mb-2">
+                    Signature Caffe Latte
+                </h3>
 
-                    <h3 class="font-bold text-base">
-                        Signature Caffe Latte
-                    </h3>
+                <p class="text-gray-400 text-xs mb-4">
+                    + Oat Milk, + Extra Shot
+                </p>
 
-                    <p class="text-xs text-gray-400 mb-3">
-                        + Oat Milk, + Extra Shot
-                    </p>
+                <div class="flex items-center gap-5 bg-[#f7f5f3] rounded-2xl px-4 py-2 w-fit">
 
-                    <div class="flex items-center gap-3 bg-[#f7f5f3] rounded-xl px-3 py-2 w-fit">
+                    <button class="font-black text-lg">-</button>
 
-                        <button class="font-bold">-</button>
+                    <span class="font-black text-lg">
+                        2
+                    </span>
 
-                        <span class="font-bold">
-                            2
-                        </span>
-
-                        <button class="font-bold">+</button>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-
-            {{-- ITEM --}}
-            <div class="flex gap-3">
-
-                <img
-                    src="https://images.unsplash.com/photo-1555507036-ab794f4afe5a?q=80&w=1200&auto=format&fit=crop"
-                    class="w-16 h-16 rounded-2xl object-cover"
-                >
-
-                <div class="flex-1">
-
-                    <h3 class="font-bold text-base">
-                        Pain au Chocolate
-                    </h3>
-
-                    <p class="text-xs text-gray-400 mb-3">
-                        Freshly baked
-                    </p>
-
-                    <div class="flex items-center gap-3 bg-[#f7f5f3] rounded-xl px-3 py-2 w-fit">
-
-                        <button class="font-bold">-</button>
-
-                        <span class="font-bold">
-                            1
-                        </span>
-
-                        <button class="font-bold">+</button>
-
-                    </div>
+                    <button class="font-black text-lg">+</button>
 
                 </div>
 
@@ -281,7 +228,7 @@
 
 
         {{-- TOTAL --}}
-        <div class="border-t mt-6 pt-5 space-y-3">
+        <div class="border-t pt-6 space-y-4">
 
             <div class="flex justify-between text-sm">
 
@@ -289,7 +236,7 @@
                     Subtotal
                 </span>
 
-                <span class="font-semibold">
+                <span class="font-bold">
                     Rp 99.000
                 </span>
 
@@ -301,19 +248,19 @@
                     Tax
                 </span>
 
-                <span class="font-semibold">
+                <span class="font-bold">
                     Rp 9.900
                 </span>
 
             </div>
 
-            <div class="flex justify-between text-lg font-black">
+            <div class="flex justify-between items-center">
 
-                <span>
+                <span class="text-[20px] font-black">
                     Total
                 </span>
 
-                <span class="text-[#7b0000]">
+                <span class="text-[#7b0000] text-[20px] font-black">
                     Rp 108.900
                 </span>
 
@@ -324,7 +271,7 @@
 
 
         {{-- CHECKOUT --}}
-        <button class="bg-[#7b0000] hover:bg-[#650000] text-white w-full py-3 rounded-2xl font-bold mt-6">
+        <button class="bg-[#7b0000] hover:bg-[#650000] text-white w-full py-4 rounded-2xl font-black text-lg mt-8 transition">
 
             Checkout
 
