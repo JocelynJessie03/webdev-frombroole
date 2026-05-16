@@ -34,70 +34,34 @@
 
 
     {{-- MEMBERSHIP STATS --}}
-    <div class="grid grid-cols-4 gap-3">
-
-        {{-- PLATINUM --}}
-        <div class="bg-[#eef0ff] border border-[#dfe3ff] rounded-2xl p-5 text-center">
-
-            <i data-lucide="star" class="w-5 h-5 mx-auto text-indigo-600 mb-3"></i>
-
-            <p class="uppercase tracking-widest text-[10px] font-bold text-indigo-600 mb-2">
-                Platinum Members
-            </p>
-
-            <h2 class="text-3xl font-black text-indigo-600">
-                12
-            </h2>
-
-        </div>
-
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
         {{-- GOLD --}}
-        <div class="bg-[#fff9e9] border border-[#f6e7a8] rounded-2xl p-5 text-center">
+    <div class="bg-[#fff9e9] border border-[#f6e7a8] rounded-2xl p-5 text-center flex flex-col items-center justify-center">
+        <i data-lucide="star" class="w-5 h-5 text-yellow-600 mb-3"></i>
+        <p class="uppercase tracking-widest text-[10px] font-bold text-yellow-700 mb-2">
+            Gold Members
+        </p>
+        <h2 class="text-3xl font-black text-yellow-700">{{ $goldCount }}</h2>
+    </div>
 
-            <i data-lucide="star" class="w-5 h-5 mx-auto text-yellow-600 mb-3"></i>
+    {{-- SILVER --}}
+    <div class="bg-[#f5f5f5] border rounded-2xl p-5 text-center flex flex-col items-center justify-center">
+        <i data-lucide="star" class="w-5 h-5 text-gray-600 mb-3"></i>
+        <p class="uppercase tracking-widest text-[10px] font-bold text-gray-600 mb-2">
+            Silver Members
+        </p>
+        <h2 class="text-3xl font-black text-gray-700">{{ $silverCount }}</h2>
+    </div>
 
-            <p class="uppercase tracking-widest text-[10px] font-bold text-yellow-700 mb-2">
-                Gold Members
-            </p>
-
-            <h2 class="text-3xl font-black text-yellow-700">
-                48
-            </h2>
-
-        </div>
-
-
-        {{-- SILVER --}}
-        <div class="bg-[#f5f5f5] border rounded-2xl p-5 text-center">
-
-            <i data-lucide="star" class="w-5 h-5 mx-auto text-gray-600 mb-3"></i>
-
-            <p class="uppercase tracking-widest text-[10px] font-bold text-gray-600 mb-2">
-                Silver Members
-            </p>
-
-            <h2 class="text-3xl font-black text-gray-700">
-                156
-            </h2>
-
-        </div>
-
-
-        {{-- BRONZE --}}
-        <div class="bg-[#fff5ec] border border-[#ffd8b5] rounded-2xl p-5 text-center">
-
-            <i data-lucide="star" class="w-5 h-5 mx-auto text-orange-600 mb-3"></i>
-
-            <p class="uppercase tracking-widest text-[10px] font-bold text-orange-600 mb-2">
-                Bronze Members
-            </p>
-
-            <h2 class="text-3xl font-black text-orange-600">
-                842
-            </h2>
-
-        </div>
+    {{-- BRONZE --}}
+    <div class="bg-[#fff5ec] border border-[#ffd8b5] rounded-2xl p-5 text-center flex flex-col items-center justify-center">
+        <i data-lucide="star" class="w-5 h-5 text-orange-600 mb-3"></i>
+        <p class="uppercase tracking-widest text-[10px] font-bold text-orange-600 mb-2">
+            Bronze Members
+        </p>
+        <h2 class="text-3xl font-black text-orange-600">{{ $bronzeCount }}</h2>
+    </div>
 
     </div>
 
@@ -169,170 +133,84 @@
 
             <tbody>
 
-                @php
-                    $customers = [
-                        [
-                            'name'=>'Budi Santoso',
-                            'email'=>'budi.s@gmail.com',
-                            'phone'=>'+62 812-3456-7890',
-                            'spend'=>'Rp 2.450.000',
-                            'visits'=>'12',
-                            'points'=>'2450',
-                            'tier'=>'Gold',
-                            'img'=>'1'
-                        ],
-                        [
-                            'name'=>'Maya Putri',
-                            'email'=>'maya.p@outlook.com',
-                            'phone'=>'+62 811-9876-5432',
-                            'spend'=>'Rp 1.280.000',
-                            'visits'=>'8',
-                            'points'=>'1280',
-                            'tier'=>'Silver',
-                            'img'=>'2'
-                        ],
-                        [
-                            'name'=>'Andi Wijaya',
-                            'email'=>'andi.w@yahoo.com',
-                            'phone'=>'+62 813-1122-3344',
-                            'spend'=>'Rp 850.000',
-                            'visits'=>'5',
-                            'points'=>'850',
-                            'tier'=>'Bronze',
-                            'img'=>'3'
-                        ],
-                    ];
-                @endphp
-
-
+                
                 @foreach($customers as $customer)
+<tr class="border-t hover:bg-gray-50 transition">
+    {{-- CUSTOMER --}}
+    <td class="px-6 py-5">
+        <div class="flex items-center gap-3">
+            {{-- Karena di migration tidak ada kolom image, kita gunakan UI Avatars sebagai fallback --}}
+            <img src="https://ui-avatars.com/api/?name={{ urlencode($customer->customer_name) }}&background=random" 
+                 class="w-12 h-12 rounded-xl object-cover">
+            <div>
+                <h3 class="font-bold text-base">{{ $customer->customer_name }}</h3>
+                <span class="text-[10px] text-gray-400 font-mono">{{ $customer->customer_ID }}</span>
+            </div>
+        </div>
+    </td>
 
-                <tr class="border-t hover:bg-gray-50 transition">
+    {{-- CONTACT --}}
+    <td class="px-6 py-5">
+        <div class="space-y-1 text-sm text-gray-600">
+            <div class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i> {{ $customer->email }}</div>
+            <div class="flex items-center gap-2"><i data-lucide="phone" class="w-4 h-4"></i> {{ $customer->phone }}</div>
+        </div>
+    </td>
 
-                    {{-- CUSTOMER --}}
-                    <td class="px-6 py-5">
+    {{-- TOTAL SPEND --}}
+    <td class="px-6 py-5">
+        <h3 class="font-bold text-lg">Rp {{ number_format($customer->total_spend, 0, ',', '.') }}</h3>
+    </td>
 
-                        <div class="flex items-center gap-3">
+    {{-- VISITS (Jika belum ada kolom visits di migration, bisa di-count dari relasi orders) --}}
+    <td class="px-6 py-5">
+        <div class="font-semibold text-sm">
+            {{ $customer->orders->count() }} visits
+        </div>
+    </td>
 
-                            <img
-                                src="https://i.pravatar.cc/60?img={{ $customer['img'] }}"
-                                class="w-12 h-12 rounded-xl object-cover"
-                            >
+    {{-- LOYALTY POINTS --}}
+    <td class="px-6 py-5">
+        <div class="flex items-center gap-3">
+            <div class="w-24 h-2 bg-gray-100 rounded-full overflow-hidden">
+                {{-- Progress bar: asumsikan 5000 pts adalah target --}}
+                <div class="bg-[#7f876e] h-full rounded-full" style="width: {{ min(($customer->member_points / 5000) * 100, 100) }}%"></div>
+            </div>
+            <span class="text-sm font-semibold text-[#7f876e]">
+                {{ $customer->member_points }} pts
+            </span>
+        </div>
+    </td>
 
-                            <div>
+    {{-- TIER --}}
+    <td class="px-6 py-5">
+        @php
+            $tierStyles = [
+                'Gold' => 'bg-[#fff2c9] text-yellow-700',
+                'Silver' => 'bg-gray-100 text-gray-600',
+                'Bronze' => 'bg-[#ffe7d1] text-orange-700',
+            ];
+            $style = $tierStyles[$customer->tier] ?? 'bg-gray-100 text-gray-600';
+        @endphp
+        <div class="{{ $style }} px-4 py-1 rounded-full text-xs font-bold inline-block uppercase">
+            {{ $customer->tier }}
+        </div>
+    </td>
 
-                                <h3 class="font-bold text-base">
-                                    {{ $customer['name'] }}
-                                </h3>
-
-                            </div>
-
-                        </div>
-
-                    </td>
-
-
-                    {{-- CONTACT --}}
-                    <td class="px-6 py-5">
-
-                        <div class="space-y-1 text-sm text-gray-600">
-
-                            <div class="flex items-center gap-2">
-                                <i data-lucide="mail" class="w-4 h-4"></i>
-                                {{ $customer['email'] }}
-                            </div>
-
-                            <div class="flex items-center gap-2">
-                                <i data-lucide="phone" class="w-4 h-4"></i>
-                                {{ $customer['phone'] }}
-                            </div>
-
-                        </div>
-
-                    </td>
-
-
-                    {{-- SPEND --}}
-                    <td class="px-6 py-5">
-
-                        <h3 class="font-bold text-lg">
-                            {{ $customer['spend'] }}
-                        </h3>
-
-                    </td>
-
-
-                    {{-- VISITS --}}
-                    <td class="px-6 py-5">
-
-                        <div class="font-semibold text-sm">
-                            {{ $customer['visits'] }} visits
-                        </div>
-
-                    </td>
-
-
-                    {{-- POINTS --}}
-                    <td class="px-6 py-5">
-
-                        <div class="flex items-center gap-3">
-
-                            <div class="w-24 h-2 bg-gray-100 rounded-full overflow-hidden">
-
-                                <div class="bg-[#7f876e] h-full w-[70%] rounded-full"></div>
-
-                            </div>
-
-                            <span class="text-sm font-semibold text-[#7f876e]">
-                                {{ $customer['points'] }} pts
-                            </span>
-
-                        </div>
-
-                    </td>
-
-
-                    {{-- TIER --}}
-                    <td class="px-6 py-5">
-
-                        @if($customer['tier'] == 'Gold')
-
-                        <div class="bg-[#fff2c9] text-yellow-700 px-4 py-1 rounded-full text-xs font-bold inline-block">
-                            GOLD
-                        </div>
-
-                        @elseif($customer['tier'] == 'Silver')
-
-                        <div class="bg-gray-100 text-gray-600 px-4 py-1 rounded-full text-xs font-bold inline-block">
-                            SILVER
-                        </div>
-
-                        @else
-
-                        <div class="bg-[#ffe7d1] text-orange-700 px-4 py-1 rounded-full text-xs font-bold inline-block">
-                            BRONZE
-                        </div>
-
-                        @endif
-
-                    </td>
-
-
-                    {{-- ACTION --}}
-                    <td class="px-6 py-5">
-
-                        <div class="flex gap-3 text-[#7b0000]">
-
-                            <i data-lucide="history" class="w-4 h-4"></i>
-                            <i data-lucide="ellipsis" class="w-4 h-4"></i>
-
-                        </div>
-
-                    </td>
-
-                </tr>
-
-                @endforeach
+    {{-- ACTION --}}
+    <td class="px-6 py-5">
+        <div class="flex gap-3 text-[#7b0000]">
+            {{-- Mengirim data name ke fungsi modal --}}
+            <button onclick="openHistory('{{ $customer->customer_name }}')" class="hover:scale-110 transition">
+                <i data-lucide="history" class="w-4 h-4"></i>
+            </button>
+            <button class="hover:scale-110 transition">
+                <i data-lucide="ellipsis" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </td>
+</tr>
+@endforeach
 
             </tbody>
 
@@ -343,3 +221,65 @@
 </div>
 
 @endsection
+{{-- MODAL HISTORY --}}
+<div id="historyModal" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl">
+        {{-- Modal Header --}}
+        <div class="p-6 border-b flex justify-between items-center">
+            <div>
+                <h2 class="text-xl font-bold">Transaction History</h2>
+                <p class="text-sm text-gray-500" id="modalCustomerName"></p>
+            </div>
+            <button onclick="closeHistory()" class="text-gray-400 hover:text-black">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        {{-- Modal Body (List Transaksi) --}}
+        <div class="p-6 max-h-[400px] overflow-y-auto space-y-4">
+            {{-- Contoh Item Transaksi --}}
+            <div class="flex justify-between items-center p-4 bg-gray-50 rounded-2xl">
+                <div>
+                    <p class="font-bold text-sm">Sea Salt Butterscotch Coffee</p>
+                    <p class="text-xs text-gray-400">12 May 2026 • 14:20</p>
+                </div>
+                <p class="font-black text-[#7b0000]">Rp 35.000</p>
+            </div>
+
+            <div class="flex justify-between items-center p-4 bg-gray-50 rounded-2xl">
+                <div>
+                    <p class="font-bold text-sm">Oreo Cheesecake</p>
+                    <p class="text-xs text-gray-400">10 May 2026 • 11:05</p>
+                </div>
+                <p class="font-black text-[#7b0000]">Rp 45.000</p>
+            </div>
+        </div>
+
+        {{-- Modal Footer --}}
+        <div class="p-6 border-t bg-gray-50 flex justify-end">
+            <button onclick="closeHistory()" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-xl font-bold text-sm">
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+
+{{-- SCRIPT SEDERHANA --}}
+<script>
+    function openHistory(name) {
+        document.getElementById('modalCustomerName').innerText = "Viewing transactions for " + name;
+        document.getElementById('historyModal').classList.remove('hidden');
+    }
+
+    function closeHistory() {
+        document.getElementById('historyModal').classList.add('hidden');
+    }
+
+    // Menutup modal jika klik di luar area modal
+    window.onclick = function(event) {
+        const modal = document.getElementById('historyModal');
+        if (event.target == modal) {
+            closeHistory();
+        }
+    }
+</script>

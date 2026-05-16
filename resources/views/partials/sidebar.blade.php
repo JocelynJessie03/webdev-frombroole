@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dagangin POS - From Broole</title>
+    <title>From Broole</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -85,16 +85,23 @@
                     <span class="hide-on-collapse whitespace-nowrap">Point of Sale</span>
                 </a>
 
-                <a href="{{ route('inventory') }}" 
+                <a href="{{ route('product.inventory') }}" 
                    class="menu-item flex items-center gap-4 px-5 py-3 rounded-2xl text-lg transition-all 
-                   {{ Route::is('inventory') ? 'bg-white/10 border-r-4 border-white font-bold' : 'opacity-70 hover:bg-white/10' }}">
+                   {{ Route::is('product.inventory') ? 'bg-white/10 border-r-4 border-white font-bold' : 'opacity-70 hover:bg-white/10' }}">
                     <i data-lucide="package" class="shrink-0 w-5 h-5"></i>
-                    <span class="hide-on-collapse whitespace-nowrap">Inventory</span>
+                    <span class="hide-on-collapse whitespace-nowrap">Product Inventory</span>
                 </a>
 
-                <a href="{{ route('orders') }}" 
+                <a href="{{ route('ingredient.inventory') }}" 
                    class="menu-item flex items-center gap-4 px-5 py-3 rounded-2xl text-lg transition-all 
-                   {{ Route::is('orders') ? 'bg-white/10 border-r-4 border-white font-bold' : 'opacity-70 hover:bg-white/10' }}">
+                   {{ Route::is('ingredient.inventory') ? 'bg-white/10 border-r-4 border-white font-bold' : 'opacity-70 hover:bg-white/10' }}">
+                    <i data-lucide="package" class="shrink-0 w-5 h-5"></i>
+                    <span class="hide-on-collapse whitespace-nowrap">Ingredient Inventory</span>
+                </a>
+
+                <a href="{{ route('order_history') }}" 
+                   class="menu-item flex items-center gap-4 px-5 py-3 rounded-2xl text-lg transition-all 
+                   {{ Route::is('order_history') ? 'bg-white/10 border-r-4 border-white font-bold' : 'opacity-70 hover:bg-white/10' }}">
                     <i data-lucide="receipt" class="shrink-0 w-5 h-5"></i>
                     <span class="hide-on-collapse whitespace-nowrap">Orders</span>
                 </a>

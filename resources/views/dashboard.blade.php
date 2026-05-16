@@ -155,108 +155,145 @@
     {{-- RIGHT --}}
     <div class="space-y-8">
 
-        {{-- NEW TRANSACTION --}}
-        <div class="bg-white rounded-[40px] p-10 text-center shadow-sm">
+    <div class="bg-white rounded-[40px] p-10 text-center shadow-sm">
 
-            <div class="w-20 h-20 bg-[#f5ebeb] mx-auto rounded-2xl flex items-center justify-center mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-[#7b0000]" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                </svg>
+        <div class="w-20 h-20 bg-[#f5ebeb] mx-auto rounded-2xl flex items-center justify-center mb-6">
+
+            <svg xmlns="http://www.w3.org/2000/svg"
+                class="w-10 h-10 text-[#7b0000]"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round">
+
+                <path d="M4 2h16v20l-3-2-3 2-3-2-3 2-3-2-3 2V2z"></path>
+                <path d="M8 7h8"></path>
+                <path d="M8 11h8"></path>
+                <path d="M8 15h5"></path>
+
+            </svg>
+
+        </div>
+
+        <h2 class="text-xl font-black mb-2">Order Status</h2>
+
+        <p class="text-sm text-gray-500">
+            Quickly open the orders to track and manage all transactions
+        </p>
+
+    
+
+</div>
+
+
+<div class="bg-white rounded-[40px] p-8 shadow-sm">
+
+    <h2 class="text-3xl font-black mb-8">
+        Low Stock Alert
+    </h2>
+
+    <div class="space-y-5">
+
+        {{-- ITEM 1 --}}
+        <div class="flex items-center gap-5 border border-gray-100 rounded-3xl p-5">
+
+            <div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0">
+                <img src="https://placehold.co/100x100"
+                     alt="Paper Cups"
+                     class="w-full h-full object-cover">
             </div>
 
-            <h2 class="text-xl font-black mb-2">New Transaction</h2>
-            <p class="text-sm text-gray-500">Quickly open the POS to register a new sale</p>
+            <div class="flex-1">
+
+                <div class="flex items-center justify-between">
+
+                    <div>
+                        <h3 class="font-bold text-lg">
+                            Sea Salt Butterscotch Coffee
+                        </h3>
+
+                        <p class="text-[#7b0000] font-black text-2xl">
+                            12 left
+                        </p>
+                    </div>
+
+                    <span class="bg-red-100 text-red-600 text-sm font-bold px-4 py-2 rounded-full">
+                        LOW
+                    </span>
+
+                </div>
+
+            </div>
 
         </div>
 
 
-        {{-- RECENT ACTIVITY --}}
-        <div class="bg-white rounded-[40px] p-8 shadow-sm">
+        {{-- ITEM 2 --}}
+        <div class="flex items-center gap-5 border border-gray-100 rounded-3xl p-5">
 
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-black">Recent Activity</h2>
-                <button class="text-gray-400 hover:text-gray-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                        <circle cx="12" cy="5" r="1.5"></circle>
-                        <circle cx="12" cy="12" r="1.5"></circle>
-                        <circle cx="12" cy="19" r="1.5"></circle>
-                    </svg>
-                </button>
+            <div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0">
+                <img src="https://placehold.co/100x100"
+                     alt="Whole Milk"
+                     class="w-full h-full object-cover">
             </div>
 
-            <div class="space-y-5">
+            <div class="flex-1">
 
-                {{-- Sale #9402 --}}
-                <div class="flex gap-4 items-start">
-                    <div class="w-10 h-10 bg-[#7b0000] rounded-full flex items-center justify-center flex-shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="9" cy="21" r="1"></circle>
-                            <circle cx="20" cy="21" r="1"></circle>
-                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-sm font-bold">New Sale: #TRX-9402</h3>
-                        <p class="text-xs text-gray-500">2x Signature Blend, 1x Latte</p>
-                        <p class="text-xs text-gray-400 mt-1">2 MINS AGO · TERMINAL 01</p>
-                    </div>
-                </div>
+                <div class="flex items-center justify-between">
 
-                {{-- Stock Warning --}}
-                <div class="flex gap-4 items-start">
-                    <div class="w-10 h-10 bg-[#f5ebeb] rounded-full flex items-center justify-center flex-shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#7b0000]" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                            <line x1="12" y1="9" x2="12" y2="13"></line>
-                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                        </svg>
-                    </div>
                     <div>
-                        <h3 class="text-sm font-bold">Stock Warning</h3>
-                        <p class="text-xs text-gray-500">Paper Cups reached threshold (12)</p>
-                        <p class="text-xs text-gray-400 mt-1">45 MINS AGO · SYSTEM</p>
-                    </div>
-                </div>
+                        <h3 class="font-bold text-lg">
+                            Strawberry Matcha Latte
+                        </h3>
 
-                {{-- Maya Putri clocked in --}}
-                <div class="flex gap-4 items-start">
-                    <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
-                        <img src="https://ui-avatars.com/api/?name=Maya+Putri&background=7b0000&color=fff" alt="Maya Putri" class="w-full h-full object-cover">
+                        <p class="text-[#7b0000] font-black text-2xl">
+                            5 units
+                        </p>
                     </div>
-                    <div>
-                        <h3 class="text-sm font-bold">Maya Putri clocked in</h3>
-                        <p class="text-xs text-gray-500">Morning shift started</p>
-                        <p class="text-xs text-gray-400 mt-1">07:00 AM · STAFF PORTAL</p>
-                    </div>
-                </div>
 
-                {{-- Sale #9401 --}}
-                <div class="flex gap-4 items-start">
-                    <div class="w-10 h-10 bg-[#7b0000] rounded-full flex items-center justify-center flex-shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="9" cy="21" r="1"></circle>
-                            <circle cx="20" cy="21" r="1"></circle>
-                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-sm font-bold">New Sale: #TRX-9401</h3>
-                        <p class="text-xs text-gray-500">1x Single Origin Gayo</p>
-                        <p class="text-xs text-gray-400 mt-1">YESTERDAY · TERMINAL 01</p>
-                    </div>
+                    <span class="bg-red-100 text-red-600 text-sm font-bold px-4 py-2 rounded-full">
+                        CRITICAL
+                    </span>
+
                 </div>
 
             </div>
 
-            <button class="w-full mt-8 bg-[#7b0000] text-white rounded-2xl py-4 text-sm font-bold hover:bg-[#930000] transition">
-                Show All Activity
-            </button>
+        </div>
+
+
+        {{-- ITEM 3 --}}
+        <div class="flex items-center gap-5 border border-gray-100 rounded-3xl p-5">
+
+            <div class="w-16 h-16 rounded-2xl overflow-hidden shrink-0">
+                <img src="https://placehold.co/100x100"
+                     alt="Vanilla Syrup"
+                     class="w-full h-full object-cover">
+            </div>
+
+            <div class="flex-1">
+
+                <div class="flex items-center justify-between">
+
+                    <div>
+                        <h3 class="font-bold text-lg">
+                            Broole Original Toping Oreo
+                        </h3>
+
+                        <p class="text-[#7b0000] font-black text-2xl">
+                            18 left
+                        </p>
+                    </div>
+
+                    <span class="bg-yellow-100 text-yellow-700 text-sm font-bold px-4 py-2 rounded-full">
+                        SOON
+                    </span>
+
+                </div>
+
+            </div>
 
         </div>
 
@@ -264,4 +301,6 @@
 
 </div>
 
+
+        
 @endsection

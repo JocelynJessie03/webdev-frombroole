@@ -2,6 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\IngredientController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PosController;
+use App\Http\Controllers\OrderHistoryController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\CustomerController;
 
 Route::get('/', function () {
     return redirect('/dashboard');
@@ -11,29 +18,23 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
 
-Route::get('/pos', function () {
-    return view('pos');
-})->name('pos');
+Route::get('/pos', [PosController::class, 'index'])->name('pos');
 
-Route::get('/inventory', function () {
-    return view('inventory');
-})->name('inventory');
+Route::get('/product-inventory', [ProductController::class, 'index'])->name('product.inventory');
 
-Route::get('/orders', function () {
-    return view('orders');
-})->name('orders');
+Route::get('/ingredient-inventory', [IngredientController::class, 'index'])
+    ->name('ingredient.inventory');
+
+
+Route::get('/order_history', [OrderHistoryController::class, 'index'])->name('order_history');
 
 Route::get('/reports', function () {
     return view('reports');
 })->name('reports');
 
-Route::get('/customers', function () {
-    return view('customers');
-})->name('customers');
+Route::get('/customers', [CustomerController::class, 'index'])->name('customers');
 
-// POS
-Route::get('/pos', [ProductController::class, 'index'])
-    ->name('pos');
+
 
 
 

@@ -50,7 +50,7 @@
             </p>
 
             <h2 class="text-3xl font-black">
-                1,284
+                {{ number_format($stats['total']) }}
             </h2>
 
         </div>
@@ -69,9 +69,7 @@
                 Completed
             </p>
 
-            <h2 class="text-3xl font-black">
-                1,120
-            </h2>
+            <h2 class="text-3xl font-black">{{ number_format($stats['completed']) }}</h2>
 
         </div>
 
@@ -89,9 +87,7 @@
                 Pending
             </p>
 
-            <h2 class="text-3xl font-black">
-                45
-            </h2>
+            <h2 class="text-3xl font-black">{{ number_format($stats['pending']) }}</h2>
 
         </div>
 
@@ -109,9 +105,7 @@
                 Cancelled
             </p>
 
-            <h2 class="text-3xl font-black">
-                119
-            </h2>
+            <h2 class="text-3xl font-black">{{ number_format($stats['cancelled']) }}</h2>
 
         </div>
 
@@ -185,88 +179,67 @@
 
             <tbody>
 
-                @php
-                    $orders = [
-                        [
-                            'id'=>'#ORD-8291',
-                            'customer'=>'Budi Santoso',
-                            'payment'=>'CASH',
-                            'date'=>'Oct 24, 14:20',
-                            'items'=>'3',
-                            'total'=>'Rp 102.120',
-                            'status'=>'Completed'
-                        ],
-                        [
-                            'id'=>'#ORD-8290',
-                            'customer'=>'Maya Putri',
-                            'payment'=>'QRIS',
-                            'date'=>'Oct 24, 13:45',
-                            'items'=>'1',
-                            'total'=>'Rp 45.000',
-                            'status'=>'Completed'
-                        ]
-                    ];
-                @endphp
+@foreach($orders as $order)
+    <tr class="border-t hover:bg-gray-50 transition">
+        <td class="px-6 py-5 font-bold text-[#7b0000] text-lg">
+            {{ $order->order_id }}
+        </td>
 
+        <td class="px-6 py-5">
+            <h3 class="font-bold text-base">
+                {{ $order->customer->customer_name ?? 'Guest' }}
+            </h3>
+            <p class="text-gray-400 uppercase text-[10px] mt-1">
+                {{-- Kamu bisa menambahkan kolom payment_method di migration jika perlu --}}
+                OFFLINE ORDER
+            </p>
+        </td>
 
-                @foreach($orders as $order)
+        <td class="px-6 py-5 text-sm text-gray-600">
+            {{ $order->order_date->format('M d, H:i') }}
+        </td>
 
-                <tr class="border-t hover:bg-gray-50 transition">
+        <td class="px-6 py-5 text-sm font-semibold">
+            {{ $order->total_items }} items
+        </td>
 
-                    <td class="px-6 py-5 font-bold text-[#7b0000] text-lg">
-                        {{ $order['id'] }}
-                    </td>
+        <td class="px-6 py-5 text-base font-bold">
+            Rp {{ number_format($order->total_price, 0, ',', '.') }}
+        </td>
 
-                    <td class="px-6 py-5">
+        <td class="px-6 py-5">
+            @php
+                $statusClasses = [
+                    'Completed' => 'bg-[#dff7e5] text-green-700',
+                    'Pending'   => 'bg-[#fff6e8] text-yellow-700',
+                    'Cancelled' => 'bg-[#fff0f0] text-red-700',
+                ];
+                $class = $statusClasses[$order->status] ?? 'bg-gray-100 text-gray-700';
+            @endphp
+            <div class="{{ $class }} px-3 py-1 rounded-full inline-flex items-center gap-2 font-bold uppercase text-[10px]">
+                @if($order->status == 'Completed')
+                    <i data-lucide="check-circle-2" class="w-3 h-3"></i>
+                @elseif($order->status == 'Pending')
+                    <i data-lucide="clock-3" class="w-3 h-3"></i>
+                @else
+                    <i data-lucide="x-circle" class="w-3 h-3"></i>
+                @endif
+                {{ $order->status }}
+            </div>
+        </td>
 
-                        <h3 class="font-bold text-base">
-                            {{ $order['customer'] }}
-                        </h3>
-
-                        <p class="text-gray-400 uppercase text-[10px] mt-1">
-                            {{ $order['payment'] }}
-                        </p>
-
-                    </td>
-
-                    <td class="px-6 py-5 text-sm text-gray-600">
-                        {{ $order['date'] }}
-                    </td>
-
-                    <td class="px-6 py-5 text-sm font-semibold">
-                        {{ $order['items'] }} items
-                    </td>
-
-                    <td class="px-6 py-5 text-base font-bold">
-                        {{ $order['total'] }}
-                    </td>
-
-                    <td class="px-6 py-5">
-
-                        <div class="bg-[#dff7e5] text-green-700 px-3 py-1 rounded-full inline-flex items-center gap-2 font-bold uppercase text-[10px]">
-
-                            <i data-lucide="check-circle-2" class="w-3 h-3"></i>
-
-                            {{ $order['status'] }}
-
-                        </div>
-
-                    </td>
-
-                    <td class="px-6 py-5">
-
-                        <div class="flex gap-3 text-[#7b0000]">
-
-                            <i data-lucide="eye" class="w-4 h-4"></i>
-                            <i data-lucide="ellipsis" class="w-4 h-4"></i>
-
-                        </div>
-
-                    </td>
-
-                </tr>
-
-                @endforeach
+        <td class="px-6 py-5">
+            <div class="flex gap-3 text-[#7b0000]">
+                <button title="View Detail">
+                    <i data-lucide="eye" class="w-4 h-4"></i>
+                </button>
+                <button>
+                    <i data-lucide="ellipsis" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </td>
+    </tr>
+    @endforeach
 
             </tbody>
 

@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('order_histories', function (Blueprint $table) {
+            $table->id();
+            $table->string('order_id')->unique(); // Contoh: INV-20260512-001
+            // Relasi ke customer (nullable jika pembeli anonim/bukan member)
+            $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
+            $table->dateTime('order_date');
+            $table->integer('total_items'); 
+            $table->decimal('total_price', 15, 2);
+            $table->string('status')->default('Complete'); 
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('order_histories');
+    }
+};
