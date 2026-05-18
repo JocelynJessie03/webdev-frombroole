@@ -78,6 +78,7 @@ class ProductController extends Controller
     {
         $request->validate([
             'pro_name' => 'required',
+            'category_id' => 'required|exists:categories,id',
             'pro_price' => 'required|numeric',
             'pro_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'ingredients' => 'required|array', // Validasi input resep
@@ -88,10 +89,13 @@ class ProductController extends Controller
             $imageName = time().'.'.$request->pro_image->extension();
             $request->pro_image->move(public_path('products'), $imageName);
         }
-
+            $cleanName = str_replace(' ', '', $request->pro_name);
+            $uniqueCode = strtoupper(substr($cleanName, 0, 3) . substr($cleanName, -3));
+            $generatedID = 'PRO-' . $uniqueCode . rand(1000, 9999);
         // 1. Simpan Data Produk
         $product = Product::create([
-            'pro_ID' => 'PRO'.rand(1000,9999),
+            'pro_ID' => $generatedID,
+            'category_id' => $request->category_id,
             'pro_name' => $request->pro_name,
             'pro_description' => $request->pro_description,
             'pro_price' => $request->pro_price,
@@ -109,4 +113,56 @@ class ProductController extends Controller
 
         return redirect('/pos')->with('success', 'Produk dan Resep berhasil disimpan!');
     }
+    public function edit($id)
+{
+    $product = Product::with('ingredients')->findOrFail($id);
+    $categories = \App\Models\Category::all();
+    $ingredients = Ingredient::all();
+    
+    return view('product.edit', compact('product', 'categories', 'ingredients'));
+}
+
+public function update(Request $request, $id)
+{
+    $product = Product::findOrFail($id);
+
+    $request->validate([
+        'pro_name' => 'required',
+        'category_id' => 'required|exists:categories,id',
+        'pro_price' => 'required|numeric',
+        'pro_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'ingredients' => 'required|array',
+    ]);
+
+    if ($request->hasFile('pro_image')) {
+        // Hapus gambar lama jika ada
+        if ($product->pro_image && file_exists(public_path('products/' . $product->pro_image))) {
+            unlink(public_path('products/' . $product->pro_image));
+        }
+        $imageName = time().'.'.$request->pro_image->extension();
+        $request->pro_image->move(public_path('products'), $imageName);
+        $product->pro_image = $imageName;
+    }
+
+    $product->update([
+        'category_id' => $request->category_id,
+        'pro_name' => $request->pro_name,
+        'pro_description' => $request->pro_description,
+        'pro_price' => $request->pro_price,
+        'pro_image' => $product->pro_image,
+    ]);
+
+    // Sync relasi pivot bahan baku
+    $syncData = [];
+    foreach ($request->ingredients as $ingredientId => $amount) {
+        if ($amount > 0) {
+            $syncData[$ingredientId] = ['amount_needed' => $amount];
+        }
+    }
+    $product->ingredients()->sync($syncData);
+
+    return redirect()->route('product.inventory')->with('success', 'Product updated successfully!');
+}
+
+
 }

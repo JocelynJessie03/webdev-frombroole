@@ -50,4 +50,28 @@ class IngredientController extends Controller
 
         return redirect()->route('ingredient.inventory')->with('success', 'Ingredient successfully added!');
     }
+    public function edit(Ingredient $ingredient)
+{
+    // Menampilkan view form edit dengan membawa data ingredient yang dipilih
+    return view('ingredient.edit', compact('ingredient'));
+}
+
+public function update(Request $request, Ingredient $ingredient)
+{
+    $request->validate([
+        'name'  => 'required|string|max:255|unique:ingredients,name,' . $ingredient->id,
+        'stock' => 'required|numeric|min:0',
+        'unit'  => 'required|string|in:gr,ml,pcs',
+    ]);
+
+    $ingredient->update([
+        'name'  => $request->name,
+        'stock' => $request->stock,
+        'unit'  => strtolower($request->unit),
+    ]);
+
+    return redirect()->route('ingredient.inventory')->with('success', 'Ingredient updated successfully!');
+}
+
+
 }

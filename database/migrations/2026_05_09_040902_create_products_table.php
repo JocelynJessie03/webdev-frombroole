@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('pro_ID')->unique();
             $table->string('pro_name');
             $table->text('pro_description')->nullable();
-            $table->decimal('pro_price', 15, 2);
+            $table->bigInteger('pro_price');
             // Hapus pro_stock/pro_currstock dari sini karena stok dihitung dari bahan baku
             $table->string('pro_image')->nullable(); // Kolom image sudah masuk di sini
             $table->foreignId('category_id')->constrained()->onDelete('cascade'); // Menambahkan foreign key untuk kategori

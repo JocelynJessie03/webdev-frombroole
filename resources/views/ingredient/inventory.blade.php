@@ -242,26 +242,23 @@
                         {{-- DROPDOWN --}}
                         <div class="hidden absolute right-0 top-12 w-48 bg-white border rounded-2xl shadow-xl z-40 overflow-hidden action-dropdown">
                             {{-- EDIT --}}
-                                    <button
-                                        class="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm font-semibold flex items-center gap-3">
-
+                                    {{-- EDIT (Ubah menjadi tag <a>) --}}
+                                    <a href="{{ route('ingredient.edit', $ingredient->id) }}"
+                                        class="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm font-semibold flex items-center gap-3 text-gray-700 transition">
                                         <i data-lucide="square-pen" class="w-4 h-4"></i>
-
                                         Edit Ingredient
-
-                                    </button>
+                                    </a>
 
 
 
                                     {{-- DELETE --}}
-                                    <button
-                                        class="w-full text-left px-4 py-3 hover:bg-red-50 text-red-600 text-sm font-semibold flex items-center gap-3">
-
+                                    
+                                        <button type="submit"
+                                        class="w-full text-left px-4 py-3 hover:bg-red-50 text-red-600 text-sm font-semibold flex items-center gap-3 transition">
                                         <i data-lucide="trash-2" class="w-4 h-4"></i>
-
                                         Delete Ingredient
-
-                                    </button>
+                                        </button>
+                                    </form>
 
                                 </div>
 
