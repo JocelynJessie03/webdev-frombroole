@@ -69,7 +69,9 @@ class ProductController extends Controller
     {
         // Ambil semua bahan baku untuk dipilih di form create product
         $ingredients = Ingredient::all();
-        return view('product.create', compact('ingredients'));
+        $categories = \App\Models\Category::all();
+
+        return view('product.create', compact('ingredients', 'categories'));
     }
 
     public function store(Request $request)

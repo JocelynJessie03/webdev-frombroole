@@ -138,17 +138,12 @@
 
             {{-- ACTIONS --}}
             <div class="flex items-center gap-3">
-
-                <button
-                    class="bg-[#7b0000] hover:bg-[#920000] text-white px-5 py-2 rounded-xl font-bold text-sm flex items-center gap-2 transition">
-
-                    <i data-lucide="plus" class="w-4 h-4"></i>
-
-                    Add Ingredient
-
-                </button>
-
-            </div>
+    <a href="{{ route('ingredient.create') }}"
+       class="bg-[#7b0000] hover:bg-[#920000] text-white px-5 py-2 rounded-xl font-bold text-sm flex items-center gap-2 transition">
+        <i data-lucide="plus" class="w-4 h-4"></i>
+        Add Ingredient
+    </a>
+</div>
 
         </div>
 

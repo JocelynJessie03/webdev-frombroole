@@ -25,6 +25,8 @@ Route::get('/product-inventory', [ProductController::class, 'index'])->name('pro
 Route::get('/ingredient-inventory', [IngredientController::class, 'index'])
     ->name('ingredient.inventory');
 
+Route::get('/ingredients/create', [IngredientController::class, 'create'])->name('ingredient.create');
+Route::post('/ingredients/store', [IngredientController::class, 'store'])->name('ingredient.store');
 
 Route::get('/order_history', [OrderHistoryController::class, 'index'])->name('order_history');
 
