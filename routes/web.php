@@ -57,4 +57,8 @@ Route::get('/reports', function () {
 
 Route::get('/customers', [CustomerController::class, 'index'])->name('customers');
 
+// REPORTS
+Route::get('/reports', [ReportController::class, 'index'])
+    ->name('reports');
+
 

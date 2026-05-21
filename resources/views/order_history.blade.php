@@ -34,19 +34,17 @@
 
 
     {{-- STATS --}}
-    <div class="grid grid-cols-4 gap-3">
+    <div class="grid grid-cols-3 gap-3">
 
         {{-- CARD --}}
         <div class="bg-white rounded-2xl p-5 border shadow-sm">
 
             <div class="w-9 h-9 bg-[#f7ebeb] rounded-xl flex items-center justify-center mb-3">
-
                 <i data-lucide="receipt" class="w-4 h-4 text-[#7b0000]"></i>
-
             </div>
 
             <p class="uppercase tracking-widest text-[10px] text-gray-400 font-bold mb-2">
-                Total Orders
+            Total Orders
             </p>
 
             <h2 class="text-3xl font-black">
@@ -60,16 +58,16 @@
         <div class="bg-white rounded-2xl p-5 border shadow-sm">
 
             <div class="w-9 h-9 bg-[#eaf8ef] rounded-xl flex items-center justify-center mb-3">
-
                 <i data-lucide="check-circle-2" class="w-4 h-4 text-green-600"></i>
-
             </div>
 
             <p class="uppercase tracking-widest text-[10px] text-gray-400 font-bold mb-2">
-                Completed
+            Completed
             </p>
 
-            <h2 class="text-3xl font-black">{{ number_format($stats['completed']) }}</h2>
+            <h2 class="text-3xl font-black">
+                {{ number_format($stats['completed']) }}
+            </h2>
 
         </div>
 
@@ -78,34 +76,16 @@
         <div class="bg-white rounded-2xl p-5 border shadow-sm">
 
             <div class="w-9 h-9 bg-[#fff6e8] rounded-xl flex items-center justify-center mb-3">
-
                 <i data-lucide="clock-3" class="w-4 h-4 text-yellow-600"></i>
-
             </div>
 
             <p class="uppercase tracking-widest text-[10px] text-gray-400 font-bold mb-2">
                 Pending
             </p>
 
-            <h2 class="text-3xl font-black">{{ number_format($stats['pending']) }}</h2>
-
-        </div>
-
-
-        {{-- CARD --}}
-        <div class="bg-white rounded-2xl p-5 border shadow-sm">
-
-            <div class="w-9 h-9 bg-[#fff0f0] rounded-xl flex items-center justify-center mb-3">
-
-                <i data-lucide="x-circle" class="w-4 h-4 text-red-600"></i>
-
-            </div>
-
-            <p class="uppercase tracking-widest text-[10px] text-gray-400 font-bold mb-2">
-                Cancelled
-            </p>
-
-            <h2 class="text-3xl font-black">{{ number_format($stats['cancelled']) }}</h2>
+            <h2 class="text-3xl font-black">
+                {{ number_format($stats['pending']) }}
+            </h2>
 
         </div>
 
@@ -116,7 +96,7 @@
     {{-- TABLE --}}
     <div class="bg-white rounded-3xl border shadow-sm overflow-hidden">
 
-        {{-- SEARCH --}}
+         {{-- SEARCH --}}
         <div class="p-4 flex justify-between items-center border-b">
 
             <div class="bg-[#f7f5f3] rounded-full px-4 py-2.5 flex items-center gap-3 w-[340px]">
@@ -124,36 +104,30 @@
                 <i data-lucide="search" class="w-4 h-4 text-gray-400"></i>
 
                 <input
-                    type="text"
-                    placeholder="Search order..."
-                    class="bg-transparent outline-none w-full text-sm"
+                id="searchInput"
+                type="text"
+                placeholder="Search order or customer..."
+                class="bg-transparent outline-none w-full text-sm"
                 >
 
             </div>
 
-
             <div class="flex gap-2">
-
+                <div class="relative flex items-center border px-4 py-2 rounded-xl gap-2 font-medium text-sm">
+                    <i data-lucide="filter" class="w-4 h-4 text-gray-500"></i>
+                        <select id="statusFilter" class="bg-transparent outline-none cursor-pointer appearance-none pr-4">
+                            <option value="all">All Status</option>
+                            <option value="completed">Completed</option> {{-- Ditambah 'ed' --}}
+                            <option value="pending">Pending</option>
+                        </select>
+                </div>
                 <button class="border px-4 py-2 rounded-xl flex items-center gap-2 font-medium text-sm">
-
-                    <i data-lucide="filter" class="w-4 h-4"></i>
-
-                    Filter
-
-                </button>
-
-
-                <button class="border px-4 py-2 rounded-xl flex items-center gap-2 font-medium text-sm">
-
                     <i data-lucide="clock-3" class="w-4 h-4"></i>
-
                     Date
-
                 </button>
-
             </div>
-
         </div>
+
 
 
 
@@ -175,7 +149,6 @@
                 </tr>
 
             </thead>
-
 
             <tbody>
 
@@ -210,21 +183,23 @@
         <td class="px-6 py-5">
             @php
                 $statusClasses = [
-                    'Completed' => 'bg-[#dff7e5] text-green-700',
+                    'Complete' => 'bg-[#dff7e5] text-green-700',
                     'Pending'   => 'bg-[#fff6e8] text-yellow-700',
-                    'Cancelled' => 'bg-[#fff0f0] text-red-700',
                 ];
                 $class = $statusClasses[$order->status] ?? 'bg-gray-100 text-gray-700';
             @endphp
+
             <div class="{{ $class }} px-3 py-1 rounded-full inline-flex items-center gap-2 font-bold uppercase text-[10px]">
-                @if($order->status == 'Completed')
+
+                 @if($order->status == 'Complete')
                     <i data-lucide="check-circle-2" class="w-3 h-3"></i>
-                @elseif($order->status == 'Pending')
-                    <i data-lucide="clock-3" class="w-3 h-3"></i>
+
                 @else
-                    <i data-lucide="x-circle" class="w-3 h-3"></i>
+                    <i data-lucide="clock-3" class="w-3 h-3"></i>
+
                 @endif
-                {{ $order->status }}
+
+                <span class="status-text">{{ $order->status }}</span>
             </div>
         </td>
 
@@ -250,3 +225,46 @@
 </div>
 
 @endsection
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const searchInput = document.getElementById("searchInput");
+    const statusFilter = document.getElementById("statusFilter");
+    const rows = document.querySelectorAll("tbody tr");
+
+    function filterTable() {
+        const searchValue = searchInput.value.toLowerCase().trim();
+        const statusValue = statusFilter.value.toLowerCase().trim();
+
+        rows.forEach(row => {
+            // 1. Ambil semua teks dalam baris untuk pencarian nama/ID
+            const rowText = row.innerText.toLowerCase();
+
+            // 2. Ambil teks status dari span yang sudah kita beri class tadi
+            const statusCell = row.querySelector(".status-text");
+            let rowStatus = statusCell ? statusCell.innerText.toLowerCase().trim() : "";
+            
+            // Normalisasi kata 'complete' agar cocok dengan value option 'completed'
+            if (rowStatus === 'complete') {
+                rowStatus = 'completed';
+            }
+
+            // 3. Logika Evaluasi Filter
+            const matchSearch = rowText.includes(searchValue);
+            const matchStatus = (statusValue === "all" || rowStatus === statusValue);
+
+            // 4. Tampilkan atau Sembunyikan Baris
+            if (matchSearch && matchStatus) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+
+    // Jalankan filter saat mengetik atau mengganti opsi status
+    if (searchInput) searchInput.addEventListener("keyup", filterTable);
+    if (statusFilter) statusFilter.addEventListener("change", filterTable);
+
+});
+</script>

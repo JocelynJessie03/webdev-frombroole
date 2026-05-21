@@ -47,6 +47,7 @@
         }
     </style>
 </head>
+
 <body class="h-screen w-screen overflow-hidden">
 
 <div id="main-container">
@@ -185,5 +186,6 @@
         lucide.createIcons();
     });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
