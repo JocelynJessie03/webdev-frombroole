@@ -9,7 +9,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::where('pro_delete', false)->get();
+        $products = Product::where('pro_delete', '=', false, 'and')->get();
 
         return view('pos', compact('products'));
     }
