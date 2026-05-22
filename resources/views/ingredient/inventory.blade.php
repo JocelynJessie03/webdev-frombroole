@@ -216,17 +216,27 @@
                 </td>
 
                 {{-- STATUS --}}
-                <td class="px-4 py-5">
-                    @if($ingredient->is_low_stock)
-                        <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-bold">
-                            LOW STOCK
-                        </span>
-                    @else
-                        <span class="bg-[#f8e9e9] text-[#7b0000] px-3 py-1 rounded-full text-xs font-bold">
-                            IN STOCK
-                        </span>
-                    @endif
-                </td>
+<td class="px-4 py-5">
+
+    @if($ingredient->is_low_stock)
+
+        <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold">
+
+            LOW STOCK
+
+        </span>
+
+    @else
+
+        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">
+
+            IN STOCK
+
+        </span>
+
+    @endif
+
+</td>
 
 
                 {{-- ACTION --}}

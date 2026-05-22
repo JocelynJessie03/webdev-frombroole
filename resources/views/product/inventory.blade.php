@@ -147,10 +147,36 @@
                         </td>
 
                         <td class="px-4 py-5">
-                            <span class="{{ $product->status_label == 'IN STOCK' ? 'bg-[#f8e9e9] text-[#7b0000]' : ($product->status_label == 'LOW STOCK' ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-500') }} px-3 py-1 rounded-full text-xs font-bold">
-                                {{ $product->status_label }}
-                            </span>
-                        </td>
+
+    <span class="
+
+        {{ 
+
+            $product->status_label == 'IN STOCK'
+
+            ? 'bg-green-100 text-green-700'
+
+            : (
+
+                $product->status_label == 'LOW STOCK'
+
+                ? 'bg-yellow-100 text-yellow-700'
+
+                : 'bg-red-100 text-red-600'
+
+            )
+
+        }}
+
+        px-3 py-1 rounded-full text-xs font-bold
+
+    ">
+
+        {{ $product->status_label }}
+
+    </span>
+
+</td>
                         
                         <td class="px-4 py-5">
                             <div class="relative">

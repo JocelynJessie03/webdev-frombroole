@@ -14,9 +14,8 @@ Route::get('/', function () {
     return redirect('/dashboard');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->name('dashboard');
 
 Route::get('/pos', [PosController::class, 'index'])->name('pos');
 
@@ -51,14 +50,32 @@ Route::put('/ingredients/{ingredient}', [IngredientController::class, 'update'])
 // ORDER HISTORY
 Route::get('/order_history', [OrderHistoryController::class, 'index'])->name('order_history');
 
-Route::get('/reports', function () {
-    return view('reports');
-})->name('reports');
-
 Route::get('/customers', [CustomerController::class, 'index'])->name('customers');
+
 
 // REPORTS
 Route::get('/reports', [ReportController::class, 'index'])
     ->name('reports');
 
+
+// CHECKOUT
+Route::post('/pos/checkout', [PosController::class, 'checkout'])
+    ->name('pos.checkout');
+    
+Route::get('/checkout/{id}', [PosController::class, 'checkoutView'])
+    ->name('checkout.view');
+
+Route::post('/checkout-preview', [PosController::class, 'checkoutPreview'])
+    ->name('checkout.preview');
+
+Route::post('/payment-process', [PosController::class, 'processPayment'])
+    ->name('payment.process');
+
+Route::get('/payment-success/{id}', [PosController::class, 'paymentSuccess'])
+    ->name('payment.success');
+
+Route::get('/receipt/{id}', [PosController::class, 'receipt'])
+    ->name('receipt');
+
+Route::get('/api/search', [DashboardController::class, 'apiSearch']);
 
