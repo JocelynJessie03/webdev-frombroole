@@ -11,7 +11,7 @@
         <div class="bg-gradient-to-br from-[#7b0000] to-[#930000] rounded-[40px] p-10 text-white">
 
             <p class="uppercase tracking-widest text-sm opacity-70 mb-3">
-                Daily Sales Summary
+                Sales Summary
             </p>
 
             <h1 class="text-6xl font-black mb-8">
@@ -139,7 +139,7 @@
             <div class="flex items-center justify-between mb-6">
 
                 <h2 class="text-2xl font-black">
-                    Inventory Status
+                    Ingredients Inventory Status
                 </h2>
 
                 <a

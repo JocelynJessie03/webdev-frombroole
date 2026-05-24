@@ -129,7 +129,7 @@
                                 <input type="number" 
                                        name="ingredients[{{ $ingredient->id }}]" 
                                        min="0" 
-                                       step="0.01"
+                                       step="1"
                                        value="{{ old('ingredients.'.$ingredient->id, $amountNeeded) }}"
                                        placeholder="0"
                                        class="w-full text-right outline-none text-sm font-bold text-gray-800">

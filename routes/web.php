@@ -33,6 +33,12 @@ Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('pro
 
 Route::put('/products/{id}', [ProductController::class, 'update'])->name('product.update');
 
+Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+
+
+//Category
+Route::get('/categories/create', [App\Http\Controllers\CategoryController::class, 'create'])->name('categories.create');
+Route::post('/categories', [App\Http\Controllers\CategoryController::class, 'store'])->name('categories.store');
 
 // INGREDIENT
 Route::get('/ingredient-inventory', [IngredientController::class, 'index'])
@@ -46,10 +52,13 @@ Route::get('/ingredients/{ingredient}/edit', [IngredientController::class, 'edit
 
 Route::put('/ingredients/{ingredient}', [IngredientController::class, 'update'])->name('ingredient.update');
 
-
+Route::delete('/ingredients/{id}', [IngredientController::class, 'destroy'])->name('ingredient.destroy');
 // ORDER HISTORY
 Route::get('/order_history', [OrderHistoryController::class, 'index'])->name('order_history');
 
+Route::patch('/order_history/{id}/update-status', [OrderHistoryController::class, 'updateStatus'])->name('order_history.update_status');
+
+//Customer
 Route::get('/customers', [CustomerController::class, 'index'])->name('customers');
 
 
@@ -78,4 +87,5 @@ Route::get('/receipt/{id}', [PosController::class, 'receipt'])
     ->name('receipt');
 
 Route::get('/api/search', [DashboardController::class, 'apiSearch']);
+Route::post('/check-member', [App\Http\Controllers\PosController::class, 'checkMember'])->name('check.member');
 

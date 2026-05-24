@@ -172,14 +172,17 @@
                     </td>
 
                     {{-- ACTION --}}
-                    <td class="px-6 py-5">
+                    <td class="px-9 py-5">
                         <div class="flex gap-3 text-[#7b0000]">
-                            <button onclick="openHistory('{{ $customer->customer_name }}')" class="hover:scale-110 transition">
+                            {{-- TOMBOL HISTORY --}}
+                            <button onclick="openHistory(this)" 
+                                    data-name="{{ $customer->customer_name }}"
+                                    data-history="{{ json_encode($customer->orders ?? []) }}"
+                                    class="hover:scale-110 transition flex items-center gap-1.5"
+                                    title="View Transaction History">
                                 <i data-lucide="history" class="w-4 h-4"></i>
                             </button>
-                            <button class="hover:scale-110 transition">
-                                <i data-lucide="ellipsis" class="w-4 h-4"></i>
-                            </button>
+                            {{-- TOMBOL TITIK TIGA DI SINI SUDAH DIHAPUS --}}
                         </div>
                     </td>
                 </tr>
@@ -190,9 +193,9 @@
 </div>
 
 {{-- MODAL HISTORY --}}
-<div id="historyModal" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl">
-        <div class="p-6 border-b flex justify-between items-center">
+<div id="historyModal" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh]">
+        <div class="p-6 border-b flex justify-between items-center bg-[#faf7f5]">
             <div>
                 <h2 class="text-xl font-bold">Transaction History</h2>
                 <p class="text-sm text-gray-500" id="modalCustomerName"></p>
@@ -202,25 +205,13 @@
             </button>
         </div>
 
-        <div class="p-6 max-h-[400px] overflow-y-auto space-y-4">
-            <div class="flex justify-between items-center p-4 bg-gray-50 rounded-2xl">
-                <div>
-                    <p class="font-bold text-sm">Sea Salt Butterscotch Coffee</p>
-                    <p class="text-xs text-gray-400">12 May 2026 • 14:20</p>
-                </div>
-                <p class="font-black text-[#7b0000]">Rp 35.000</p>
-            </div>
-            <div class="flex justify-between items-center p-4 bg-gray-50 rounded-2xl">
-                <div>
-                    <p class="font-bold text-sm">Oreo Cheesecake</p>
-                    <p class="text-xs text-gray-400">10 May 2026 • 11:05</p>
-                </div>
-                <p class="font-black text-[#7b0000]">Rp 45.000</p>
-            </div>
+        {{-- AREA SCROLL UNTUK ACCORDION TRANSAKSI --}}
+        <div class="p-6 overflow-y-auto flex-1 space-y-4" id="historyModalBody">
+            {{-- Data akan di inject otomatis via JS --}}
         </div>
 
         <div class="p-6 border-t bg-gray-50 flex justify-end">
-            <button onclick="closeHistory()" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-xl font-bold text-sm">
+            <button onclick="closeHistory()" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-xl font-bold text-sm hover:bg-gray-300 transition">
                 Close
             </button>
         </div>
@@ -257,11 +248,11 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Fungsi Pengurutan Top Spender (High to Low / Low to High)
+    // Fungsi Pengurutan Top Spender
     function sortTopSpenders() {
         const rows = Array.from(document.querySelectorAll(".customer-row"));
         const currentSortMode = btnTopSpender.getAttribute("data-sort");
-        let newSortMode = "desc"; // Default pertama klik langsung dari yang terbesar
+        let newSortMode = "desc";
 
         if (currentSortMode === "desc") {
             newSortMode = "asc";
@@ -273,32 +264,145 @@ document.addEventListener("DOMContentLoaded", function () {
         
         btnTopSpender.setAttribute("data-sort", newSortMode);
 
-        // Algoritma sorting baris tabel berdasarkan nominal spend
         rows.sort((rowA, rowB) => {
             const spendA = parseInt(rowA.getAttribute("data-spend")) || 0;
             const spendB = parseInt(rowB.getAttribute("data-spend")) || 0;
-
             return newSortMode === "desc" ? (spendB - spendA) : (spendA - spendB);
         });
 
-        // Gambar ulang susunan baris di tabel body
         rows.forEach(row => tableBody.appendChild(row));
     }
 
-    // Event Listener
     if (searchInput) searchInput.addEventListener("keyup", applyFilters);
     if (tierFilter) tierFilter.addEventListener("change", applyFilters);
     if (btnTopSpender) btnTopSpender.addEventListener("click", sortTopSpenders);
 });
 
-// Fungsi bawaan Modal
-function openHistory(name) {
-    document.getElementById('modalCustomerName').innerText = "Viewing transactions for " + name;
-    document.getElementById('historyModal').classList.remove('hidden');
+// FUNGSI MODAL HISTORY CUSTOMER (DENGAN ACCORDION)
+function openHistory(button) {
+    const modal = document.getElementById('historyModal');
+    const nameEl = document.getElementById('modalCustomerName');
+    const bodyEl = document.getElementById('historyModalBody');
+
+    const customerName = button.getAttribute('data-name');
+    let historyData = [];
+    
+    try {
+        historyData = JSON.parse(button.getAttribute('data-history') || '[]');
+    } catch (e) {
+        console.error("Gagal parse data riwayat", e);
+    }
+
+    nameEl.innerText = "Viewing transactions for " + customerName;
+    bodyEl.innerHTML = ''; // Reset isi body
+
+    if (historyData.length === 0) {
+        bodyEl.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-10 opacity-50">
+                <i data-lucide="receipt" class="w-12 h-12 mb-3"></i>
+                <p class="text-gray-500 font-medium">No transaction history found.</p>
+            </div>
+        `;
+    } else {
+        historyData.forEach((trx, index) => {
+            // Render detail list item dari transaksi
+            let itemsList = '';
+            if (trx.items && trx.items.length > 0) {
+                itemsList = trx.items.map(item => {
+                    let productName = 'Unknown Product';
+                    if (item.product) {
+                        productName = item.pro_name || item.product.pro_name || item.product.pro_name || 'Unnamed Product';
+                    }
+
+                    return `
+                    <li class="flex justify-between items-center text-sm py-2 border-b last:border-0 border-gray-100">
+                        <span class="text-gray-700 font-medium">${productName}</span>
+                        <span class="text-gray-400 text-xs">x${item.quantity || 1}</span>
+                    </li>
+                    `;
+                }).join('');
+            } else {
+                itemsList = '<p class="text-xs text-gray-400 italic">No details available.</p>';
+            }
+
+            // Fallback variable data transaksi dasar
+            let orderId = trx.order_id || `TRX-${Math.floor(Math.random() * 10000)}`;
+            let orderDate = trx.order_date || trx.created_at || '-';
+            let totalItems = trx.total_items || (trx.items ? trx.items.length : 0);
+            
+            // Mengambil dan memformat total_price ke mata uang Rupiah
+            let totalPrice = trx.total_price ? parseInt(trx.total_price) : 0;
+            let formattedPrice = 'Rp ' + totalPrice.toLocaleString('id-ID');
+
+            // Format Tanggal dan Jam agar rapi (Contoh: 21 May 2026 - 11:35)
+            let displayDate = orderDate;
+            if (orderDate !== '-') {
+                try {
+                    let dateObj = new Date(orderDate);
+                    if (!isNaN(dateObj.getTime())) {
+                        let tgl = String(dateObj.getDate()).padStart(2, '0');
+                        let bln = dateObj.toLocaleString('id-ID', { month: 'short' });
+                        let thn = dateObj.getFullYear();
+                        let jam = String(dateObj.getHours()).padStart(2, '0');
+                        let menit = String(dateObj.getMinutes()).padStart(2, '0');
+                        displayDate = `${tgl} ${bln} ${thn} - ${jam}:${menit}`;
+                    }
+                } catch (e) {
+                    console.error("Gagal memformat tanggal", e);
+                }
+            }
+
+            bodyEl.innerHTML += `
+                <div class="border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm">
+                    <div class="flex items-center justify-between p-4 bg-white hover:bg-gray-50 transition">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-[#f7ebeb] flex items-center justify-center text-[#7b0000]">
+                                <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <p class="font-black text-[#1b1b1b]">${orderId}</p>
+                                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">${displayDate}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-4">
+                            <div class="text-right">
+                                <p class="font-black text-sm text-[#1b1b1b]">${formattedPrice}</p>
+                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">${totalItems} items</p>
+                            </div>
+                            <button onclick="toggleOrderDetails('details-${index}')" class="text-gray-400 hover:text-[#7b0000] p-2 rounded-xl border hover:bg-white transition bg-gray-50" title="View Items">
+                                <i data-lucide="eye" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="details-${index}" class="hidden bg-[#faf7f5] p-4 border-t">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Items Ordered</p>
+                        <ul class="space-y-1">
+                            ${itemsList}
+                        </ul>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    modal.classList.remove('hidden');
+    
+    // Refresh SVG Lucide yang baru saja di-inject
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
 }
 
 function closeHistory() {
     document.getElementById('historyModal').classList.add('hidden');
+}
+
+// FUNGSI UNTUK MEMUNCULKAN DROPDOWN DETAIL MENU (MATA)
+function toggleOrderDetails(id) {
+    const el = document.getElementById(id);
+    el.classList.toggle('hidden');
 }
 
 window.onclick = function(event) {

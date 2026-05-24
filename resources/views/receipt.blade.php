@@ -44,7 +44,7 @@
                 </p>
 
                 <p class="font-black text-green-600">
-                    PAID
+                    Complete
                 </p>
 
             </div>

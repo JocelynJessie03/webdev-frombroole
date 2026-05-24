@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CustomerController extends Controller
 {
     public function index(Request $request)
     {
-        // 1. Inisialisasi Query
-        $query = Customer::query();
+        // 1. Inisialisasi Query & LOAD RELASI (orders, items, dan product)
+        // Pastikan nama relasi di model Customer adalah 'orders'
+        $query = Customer::with(['orders.items.product']);
 
         // 2. Logika Search (Cari berdasarkan nama, ID, atau email)
         if ($request->filled('search')) {
@@ -36,10 +38,11 @@ class CustomerController extends Controller
         // 5. Eksekusi Query
         $customers = $query->get();
 
-        // 6. Hitung Statistik untuk Card Atas
-        $goldCount = Customer::where('tier', '=', 'Gold','and')->count();
-        $silverCount = Customer::where('tier', '=', 'Silver','and')->count();
-        $bronzeCount = Customer::where('tier', '=', 'Bronze','and')->count();
+        // 6. Hitung Statistik untuk Card Atas menggunakan DB::table
+        $goldCount = DB::table('customers')->where('tier', '=', 'Gold')->count();
+        $silverCount = DB::table('customers')->where('tier', '=', 'Silver')->count();
+        $bronzeCount = DB::table('customers')->where('tier', '=', 'Bronze')->count();
+
         // 7. Kirim data ke View
         return view('customers', [
             'customers' => $customers,

@@ -91,7 +91,7 @@ class ProductController extends Controller
         }
             $cleanName = str_replace(' ', '', $request->pro_name);
             $uniqueCode = strtoupper(substr($cleanName, 0, 3) . substr($cleanName, -3));
-            $generatedID = 'PRO-' . $uniqueCode . rand(1000, 9999);
+            $generatedID = 'PRO-' . $uniqueCode . '-' . str_pad(Product::count() + 1, 3, '0', STR_PAD_LEFT);
         // 1. Simpan Data Produk
         $product = Product::create([
             'pro_ID' => $generatedID,
@@ -164,5 +164,14 @@ public function update(Request $request, $id)
     return redirect()->route('product.inventory')->with('success', 'Product updated successfully!');
 }
 
-
+public function destroy($id)
+    {
+        $product = \App\Models\Product::findOrFail($id);
+        
+        // Karena pakai SoftDeletes di model, ini otomatis hanya mengisi kolom deleted_at
+        $product->delete();
+        $product->pro_delete = true; // Tandai sebagai dihapus secara manual
+        $product->save();
+        return redirect()->back()->with('success', 'Product successfully deleted!');
+    }
 }

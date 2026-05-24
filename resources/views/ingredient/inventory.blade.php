@@ -30,11 +30,6 @@
                 <div class="w-12 h-12 rounded-xl bg-[#f7ecec] flex items-center justify-center">
                     <i data-lucide="package" class="w-5 h-5 text-[#7b0000]"></i>
                 </div>
-
-                <div class="bg-[#f7dede] text-[#7b0000] text-xs font-bold px-3 py-1 rounded-full">
-                    +2.1%
-                </div>
-
             </div>
 
             <p class="uppercase tracking-widest text-xs text-gray-400 font-bold mb-1">
@@ -54,14 +49,19 @@
 
             <div class="flex justify-between items-start mb-5">
 
-                <div class="w-12 h-12 rounded-xl bg-[#fff3f3] flex items-center justify-center">
-                    <i data-lucide="triangle-alert" class="w-5 h-5 text-red-600"></i>
+    
+                {{-- Icon Alert: Warnanya berubah jadi abu-abu kalau stock aman (0) --}}
+                <div class="w-12 h-12 rounded-xl {{ $lowStockCount > 0 ? 'bg-[#fff3f3]' : 'bg-gray-50' }} flex items-center justify-center transition-colors">
+                    <i data-lucide="triangle-alert" class="w-5 h-5 {{ $lowStockCount > 0 ? 'text-red-600' : 'text-gray-400' }}"></i>
                 </div>
-
-                <div class="bg-[#ffdede] text-red-600 text-xs font-bold px-3 py-1 rounded-full">
-                    Attention Required
-                </div>
-
+                
+                {{-- Logic Blade: Badge HANYA muncul kalau ada barang Low Stock --}}
+                @if($lowStockCount > 0)
+                    <div class="bg-[#ffdede] text-red-600 text-xs font-bold px-3 py-1 rounded-full">
+                        Attention Required
+                    </div>
+                @endif
+            
             </div>
 
             <p class="uppercase tracking-widest text-xs text-gray-400 font-bold mb-1">
@@ -77,30 +77,30 @@
 
 
         {{-- CARD --}}
+        {{-- CARD 3: USED TODAY --}}
         <div class="bg-[#8b0000] rounded-2xl p-5 shadow-lg text-white">
-
             <div class="flex justify-between items-start mb-5">
-
                 <div class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center">
-                    <i data-lucide="warehouse" class="w-5 h-5"></i>
+                    <i data-lucide="activity" class="w-5 h-5 text-white"></i>
                 </div>
-
-                <div class="bg-white/10 text-white text-xs font-bold px-3 py-1 rounded-full">
-                    Storage
-                </div>
-
+                
+                @if($usedTodayCount > 0)
+                    <div class="bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full border border-white/30">
+                        Active Kitchen
+                    </div>
+                @else
+                    <div class="bg-white/10 text-white/50 text-xs font-bold px-3 py-1 rounded-full">
+                        No Activity
+                    </div>
+                @endif
             </div>
-
             <p class="uppercase tracking-widest text-xs text-white/70 font-bold mb-1">
-                Inventory Status
+                Used Today
             </p>
-
             <h2 class="text-4xl font-black">
-                Stable
+                {{ $usedTodayCount }} <span class="text-lg font-normal text-white/70">Items</span>
             </h2>
-
         </div>
-
     </div>
 
 
@@ -127,13 +127,20 @@
             </a>
 
             {{-- Button Packaging--}}
-            <a href="{{ route('ingredient.inventory', ['filter' => 'packaging']) }}" 
-            class="{{ request('filter') == 'packaging' ? 'bg-white shadow text-[#7b0000]' : 'text-gray-500' }} px-4 py-2 rounded-lg font-bold text-sm transition">
-                Packaging
+            <a href="{{ route('ingredient.inventory', ['filter' => 'out_of_stock']) }}" 
+            class="{{ request('filter') == 'out_of_stock' ? 'bg-white shadow text-[#7b0000]' : 'text-gray-500' }} px-4 py-2 rounded-lg font-bold text-sm transition">
+                Out Of Stock
             </a>
-
+            
     </div>
-
+   {{-- INPUT SEARCH BAR --}}
+            <div class="bg-[#f6f3f1] rounded-xl px-4 py-2.5 flex items-center gap-3 w-[280px] focus-within:ring-2 focus-within:ring-[#7b0000]/20 transition">
+                <i data-lucide="search" class="w-4 h-4 text-gray-400"></i>
+                <input type="text" 
+                       id="searchInput" 
+                       placeholder="Search product..." 
+                       class="bg-transparent outline-none w-full text-sm font-plain text-gray-700 placeholder-gray-400">
+            </div>
 
 
             {{-- ACTIONS --}}
@@ -216,27 +223,27 @@
                 </td>
 
                 {{-- STATUS --}}
-<td class="px-4 py-5">
+                <td class="px-4 py-5">
 
-    @if($ingredient->is_low_stock)
+                    @if($ingredient->is_low_stock)
 
-        <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold">
+                        <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold">
 
-            LOW STOCK
+                            LOW STOCK
 
-        </span>
+                        </span>
 
-    @else
+                    @else
 
-        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">
+                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">
 
-            IN STOCK
+                            IN STOCK
 
-        </span>
+                        </span>
 
-    @endif
+                    @endif
 
-</td>
+                </td>
 
 
                 {{-- ACTION --}}
@@ -263,11 +270,15 @@
 
                                     {{-- DELETE --}}
                                     
+                                        <form action="{{ route('ingredient.destroy', $ingredient->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete {{ $ingredient->name }}?');">
+                                        @csrf
+                                        @method('DELETE')
                                         <button type="submit"
-                                        class="w-full text-left px-4 py-3 hover:bg-red-50 text-red-600 text-sm font-semibold flex items-center gap-3 transition">
-                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                        Delete Ingredient
+                                                class="w-full text-left px-4 py-3 hover:bg-red-50 text-red-600 text-sm font-semibold flex items-center gap-3 transition">
+                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                            Delete Ingredient
                                         </button>
+                                    </form>
                                     </form>
 
                                 </div>
@@ -294,19 +305,35 @@
 
 <script>
 
-    function toggleDropdown(button)
-    {
+    function toggleDropdown(button) {
         const dropdown = button.parentElement.querySelector('.action-dropdown');
-
-        document.querySelectorAll('.action-dropdown').forEach(menu =>
-        {
-            if(menu !== dropdown)
-            {
+        
+        // 1. Tutup semua dropdown lain yang sedang terbuka
+        document.querySelectorAll('.action-dropdown').forEach(menu => {
+            if(menu !== dropdown) {
                 menu.classList.add('hidden');
             }
         });
-
+        
+        // 2. Toggle status hidden dropdown aktif
         dropdown.classList.toggle('hidden');
+        
+        // 3. Atur posisi secara dinamis jika dropdown terbuka
+        if (!dropdown.classList.contains('hidden')) {
+            const rect = button.getBoundingClientRect();
+            const spaceBelow = window.innerHeight - rect.bottom;
+            
+            // Jika sisa ruang di bawah kurang dari 180px (kira-kira tinggi dropdown)
+            if (spaceBelow < 160) {
+                // Buka ke atas
+                dropdown.classList.remove('top-12');
+                dropdown.classList.add('bottom-full', 'mb-2');
+            } else {
+                // Buka ke bawah (normal)
+                dropdown.classList.remove('bottom-full', 'mb-2');
+                dropdown.classList.add('top-12');
+            }
+        }
     }
 
 
@@ -330,5 +357,28 @@
     });
 
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        
+        if(searchInput) {
+            searchInput.addEventListener('keyup', function() {
+                let filter = searchInput.value.toLowerCase();
+                // Ambil semua baris di dalam tbody
+                let rows = document.querySelectorAll('tbody tr');
 
+                rows.forEach(row => {
+                    // Ambil text dari kolom Nama Produk (kolom ke-1) 
+                    let productName = row.cells[0]?.textContent.toLowerCase() || "";
+
+                    if (productName.includes(filter) ) {
+                        row.style.display = ""; // Tampilkan baris
+                    } else {
+                        row.style.display = "none"; // Sembunyikan baris
+                    }
+                });
+            });
+        }
+    });
+</script>
 @endsection

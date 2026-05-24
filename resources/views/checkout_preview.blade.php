@@ -3,223 +3,262 @@
 @section('content')
 
 @php
-
     $subtotal = 0;
-
-    foreach($cart as $item)
-    {
+    foreach($cart as $item) {
         $subtotal += $item['price'] * $item['qty'];
     }
-
     $tax = $subtotal * 0.10;
-
     $total = $subtotal + $tax;
-
 @endphp
 
 <div class="max-w-6xl mx-auto">
-
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-        {{-- LEFT --}}
+        {{-- LEFT (CART ITEMS) --}}
         <div class="lg:col-span-2">
-
             <div class="bg-white rounded-3xl border border-gray-200 shadow-sm p-8">
-
-                <h1 class="text-4xl font-black text-[#7b0000] mb-8">
-                    Checkout Preview
-                </h1>
-
-
+                
+                {{-- TOMBOL BACK & JUDUL --}}
+                <div class="flex items-center gap-4 mb-8">
+                    <a href="{{ route('pos') }}" class="text-gray-400 hover:text-[#7b0000] p-2 hover:bg-gray-100 rounded-full transition flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </a>
+                    <h1 class="text-4xl font-black text-[#7b0000]">
+                        Checkout Preview
+                    </h1>
+                </div>
 
                 {{-- ITEMS --}}
                 <div class="space-y-6">
-
                     @foreach($cart as $item)
-
                         <div class="flex justify-between items-center border-b pb-5">
-
                             <div>
-
-                                <h2 class="font-black text-xl mb-2">
-                                    {{ $item['name'] }}
-                                </h2>
-
-                                <p class="text-gray-400">
-                                    Qty : {{ $item['qty'] }}
-                                </p>
-
+                                <h2 class="font-black text-xl mb-2">{{ $item['name'] }}</h2>
+                                <p class="text-gray-400">Qty : {{ $item['qty'] }}</p>
                             </div>
-
                             <div class="text-right">
-
                                 <p class="font-black text-[#7b0000] text-lg">
                                     Rp {{ number_format($item['price'] * $item['qty'], 0, ',', '.') }}
                                 </p>
-
                             </div>
-
                         </div>
-
                     @endforeach
-
                 </div>
-
             </div>
-
         </div>
 
-
-
-        {{-- RIGHT --}}
+        {{-- RIGHT (SUMMARY & PAYMENT) --}}
         <div>
-
             <div class="bg-white rounded-3xl border border-gray-200 shadow-sm p-8 sticky top-5">
+                <h2 class="text-2xl font-black mb-8">Payment Summary</h2>
 
-                <h2 class="text-2xl font-black mb-8">
-                    Payment Summary
-                </h2>
-
-
-
-                {{-- TOTAL --}}
-                <div class="space-y-5 mb-10">
-
-                    <div class="flex justify-between">
-
-                        <span class="text-gray-500">
-                            Subtotal
-                        </span>
-
-                        <span class="font-bold">
-                            Rp {{ number_format($subtotal, 0, ',', '.') }}
-                        </span>
-
+                {{-- CUSTOMER TYPE TOGGLE --}}
+                <div class="mb-8">
+                    <h3 class="font-bold mb-3 text-gray-700">Customer Type</h3>
+                    <div class="flex gap-4">
+                        <label class="flex-1 border rounded-xl p-3 flex items-center gap-2 cursor-pointer hover:bg-gray-50 transition">
+                            <input type="radio" name="customer_type" value="regular" checked onchange="toggleCustomerType()" class="w-4 h-4 text-[#7b0000]">
+                            <span class="font-bold text-sm">Regular</span>
+                        </label>
+                        <label class="flex-1 border rounded-xl p-3 flex items-center gap-2 cursor-pointer hover:bg-gray-50 transition">
+                            <input type="radio" name="customer_type" value="member" onchange="toggleCustomerType()" class="w-4 h-4 text-[#7b0000]">
+                            <span class="font-bold text-sm">Member</span>
+                        </label>
                     </div>
+                </div>
 
-                    <div class="flex justify-between">
-
-                        <span class="text-gray-500">
-                            Tax
-                        </span>
-
-                        <span class="font-bold">
-                            Rp {{ number_format($tax, 0, ',', '.') }}
-                        </span>
-
+                {{-- MEMBER CHECK SECTION (HIDDEN BY DEFAULT) --}}
+                <div id="member-section" class="mb-8 hidden">
+                    <label class="block text-sm font-bold mb-2">Member Phone Number</label>
+                    <div class="flex gap-2 mb-2">
+                        <input type="text" id="phone-input" placeholder="e.g. 08123456789" 
+                               class="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-[#7b0000]">
+                        <button type="button" onclick="checkMember()" 
+                                class="bg-gray-800 hover:bg-black text-white px-5 rounded-xl font-bold transition">
+                            Check
+                        </button>
                     </div>
+                    <p id="member-alert" class="text-xs text-red-600 font-bold hidden mb-4"></p>
 
-                    <div class="flex justify-between items-center border-t pt-5">
+                    {{-- MEMBER DETAILS (SHOW IF FOUND) --}}
+                    <div id="member-details" class="hidden bg-gray-50 border border-gray-200 p-4 rounded-xl space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1">Customer Name</label>
+                            <input type="text" id="member-name" readonly class="w-full bg-gray-200 border-none rounded-lg px-3 py-2 font-bold text-gray-600">
+                        </div>
+                        
+                        <div class="bg-white border rounded-lg p-3">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs font-bold text-gray-500">Available Points</span>
+                                <span class="font-black text-[#7b0000]" id="available-points">0 Pts</span>
+                            </div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1">Use Points (1 Poin = Rp 1)</label>
+                            <input type="number" id="input-points" min="0" value="0" oninput="calculateTotal()"
+                                   class="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-[#7b0000] text-right font-bold text-lg">
+                        </div>
+                    </div>
+                </div>
 
-                        <span class="text-2xl font-black">
-                            Total
-                        </span>
-
-                        <span class="text-3xl font-black text-[#7b0000]">
+                {{-- TOTAL SUMMARY --}}
+                <div class="space-y-4 mb-8 bg-gray-50 p-5 rounded-2xl">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-500">Subtotal</span>
+                        <span class="font-bold">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-500">Tax (10%)</span>
+                        <span class="font-bold">Rp {{ number_format($tax, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="flex justify-between text-sm text-green-600 font-bold hidden" id="discount-row">
+                        <span>Points Discount</span>
+                        <span id="discount-amount">- Rp 0</span>
+                    </div>
+                    <div class="flex justify-between items-center border-t border-gray-200 pt-4">
+                        <span class="text-xl font-black">Grand Total</span>
+                        <span class="text-3xl font-black text-[#7b0000]" id="grand-total-text">
                             Rp {{ number_format($total, 0, ',', '.') }}
                         </span>
-
                     </div>
-
                 </div>
 
+                {{-- PAYMENT FORM --}}
+                <form action="{{ route('payment.process') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="cart" value="{{ json_encode($cart) }}">
+                    <input type="hidden" name="customer_id" id="hidden_customer_id" value="">
+                    <input type="hidden" name="points_used" id="hidden_points_used" value="0">
 
+                    {{-- PILIHAN METODE PEMBAYARAN --}}
+                    <div class="mb-6 bg-gray-50 p-4 rounded-2xl border border-gray-200">
+                        <label class="block font-black text-gray-700 text-sm mb-3 uppercase tracking-wider">Payment Method</label>
+                        <div class="grid grid-cols-1 gap-3">
+                            
+                            <label class="flex items-center gap-3 bg-white p-4 rounded-xl border border-gray-200 cursor-pointer hover:border-[#7b0000] transition">
+                                <input type="radio" name="payment_method" value="cash" checked class="accent-[#7b0000] w-4 h-4">
+                                <div>
+                                    <span class="block font-bold text-sm text-gray-800">Cash / Tunai</span>
+                                </div>
+                            </label>
 
-                {{-- CUSTOMER --}}
-                <div class="space-y-5 mb-10">
-
-                    <div>
-
-                        <label class="block text-sm font-bold mb-3">
-                            Customer Name
-                        </label>
-
-                        <input
-                            type="text"
-                            placeholder="Input customer name"
-                            class="w-full border border-gray-200 rounded-2xl px-5 py-4 outline-none focus:border-[#7b0000]"
-                        >
-
-                    </div>
-
-                    <div>
-
-                        <label class="block text-sm font-bold mb-3">
-                            Phone Number
-                        </label>
-
-                        <input
-                            type="text"
-                            placeholder="Input phone number"
-                            class="w-full border border-gray-200 rounded-2xl px-5 py-4 outline-none focus:border-[#7b0000]"
-                        >
-
-                    </div>
-
-                </div>
-
-
-
-                {{-- PAYMENT METHOD --}}
-                <div class="mb-10">
-
-                    <h3 class="font-black mb-5">
-                        Payment Method
-                    </h3>
-
-                    <div class="space-y-4">
-
-                        <div class="border rounded-2xl p-4 flex items-center gap-4">
-
-                            <input type="radio" checked>
-
-                            <div>
-
-                                <p class="font-bold">
-                                    Midtrans Payment Gateway
-                                </p>
-
-                                <p class="text-sm text-gray-400">
-                                    QRIS, Gopay, Dana, Bank Transfer
-                                </p>
-
-                            </div>
+                            <label class="flex items-center gap-3 bg-white p-4 rounded-xl border border-gray-200 cursor-pointer hover:border-[#7b0000] transition">
+                                <input type="radio" name="payment_method" value="midtrans" class="accent-[#7b0000] w-4 h-4">
+                                <div>
+                                    <span class="block font-bold text-sm text-gray-800">QRIS / GoPay</span>
+                                </div>
+                            </label>
 
                         </div>
-
                     </div>
 
-                </div>
-
-
-
-                {{-- PAYMENT BUTTON --}}
-                <form action="{{ route('payment.process') }}" method="POST">
-
-                    @csrf
-
-                    <input
-                        type="hidden"
-                        name="cart"
-                        value="{{ json_encode($cart) }}"
-                    >
-
-                    <button
-                        type="submit"
-                        class="w-full bg-[#7b0000] hover:bg-[#650000] text-white py-5 rounded-2xl font-black text-lg transition">
-
+                    <button type="submit" class="w-full bg-[#7b0000] hover:bg-[#650000] text-white py-5 rounded-2xl font-black text-lg transition shadow-lg">
                         Process To Payment
-
                     </button>
-
                 </form>
 
             </div>
-
         </div>
-
     </div>
-
 </div>
+
+<script>
+    const baseTotal = {{ $total }};
+    let maxPoints = 0;
+
+    function toggleCustomerType() {
+        const type = document.querySelector('input[name="customer_type"]:checked').value;
+        const memberSection = document.getElementById('member-section');
+        
+        if (type === 'member') {
+            memberSection.classList.remove('hidden');
+        } else {
+            memberSection.classList.add('hidden');
+            resetMemberData();
+        }
+    }
+
+    function resetMemberData() {
+        document.getElementById('hidden_customer_id').value = '';
+        document.getElementById('member-details').classList.add('hidden');
+        document.getElementById('phone-input').value = '';
+        document.getElementById('input-points').value = 0;
+        document.getElementById('member-alert').classList.add('hidden');
+        maxPoints = 0;
+        calculateTotal();
+    }
+
+    function checkMember() {
+        const phone = document.getElementById('phone-input').value;
+        const alertBox = document.getElementById('member-alert');
+        
+        if(phone === '') {
+            alertBox.innerText = 'Tolong masukkan nomor telepon!';
+            alertBox.classList.remove('hidden');
+            return;
+        }
+
+        fetch("{{ route('check.member') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({ phone: phone })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.status === 'success') {
+                alertBox.classList.add('hidden');
+                
+                document.getElementById('hidden_customer_id').value = data.data.id;
+                document.getElementById('member-name').value = data.data.customer_name;
+                document.getElementById('available-points').innerText = data.data.member_points.toLocaleString('id-ID') + ' Pts';
+                
+                maxPoints = data.data.member_points;
+                document.getElementById('member-details').classList.remove('hidden');
+                
+                document.getElementById('input-points').value = 0;
+                calculateTotal();
+            } else {
+                alertBox.innerText = data.message;
+                alertBox.classList.remove('hidden');
+                document.getElementById('member-details').classList.add('hidden');
+                document.getElementById('hidden_customer_id').value = '';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    function calculateTotal() {
+        let pointsInput = document.getElementById('input-points');
+        let pointsToUse = parseInt(pointsInput.value) || 0;
+
+        if(pointsToUse > maxPoints) {
+            pointsToUse = maxPoints;
+            pointsInput.value = maxPoints;
+        }
+        
+        if(pointsToUse > baseTotal) {
+            pointsToUse = baseTotal;
+            pointsInput.value = baseTotal;
+        }
+
+        let newGrandTotal = baseTotal - pointsToUse;
+
+        document.getElementById('grand-total-text').innerText = 'Rp ' + newGrandTotal.toLocaleString('id-ID');
+        document.getElementById('hidden_points_used').value = pointsToUse;
+
+        const discountRow = document.getElementById('discount-row');
+        if(pointsToUse > 0) {
+            discountRow.classList.remove('hidden');
+            document.getElementById('discount-amount').innerText = '- Rp ' + pointsToUse.toLocaleString('id-ID');
+        } else {
+            discountRow.classList.add('hidden');
+        }
+    }
+</script>
 
 @endsection

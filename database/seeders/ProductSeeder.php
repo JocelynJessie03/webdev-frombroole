@@ -195,13 +195,14 @@ class ProductSeeder extends Seeder
             // Menggunakan 3 huruf pertama + 3 huruf terakhir (tanpa spasi) + random 4 digit
             $cleanName = str_replace(' ', '', $pData['name']);
             $uniqueCode = strtoupper(substr($cleanName, 0, 3) . substr($cleanName, -3));
-            $generatedID = 'PRO-' . $uniqueCode . rand(1000, 9999);
-
+            $generatedID = 'PRO-' . $uniqueCode . '-' . str_pad(Product::count() + 1, 3, '0', STR_PAD_LEFT); // PRO-XXX0001, PRO-XXX0002, dst.
+            
             $product = Product::create([
                 'pro_ID'      => $generatedID,
                 'pro_name'    => $pData['name'],
                 'pro_price'   => $pData['price'],
                 'category_id' => $pData['cat'],
+                'pro_image'   => $pData['name'] . '.png',
             ]);
 
             // Tambahkan relasi bahan baku ke tabel pivot

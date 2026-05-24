@@ -22,9 +22,6 @@
                 <div class="w-12 h-12 rounded-xl bg-[#f7ecec] flex items-center justify-center">
                     <i data-lucide="package" class="w-5 h-5 text-[#7b0000]"></i>
                 </div>
-                <div class="bg-[#f7dede] text-[#7b0000] text-xs font-bold px-3 py-1 rounded-full">
-                    +4.2%
-                </div>
             </div>
             <p class="uppercase tracking-widest text-xs text-gray-400 font-bold mb-1">
                 Total Products
@@ -37,12 +34,17 @@
         {{-- CARD 2 --}}
         <div class="bg-white rounded-2xl border p-5 shadow-sm">
             <div class="flex justify-between items-start mb-5">
-                <div class="w-12 h-12 rounded-xl bg-[#fff3f3] flex items-center justify-center">
-                    <i data-lucide="triangle-alert" class="w-5 h-5 text-red-600"></i>
+                {{-- Icon Alert: Warnanya berubah jadi abu-abu kalau stock aman (0) --}}
+                <div class="w-12 h-12 rounded-xl {{ $lowStockCount > 0 ? 'bg-[#fff3f3]' : 'bg-gray-50' }} flex items-center justify-center transition-colors">
+                    <i data-lucide="triangle-alert" class="w-5 h-5 {{ $lowStockCount > 0 ? 'text-red-600' : 'text-gray-400' }}"></i>
                 </div>
-                <div class="bg-[#ffdede] text-red-600 text-xs font-bold px-3 py-1 rounded-full">
-                    Attention Required
-                </div>
+                
+                {{-- Logic Blade: Badge HANYA muncul kalau ada barang Low Stock --}}
+                @if($lowStockCount > 0)
+                    <div class="bg-[#ffdede] text-red-600 text-xs font-bold px-3 py-1 rounded-full">
+                        Attention Required
+                    </div>
+                @endif
             </div>
             <p class="uppercase tracking-widest text-xs text-gray-400 font-bold mb-1">
                 Low Stock
@@ -89,6 +91,14 @@
                    class="{{ request('filter') == 'out_of_stock' ? 'bg-white shadow text-[#7b0000]' : 'text-gray-500' }} px-4 py-2 rounded-lg font-bold text-sm transition">
                     Out of Stock
                 </a>
+            </div>
+            {{-- INPUT SEARCH BAR --}}
+            <div class="bg-[#f6f3f1] rounded-xl px-4 py-2.5 flex items-center gap-3 w-[280px] focus-within:ring-2 focus-within:ring-[#7b0000]/20 transition">
+                <i data-lucide="search" class="w-4 h-4 text-gray-400"></i>
+                <input type="text" 
+                       id="searchInput" 
+                       placeholder="Search product..." 
+                       class="bg-transparent outline-none w-full text-sm font-plain text-gray-700 placeholder-gray-400">
             </div>
 
             {{-- ACTIONS --}}
@@ -148,43 +158,28 @@
 
                         <td class="px-4 py-5">
 
-    <span class="
-
-        {{ 
-
-            $product->status_label == 'IN STOCK'
-
-            ? 'bg-green-100 text-green-700'
-
-            : (
-
-                $product->status_label == 'LOW STOCK'
-
-                ? 'bg-yellow-100 text-yellow-700'
-
-                : 'bg-red-100 text-red-600'
-
-            )
-
-        }}
-
-        px-3 py-1 rounded-full text-xs font-bold
-
-    ">
-
-        {{ $product->status_label }}
-
-    </span>
-
-</td>
-                        
+                            <span class="
+                                {{ 
+                                    $product->status_label == 'IN STOCK'
+                                    ? 'bg-green-100 text-green-700'
+                                    : (
+                                        $product->status_label == 'LOW STOCK'
+                                        ? 'bg-yellow-100 text-yellow-700'
+                                        : 'bg-red-100 text-red-600'
+                                    )
+                                }}
+                                px-3 py-1 rounded-full text-xs font-bold">
+                                {{ $product->status_label }}
+                            </span>
+                        </td>
+             
                         <td class="px-4 py-5">
                             <div class="relative">
                                 <button onclick="toggleDropdown(this)" class="text-gray-400 hover:text-black p-2 rounded-lg">
                                     <i data-lucide="ellipsis" class="w-5 h-5"></i>
                                 </button>
 
-                                <div class="hidden absolute right-0 top-12 w-48 bg-white border rounded-2xl shadow-xl z-40 overflow-hidden action-dropdown">
+                                <div class="hidden absolute right-0 top-12 w-48 bg-white border rounded-2xl shadow-xl z-40 overflow-hidden action-dropdown transition-all duration-200">
                                     
                                     {{-- 1. Perbaikan Tombol BOM (Ditambahkan payload data resep mentah) --}}
                                     @php
@@ -209,11 +204,16 @@
                                     </a>
 
                                     
+                                      {{-- 3. Tombol Delete (Soft Delete) --}}
+                                    <form action="{{ route('products.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete {{ $product->pro_name }}?');">
+                                        @csrf
+                                        @method('DELETE')
                                         <button type="submit"
                                                 class="w-full text-left px-4 py-3 hover:bg-red-50 text-red-600 text-sm font-semibold flex items-center gap-3 transition">
                                             <i data-lucide="trash-2" class="w-4 h-4"></i>
                                             Delete Product
                                         </button>
+                                    </form>
                                     </form>
                                 </div>
                             </div>
@@ -259,12 +259,33 @@
 <script>
     function toggleDropdown(button) {
         const dropdown = button.parentElement.querySelector('.action-dropdown');
+        
+        // 1. Tutup semua dropdown lain yang sedang terbuka
         document.querySelectorAll('.action-dropdown').forEach(menu => {
             if(menu !== dropdown) {
                 menu.classList.add('hidden');
             }
         });
+        
+        // 2. Toggle status hidden dropdown aktif
         dropdown.classList.toggle('hidden');
+        
+        // 3. Atur posisi secara dinamis jika dropdown terbuka
+        if (!dropdown.classList.contains('hidden')) {
+            const rect = button.getBoundingClientRect();
+            const spaceBelow = window.innerHeight - rect.bottom;
+            
+            // Jika sisa ruang di bawah kurang dari 180px (kira-kira tinggi dropdown)
+            if (spaceBelow < 160) {
+                // Buka ke atas
+                dropdown.classList.remove('top-12');
+                dropdown.classList.add('bottom-full', 'mb-2');
+            } else {
+                // Buka ke bawah (normal)
+                dropdown.classList.remove('bottom-full', 'mb-2');
+                dropdown.classList.add('top-12');
+            }
+        }
     }
 
     // Perbaikan Fungsi pemanggil Modal BOM agar sinkron dengan ID elemen terdaftar
@@ -326,5 +347,29 @@
         }
     });
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        
+        if(searchInput) {
+            searchInput.addEventListener('keyup', function() {
+                let filter = searchInput.value.toLowerCase();
+                // Ambil semua baris di dalam tbody
+                let rows = document.querySelectorAll('tbody tr');
 
+                rows.forEach(row => {
+                    // Ambil text dari kolom Nama Produk (kolom ke-1) dan SKU (kolom ke-2)
+                    let productName = row.cells[0]?.textContent.toLowerCase() || "";
+                    let sku = row.cells[1]?.textContent.toLowerCase() || "";
+
+                    if (productName.includes(filter) || sku.includes(filter)) {
+                        row.style.display = ""; // Tampilkan baris
+                    } else {
+                        row.style.display = "none"; // Sembunyikan baris
+                    }
+                });
+            });
+        }
+    });
+</script>
 @endsection

@@ -69,11 +69,18 @@
 
                 {{-- CATEGORY --}}
                 <div>
-                    <label class="block text-xl mb-3 font-bold text-gray-700">
-                        Category
-                    </label>
+                    <div class="flex justify-between items-end mb-3">
+                        <label class="block text-xl font-bold text-gray-700 leading-none">
+                            Category
+                        </label>
+                        {{-- TOMBOL ADD NEW CATEGORY --}}
+                        <a href="{{ route('categories.create') }}" class="text-sm text-[#7b0000] font-bold hover:underline flex items-center gap-1 transition">
+                            <i data-lucide="plus" class="w-4 h-4"></i> Add New
+                        </a>
+                    </div>
                     <select 
                         name="category_id" 
+                        id="category_select"
                         required 
                         class="w-full h-14 border border-gray-300 rounded-xl px-5 outline-none focus:border-[#7b0000] bg-white transition"
                     >
@@ -151,7 +158,7 @@
                                 name="ingredients[{{ $ingredient->id }}]" 
                                 value="0" 
                                 min="0" 
-                                step="0.01"
+                                step="1"
                                 disabled
                                 placeholder="Amount"
                                 class="w-full h-10 text-center border border-gray-200 bg-gray-100 rounded-xl outline-none focus:border-[#7b0000] focus:bg-white transition text-sm font-bold"
