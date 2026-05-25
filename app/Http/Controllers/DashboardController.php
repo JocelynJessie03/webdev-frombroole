@@ -150,92 +150,44 @@ class DashboardController extends Controller
 
 public function apiSearch(Request $request)
 {
-    $query = $request->query('query');
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | PRODUCTS
-    |--------------------------------------------------------------------------
-    */
-
-    $products = Product::where('pro_name', 'LIKE', "%{$query}%")
-        ->where('pro_delete', false)
-        ->take(5)
-        ->get();
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | INGREDIENTS
-    |--------------------------------------------------------------------------
-    */
-
-    $ingredients = Ingredient::where('name', 'LIKE', "%{$query}%")
-        ->take(5)
-        ->get();
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | CUSTOMERS
-    |--------------------------------------------------------------------------
-    */
-
-    $customers = Customer::where('customer_name', 'LIKE', "%{$query}%")
-        ->take(5)
-        ->get();
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | ORDERS
-    |--------------------------------------------------------------------------
-    */
-
-    $orders = OrderHistory::where('order_id', 'LIKE', "%{$query}%")
-        ->take(5)
-        ->get();
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | REPORTS
-    |--------------------------------------------------------------------------
-    */
-
-    $reports = OrderHistory::with('customer')
-        ->where('order_id', 'LIKE', "%{$query}%")
-        ->orWhere('status', 'LIKE', "%{$query}%")
-        ->orWhere('payment_method', 'LIKE', "%{$query}%")
-        ->orWhereHas('customer', function($q) use ($query){
-
-            $q->where('customer_name', 'LIKE', "%{$query}%");
-
-        })
-        ->latest()
-        ->take(5)
-        ->get();
-
-
+    $query = $request->get('query');
 
     return response()->json([
 
-        'products' => $products,
+        'products' => Product::where('pro_name', 'LIKE', "%{$query}%")
+            ->take(5)
+            ->get(),
 
-        'ingredients' => $ingredients,
+        'ingredients' => Ingredient::where('name', 'LIKE', "%{$query}%")
+            ->take(5)
+            ->get(),
 
-        'customers' => $customers,
+        'customers' => Customer::where('customer_name', 'LIKE', "%{$query}%")
+            ->take(5)
+            ->get(),
 
-        'orders' => $orders,
+        'orders' => OrderHistory::where('order_id', 'LIKE', "%{$query}%")
+            ->take(5)
+            ->get(),
 
-        'reports' => $reports
+       'reports' => OrderHistory::with('customer')
 
+    ->where('order_id', 'LIKE', "%{$query}%")
+
+    ->orWhere('status', 'LIKE', "%{$query}%")
+
+    ->orWhere('total_price', 'LIKE', "%{$query}%")
+
+    ->orWhere('id', 'LIKE', "%{$query}%")
+
+    ->orWhereHas('customer', function ($q) use ($query) {
+
+        $q->where('customer_name', 'LIKE', "%{$query}%");
+
+    })
+
+    ->take(5)
+    ->get(),
     ]);
 }
 

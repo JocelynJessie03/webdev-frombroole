@@ -249,17 +249,36 @@
 
 
 
-    {{-- MAIN --}}
-    <main class="flex-1 p-12 overflow-auto h-full">
+ {{-- MAIN --}}
+<main class="flex-1 p-12 overflow-auto h-full">
 
-        {{-- HEADER --}}
-        <div class="flex justify-between items-center mb-10">
+    {{-- HEADER --}}
+    <div class="flex justify-between items-center gap-10 mb-10">
 
-            <h1 class="text-5xl font-black text-[#7b0000] tracking-tight capitalize">
+        @php
 
-                {{ Request::segment(1) ?: 'dashboard' }}
+            $title = match(Request::segment(1)) {
 
-            </h1>
+                'dashboard' => 'Dashboard',
+                'pos' => 'Point of Sale',
+                'product-inventory' => 'Product Inventory',
+                'ingredient-inventory' => 'Ingredient Inventory',
+                'customers' => 'Customers',
+                'reports' => 'Reports',
+                'order_history' => 'Order History',
+
+                default => 'Dashboard',
+            };
+
+        @endphp
+
+        <h1 class="text-5xl font-black text-[#7b0000] tracking-tight shrink-0">
+
+            {{ $title }}
+
+        </h1>
+
+            
 
 
 
@@ -296,17 +315,167 @@
                 </div>
 
 
+{{-- ICONS --}}
+<div class="flex items-center gap-6 text-gray-400 relative">
 
-                {{-- ICONS --}}
-                <div class="flex items-center gap-6 text-gray-400">
+    {{-- NOTIFICATION --}}
+    <div class="relative">
 
-                    <i data-lucide="bell" class="w-7 h-7 cursor-pointer hover:text-[#7b0000] transition-colors"></i>
+        {{-- BUTTON --}}
+        <button id="notif-btn" class="relative">
 
-                    <i data-lucide="refresh-cw" class="w-7 h-7 cursor-pointer hover:text-[#7b0000] transition-colors"></i>
+            <i data-lucide="bell"
+               class="w-7 h-7 cursor-pointer hover:text-[#7b0000] transition-colors">
+            </i>
+
+            {{-- RED DOT --}}
+            <span class="absolute -top-1 -right-1 bg-red-500 w-3 h-3 rounded-full"></span>
+
+        </button>
+
+
+
+        {{-- DROPDOWN --}}
+        <div
+            id="notif-dropdown"
+            class="hidden absolute right-0 top-14 w-[360px] bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden z-50"
+        >
+
+            {{-- HEADER --}}
+            <div class="p-5 border-b bg-[#7b0000] text-white">
+
+                <h2 class="font-black text-lg">
+                    Notifications
+                </h2>
+
+                <p class="text-xs opacity-80 mt-1">
+                    Latest activity from your store
+                </p>
+
+            </div>
+
+
+
+            {{-- LIST --}}
+            <div class="max-h-[350px] overflow-y-auto">
+
+                {{-- NOTIF ITEM --}}
+                <div class="px-5 py-4 border-b hover:bg-gray-50 transition cursor-pointer">
+
+                    <div class="flex items-start gap-3">
+
+                        <div class="bg-green-100 text-green-600 p-2 rounded-2xl">
+
+                            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+
+                        </div>
+
+                        <div>
+
+                            <p class="font-bold text-sm text-black">
+                                New Order Received
+                            </p>
+
+                            <p class="text-xs text-gray-400 mt-1">
+                                INV-20260525001 successfully created
+                            </p>
+
+                            <p class="text-[10px] text-gray-300 mt-2">
+                                2 minutes ago
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                {{-- NOTIF ITEM --}}
+                <div class="px-5 py-4 border-b hover:bg-gray-50 transition cursor-pointer">
+
+                    <div class="flex items-start gap-3">
+
+                        <div class="bg-yellow-100 text-yellow-600 p-2 rounded-2xl">
+
+                            <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+
+                        </div>
+
+                        <div>
+
+                            <p class="font-bold text-sm text-black">
+                                Low Ingredient Stock
+                            </p>
+
+                            <p class="text-xs text-gray-400 mt-1">
+                                Milk stock remaining only 2 liters
+                            </p>
+
+                            <p class="text-[10px] text-gray-300 mt-2">
+                                10 minutes ago
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                {{-- NOTIF ITEM --}}
+                <div class="px-5 py-4 hover:bg-gray-50 transition cursor-pointer">
+
+                    <div class="flex items-start gap-3">
+
+                        <div class="bg-blue-100 text-blue-600 p-2 rounded-2xl">
+
+                            <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+
+                        </div>
+
+                        <div>
+
+                            <p class="font-bold text-sm text-black">
+                                Revenue Updated
+                            </p>
+
+                            <p class="text-xs text-gray-400 mt-1">
+                                Today's sales reached Rp 2.500.000
+                            </p>
+
+                            <p class="text-[10px] text-gray-300 mt-2">
+                                1 hour ago
+                            </p>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
             </div>
+
+        </div>
+
+    </div>
+
+
+
+    {{-- REFRESH --}}
+    <button onclick="window.location.reload()">
+
+        <i data-lucide="refresh-cw"
+           class="w-7 h-7 cursor-pointer hover:text-[#7b0000] transition-colors">
+        </i>
+
+    </button>
+</div>
+
+            </div>
+
 
         </div>
 
@@ -378,242 +547,345 @@
 
 
 
-        searchInput.addEventListener('keyup', async function() {
+      searchInput.addEventListener('keyup', async function() {
 
-            const query = this.value;
+    const query = this.value;
 
-            if(query.length < 1)
-            {
-                dropdown.classList.add('hidden');
-                return;
-            }
+    if(query.length < 1)
+    {
+        dropdown.classList.add('hidden');
+        return;
+    }
 
-            try
-            {
+    try
+    {
 
-                const response = await fetch(`/api/search?query=${query}`);
+        const response = await fetch(`/api/search?query=${query}`);
 
-                const data = await response.json();
+        const data = await response.json();
 
-                let html = '';
-
-
-
-                // PRODUCTS
-                if(data.products.length > 0)
-                {
-
-                    html += `
-                        <div class="p-4 border-b bg-gray-50 font-bold text-[#7b0000]">
-                            Products
-                        </div>
-                    `;
-
-                    data.products.forEach(product => {
-
-                        html += `
-                            <a href="/product-inventory"
-                                class="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition border-b">
-
-                                <div>
-                                    <p class="font-bold">${product.pro_name}</p>
-                                    <p class="text-sm text-gray-400">Product</p>
-                                </div>
-
-                                <span class="text-[#7b0000] font-bold">
-                                    View →
-                                </span>
-
-                            </a>
-                        `;
-
-                    });
-
-                }
+        let html = '';
 
 
 
-                // INGREDIENTS
-                if(data.ingredients.length > 0)
-                {
-
-                    html += `
-                        <div class="p-4 border-b bg-gray-50 font-bold text-[#7b0000]">
-                            Ingredients
-                        </div>
-                    `;
-
-                    data.ingredients.forEach(ingredient => {
-
-                        html += `
-                            <a href="/ingredient-inventory"
-                                class="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition border-b">
-
-                                <div>
-                                    <p class="font-bold">${ingredient.name}</p>
-
-                                    <p class="text-sm text-gray-400">
-                                        Stock: ${ingredient.stock}
-                                    </p>
-                                </div>
-
-                                <span class="text-[#7b0000] font-bold">
-                                    View →
-                                </span>
-
-                            </a>
-                        `;
-
-                    });
-
-                }
-
-             // REPORTS
-if(data.reports.length > 0)
-{
-
-    html += `
-        <div class="p-4 border-b bg-gray-50 font-bold text-[#7b0000]">
-            Reports & Analytics
-        </div>
-    `;
-
-    data.reports.forEach(report => {
-
-        let customerName = 'Customer';
-
-        if(report.customer)
+        // PRODUCTS
+        if(data.products && data.products.length > 0)
         {
-            customerName = report.customer.customer_name;
+
+            html += `
+                <div class="p-4 border-b bg-gray-50 font-bold text-[#7b0000]">
+                    Products
+                </div>
+            `;
+
+            data.products.forEach(product => {
+
+                html += `
+                    <a href="/product-inventory"
+                        class="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition border-b">
+
+                        <div>
+
+                            <p class="font-bold">
+                                ${product.pro_name}
+                            </p>
+
+                            <p class="text-sm text-gray-400">
+                                Product
+                            </p>
+
+                        </div>
+
+                        <span class="text-[#7b0000] font-bold">
+                            View →
+                        </span>
+
+                    </a>
+                `;
+
+            });
+
         }
 
-        html += `
-            <a href="/reports"
-                class="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition border-b">
 
-                <div>
 
-                    <p class="font-bold">
-                        ${report.order_id}
-                    </p>
+        // INGREDIENTS
+        if(data.ingredients && data.ingredients.length > 0)
+        {
 
-                    <p class="text-sm text-gray-400">
-
-                        ${customerName}
-
-                        •
-
-                        ${report.status}
-
-                        •
-
-                        Rp ${new Intl.NumberFormat('id-ID').format(report.total_price)}
-
-                    </p>
-
+            html += `
+                <div class="p-4 border-b bg-gray-50 font-bold text-[#7b0000]">
+                    Ingredients
                 </div>
+            `;
 
-                <span class="text-[#7b0000] font-bold">
-                    Open →
-                </span>
+            data.ingredients.forEach(ingredient => {
 
-            </a>
-        `;
+                html += `
+                    <a href="/ingredient-inventory"
+                        class="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition border-b">
 
-    });
+                        <div>
 
-}
+                            <p class="font-bold">
+                                ${ingredient.name}
+                            </p>
 
+                            <p class="text-sm text-gray-400">
+                                Stock: ${ingredient.stock}
+                            </p>
 
-                // ORDERS
-                if(data.orders.length > 0)
-                {
-
-                    html += `
-                        <div class="p-4 border-b bg-gray-50 font-bold text-[#7b0000]">
-                            Orders
                         </div>
-                    `;
 
-                    data.orders.forEach(order => {
+                        <span class="text-[#7b0000] font-bold">
+                            View →
+                        </span>
 
-                        html += `
-                            <a href="/order_history"
-                                class="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition border-b">
+                    </a>
+                `;
 
-                                <div>
-                                    <p class="font-bold">${order.order_id}</p>
+            });
 
-                                    <p class="text-sm text-gray-400">
-                                        Rp ${new Intl.NumberFormat('id-ID').format(order.total_price)}
-                                    </p>
-                                </div>
+        }
 
-                                <span class="text-[#7b0000] font-bold">
-                                    View →
-                                </span>
 
-                            </a>
-                        `;
 
-                    });
+        // REPORTS
+        if(data.reports && data.reports.length > 0)
+        {
 
+            html += `
+                <div class="p-4 border-b bg-gray-50 font-bold text-[#7b0000]">
+                    Reports & Analytics
+                </div>
+            `;
+
+            data.reports.forEach(report => {
+
+                let customerName = 'Customer';
+
+                if(report.customer)
+                {
+                    customerName = report.customer.customer_name;
                 }
 
+                html += `
+                    <a href="/reports"
+                        class="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition border-b">
 
+                        <div>
 
-                // EMPTY
-                if(html === '')
-                {
+                            <p class="font-bold">
+                                ${report.order_id}
+                            </p>
 
-                    html = `
-                        <div class="p-8 text-center text-gray-400">
-                            No results found.
+                            <p class="text-sm text-gray-400">
+
+                                ${customerName}
+
+                                •
+
+                                ${report.status}
+
+                                •
+
+                                Rp ${new Intl.NumberFormat('id-ID').format(report.total_price)}
+
+                            </p>
+
                         </div>
-                    `;
 
-                }
+                        <span class="text-[#7b0000] font-bold">
+                            Open →
+                        </span>
 
-                results.innerHTML = html;
+                    </a>
+                `;
 
-                dropdown.classList.remove('hidden');
+            });
 
-            }
-            catch(error)
-            {
-
-                console.error(error);
-
-            }
-
-        });
+        }
 
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | CLOSE DROPDOWN
-        |--------------------------------------------------------------------------
-        */
+        // CUSTOMERS
+        if(data.customers && data.customers.length > 0)
+        {
 
-        document.addEventListener('click', function(e) {
+            html += `
+                <div class="p-4 border-b bg-gray-50 font-bold text-[#7b0000]">
+                    Customers
+                </div>
+            `;
 
-            if(
-                !searchInput.contains(e.target)
-                &&
-                !dropdown.contains(e.target)
-            )
-            {
-                dropdown.classList.add('hidden');
-            }
+            data.customers.forEach(customer => {
 
-        });
+                html += `
+                    <a href="/customers"
+                        class="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition border-b">
+
+                        <div>
+
+                            <p class="font-bold">
+                                ${customer.customer_name}
+                            </p>
+
+                        </div>
+
+                        <span class="text-[#7b0000] font-bold">
+                            View →
+                        </span>
+
+                    </a>
+                `;
+
+            });
+
+        }
+
+
+
+        // ORDERS
+        if(data.orders && data.orders.length > 0)
+        {
+
+            html += `
+                <div class="p-4 border-b bg-gray-50 font-bold text-[#7b0000]">
+                    Orders
+                </div>
+            `;
+
+            data.orders.forEach(order => {
+
+                html += `
+                    <a href="/order_history"
+                        class="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition border-b">
+
+                        <div>
+
+                            <p class="font-bold">
+                                ${order.order_id}
+                            </p>
+
+                            <p class="text-sm text-gray-400">
+                                Rp ${new Intl.NumberFormat('id-ID').format(order.total_price)}
+                            </p>
+
+                        </div>
+
+                        <span class="text-[#7b0000] font-bold">
+                            View →
+                        </span>
+
+                    </a>
+                `;
+
+            });
+
+        }
+
+        // EMPTY
+        if(html === '')
+        {
+
+            html = `
+                <div class="p-8 text-center text-gray-400">
+                    No results found.
+                </div>
+            `;
+
+        }
+
+        results.innerHTML = html;
+
+        dropdown.classList.remove('hidden');
 
     }
+    catch(error)
+    {
+
+        console.error(error);
+
+    }
+
+});
+
+
+
+/*
+|--------------------------------------------------------------------------
+| CLOSE DROPDOWN
+|--------------------------------------------------------------------------
+*/
+
+document.addEventListener('click', function(e) {
+
+    if(
+        !searchInput.contains(e.target)
+        &&
+        !dropdown.contains(e.target)
+    )
+    {
+        dropdown.classList.add('hidden');
+    }
+
+});
+
+}
 
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </body>
+
+<script>
+
+/*
+|--------------------------------------------------------------------------
+| NOTIFICATION DROPDOWN
+|--------------------------------------------------------------------------
+*/
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const notifBtn = document.getElementById('notif-btn');
+    const notifDropdown = document.getElementById('notif-dropdown');
+
+    if(notifBtn && notifDropdown)
+    {
+
+        notifBtn.addEventListener('click', function(e) {
+
+            e.stopPropagation();
+
+            notifDropdown.classList.toggle('hidden');
+
+        });
+
+
+
+
+        document.addEventListener('click', function(e) {
+
+            if(
+                !notifDropdown.contains(e.target)
+                &&
+                !notifBtn.contains(e.target)
+            )
+            {
+                notifDropdown.classList.add('hidden');
+            }
+
+        });
+
+    }
+
+});
+
+</script>
 </html>
+
+
+
+        

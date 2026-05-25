@@ -41,28 +41,52 @@
                      data-name="{{ strtolower($product->pro_name) }}">
                     
                     <div>
-                        {{-- IMAGE & BADGE STATUS --}}
-                        <div class="relative h-[170px] bg-gray-100">
-                            @if($product->pro_image)
-                                <img src="{{ $product->pro_image ? asset('products/'.$product->pro_image) : 
-                                'https://placehold.co/200x200?text=NO+IMAGE'  }}" class="w-full h-full object-cover">
-                            @else
-                                <div class="flex items-center justify-center h-full text-gray-400 font-bold text-xs">
-                                    NO IMAGE
-                                </div>
-                            @endif
+                      {{-- IMAGE & BADGE STATUS --}}
+<div class="relative h-[220px] bg-gray-100 overflow-hidden">
 
-                            {{-- BADGE STOK DINAMIS --}}
-                            @if($product->calculated_stock > 0)
-                                <div class="absolute top-3 right-3 bg-[#eaf8ef] text-green-700 text-[11px] font-bold px-4 py-2 rounded-full">
-                                    Available
-                                </div>
-                            @else
-                                <div class="absolute top-3 right-3 bg-red-100 text-red-600 text-[11px] font-bold px-4 py-2 rounded-full">
-                                    Out of Stock
-                                </div>
-                            @endif
-                        </div>
+    {{-- IMAGE SLIDER --}}
+    <div class="flex w-full h-full overflow-x-auto snap-x snap-mandatory scrollbar-hide">
+
+        {{-- IMAGE 1 --}}
+        <div class="min-w-full h-full snap-center">
+
+            @if($product->pro_image)
+
+                <img
+                    src="{{ asset('products/' . rawurlencode($product->pro_image)) }}"
+                    class="w-full h-full object-cover"
+                >
+
+            @else
+
+                <div class="flex items-center justify-center h-full text-gray-400 font-bold text-xs">
+                    NO IMAGE
+                </div>
+
+            @endif
+
+        </div>
+
+    </div>
+
+
+
+    {{-- BADGE STOCK --}}
+    @if($product->calculated_stock > 0)
+
+        <div class="absolute top-3 right-3 bg-[#eaf8ef] text-green-700 text-[11px] font-bold px-4 py-2 rounded-full z-10">
+            Available
+        </div>
+
+    @else
+
+        <div class="absolute top-3 right-3 bg-red-100 text-red-600 text-[11px] font-bold px-4 py-2 rounded-full z-10">
+            Out of Stock
+        </div>
+
+    @endif
+
+</div>
 
                         {{-- CONTENT INFO --}}
                         <div class="p-5 pb-0">
@@ -323,6 +347,21 @@ function renderCart()
         checkoutBtn.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
     }
 }
+
+
 </script>
+
+<style>
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+</style>
 
 @endsection

@@ -14,115 +14,273 @@ class IngredientController extends Controller
         $query = Ingredient::query();
 
         if ($request->filter == 'low_stock') {
+
             $query->where(function($q) {
+
                 $q->where('unit', 'pcs')->where('stock', '<=', 50)
                   ->orWhere('unit', 'ml')->where('stock', '<=', 5000)
                   ->orWhere('unit', 'gr')->where('stock', '<=', 3000)
                   ->orWhere('unit', 'pack')->where('stock', '<=', 20);
+
             });
+
         }
+
         elseif ($request->filter == 'out_of_stock') {
+
             $query->where(function($q) {
-                $q->where('unit', 'pcs')->where('stock', '<=', 0)
-                  ->orWhere('unit', 'ml')->where('stock', '<=', 0)
-                  ->orWhere('unit', 'gr')->where('stock', '<=', 0)
-                  ->orWhere('unit', 'pack')->where('stock', '<=', 0);
+
+                $q->where('stock', '<=', 0);
+
             });
+
         }
 
         $ingredients = $query->get();
-        // 1. Hitung Total Ingredients
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | TOTAL INGREDIENTS
+        |--------------------------------------------------------------------------
+        */
+
         $totalIngredients = DB::table('ingredients')
             ->whereNull('deleted_at')
             ->count();
 
-        // 2. Hitung Low Stock Count (menerjemahkan accessor model ke dalam query SQL)
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | LOW STOCK COUNT
+        |--------------------------------------------------------------------------
+        */
+
         $lowStockCount = DB::table('ingredients')
+
             ->whereNull('deleted_at')
+
             ->where(function ($q) {
-                $q->where(fn($sub) => $sub->where('unit', 'pcs')->where('stock', '<=', 50))
-                  ->orWhere(fn($sub) => $sub->where('unit', 'ml')->where('stock', '<=', 5000))
-                  ->orWhere(fn($sub) => $sub->where('unit', 'gr')->where('stock', '<=', 3000))
-                  ->orWhere(fn($sub) => $sub->where('unit', 'pack')->where('stock', '<=', 20));
+
+                $q->where(fn($sub) =>
+                    $sub->where('unit', 'pcs')->where('stock', '<=', 50)
+                )
+
+                ->orWhere(fn($sub) =>
+                    $sub->where('unit', 'ml')->where('stock', '<=', 5000)
+                )
+
+                ->orWhere(fn($sub) =>
+                    $sub->where('unit', 'gr')->where('stock', '<=', 3000)
+                )
+
+                ->orWhere(fn($sub) =>
+                    $sub->where('unit', 'pack')->where('stock', '<=', 20)
+                );
+
             })
+
             ->count();
 
-        // 3. LOGIKA BARU: Hitung jenis bahan yang keluar hari ini
-        $usedTodayCount = DB::table('ingredient_histories')
-            ->where('type', 'out')
-            ->whereDate('date', today())
-            ->distinct() // Menghindari duplikasi id
-            ->sum('amount');
 
-        return view('ingredient.inventory', compact('ingredients', 'totalIngredients', 'lowStockCount', 'usedTodayCount'));
+
+        /*
+        |--------------------------------------------------------------------------
+        | USED TODAY COUNT
+        |--------------------------------------------------------------------------
+        */
+
+        $usedTodayCount = 0;
+
+        if (DB::getSchemaBuilder()->hasTable('ingredient_histories')) {
+
+            $usedTodayCount = DB::table('ingredient_histories')
+
+                ->where('type', 'out')
+
+                ->whereDate('created_at', now('Asia/Jakarta'))
+
+                ->sum('amount');
+        }
+
+
+
+        return view(
+            'ingredient.inventory',
+            compact(
+                'ingredients',
+                'totalIngredients',
+                'lowStockCount',
+                'usedTodayCount'
+            )
+        );
     }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE INGREDIENT
+    |--------------------------------------------------------------------------
+    */
 
     public function update(Request $request, Ingredient $ingredient)
     {
         $request->validate([
+
             'name'  => 'required|string|max:255|unique:ingredients,name,' . $ingredient->id,
+
             'stock' => 'required|numeric|min:0',
-            'unit'  => 'required|string|in:gr,ml,pcs',
+
+            'unit'  => 'required|string|in:gr,ml,pcs,pack',
+
         ]);
 
-        // LOGIKA BARU: Cek selisih stok lama dan stok baru
+
+
         $oldStock = $ingredient->stock;
+
         $newStock = $request->stock;
 
-        // Jika stok baru lebih KECIL dari stok lama, berarti ada bahan yang "Dipakai/Keluar"
-        if ($newStock < $oldStock) {
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SAVE HISTORY IF STOCK DECREASED
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $newStock < $oldStock
+            &&
+            DB::getSchemaBuilder()->hasTable('ingredient_histories')
+        ) {
+
             IngredientHistory::create([
+
                 'ingredient_id' => $ingredient->id,
-                'amount'        => $oldStock - $newStock, // Selisihnya
+
+                'amount'        => $oldStock - $newStock,
+
                 'type'          => 'out',
-                'date'          => today(), // Catat tanggal hari ini
+
+                'created_at'    => now('Asia/Jakarta'),
+
+                'updated_at'    => now('Asia/Jakarta'),
+
             ]);
         }
 
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE INGREDIENT
+        |--------------------------------------------------------------------------
+        */
+
         $ingredient->update([
+
             'name'  => $request->name,
+
             'stock' => $newStock,
+
             'unit'  => strtolower($request->unit),
+
         ]);
 
-        return redirect()->route('ingredient.inventory')->with('success', 'Ingredient updated successfully!');
+
+
+        return redirect()
+            ->route('ingredient.inventory')
+            ->with('success', 'Ingredient updated successfully!');
     }
-    // Method untuk menampilkan form create
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | CREATE PAGE
+    |--------------------------------------------------------------------------
+    */
+
     public function create()
     {
         return view('ingredient.create');
     }
 
-    // Method untuk menyimpan data ingredient baru
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | STORE INGREDIENT
+    |--------------------------------------------------------------------------
+    */
+
     public function store(Request $request)
     {
         $request->validate([
+
             'name'  => 'required|string|max:255|unique:ingredients,name',
+
             'stock' => 'required|numeric|min:0',
-            'unit'  => 'required|string|in:gr,ml,pcs', // Pilihan unit dibatasi sesuai logic filter kamu
+
+            'unit'  => 'required|string|in:gr,ml,pcs,pack',
+
         ]);
+
+
 
         Ingredient::create([
+
             'name'  => $request->name,
+
             'stock' => $request->stock,
+
             'unit'  => strtolower($request->unit),
+
         ]);
 
-        return redirect()->route('ingredient.inventory')->with('success', 'Ingredient successfully added!');
+
+
+        return redirect()
+            ->route('ingredient.inventory')
+            ->with('success', 'Ingredient successfully added!');
     }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | EDIT PAGE
+    |--------------------------------------------------------------------------
+    */
+
     public function edit(Ingredient $ingredient)
-{
-    // Menampilkan view form edit dengan membawa data ingredient yang dipilih
-    return view('ingredient.edit', compact('ingredient'));
-}
-public function destroy($id)
     {
-        $ingredient = \App\Models\Ingredient::findOrFail($id);
-        
-        // Karena pakai SoftDeletes di model, ini otomatis hanya mengisi kolom deleted_at
+        return view('ingredient.edit', compact('ingredient'));
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DELETE INGREDIENT
+    |--------------------------------------------------------------------------
+    */
+
+    public function destroy($id)
+    {
+        $ingredient = Ingredient::findOrFail($id);
+
         $ingredient->delete();
 
-        return redirect()->back()->with('success', 'Ingredient successfully deleted!');
+        return redirect()
+            ->back()
+            ->with('success', 'Ingredient successfully deleted!');
     }
-
 }
+
+

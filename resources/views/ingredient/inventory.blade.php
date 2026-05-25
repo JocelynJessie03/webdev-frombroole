@@ -4,20 +4,6 @@
 
 <div class="space-y-5">
 
-    {{-- HEADER --}}
-    <div>
-
-        <h1 class="text-[32px] font-black text-[#7b0000] leading-none mb-2">
-            Ingredient Inventory
-        </h1>
-
-        <p class="text-gray-600 text-sm max-w-3xl leading-relaxed">
-            Manage your ingredient stock, monitor raw material availability, and track kitchen inventory in real time.
-        </p>
-
-    </div>
-
-
 
     {{-- TOP CARDS --}}
     <div class="grid grid-cols-3 gap-4">

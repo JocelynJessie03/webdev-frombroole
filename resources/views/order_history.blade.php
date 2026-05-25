@@ -6,14 +6,7 @@
 
     {{-- HEADER --}}
     <div class="flex justify-between items-start">
-        <div>
-            <h1 class="text-3xl font-black text-[#1b1b1b] mb-1">
-                Order History
-            </h1>
-            <p class="text-gray-500 text-sm">
-                Track and manage all transactions from your POS terminals.
-            </p>
-        </div>
+        
 
         {{-- TOMBOL EXPORT CSV DIUBAH --}}
         <button onclick="exportTableToCSV('Order_History.csv')" class="bg-[#7b0000] hover:bg-[#650000] text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow transition">

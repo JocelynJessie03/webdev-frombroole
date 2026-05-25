@@ -4,25 +4,6 @@
 
 <div class="space-y-4">
 
-    {{-- HEADER --}}
-    <div class="flex justify-between items-start">
-        <div>
-            <h1 class="text-3xl font-black text-[#1b1b1b] mb-1">
-                Customer Directory
-            </h1>
-            <p class="text-gray-500 text-sm">
-                Manage your customer relationships and loyalty programs.
-            </p>
-        </div>
-
-        <button class="bg-[#7b0000] hover:bg-[#650000] text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow">
-            <i data-lucide="user-plus" class="w-4 h-4"></i>
-            <span class="font-semibold text-sm">
-                Add New Customer
-            </span>
-        </button>
-    </div>
-
     {{-- MEMBERSHIP STATS --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         {{-- GOLD --}}
