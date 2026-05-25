@@ -89,3 +89,8 @@ Route::get('/receipt/{id}', [PosController::class, 'receipt'])
 Route::get('/api/search', [DashboardController::class, 'apiSearch']);
 Route::post('/check-member', [App\Http\Controllers\PosController::class, 'checkMember'])->name('check.member');
 
+//CATEGORY
+Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
+Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+// Tambahkan baris rute restore ini di routes/web.php kamu
+Route::post('/categories/{id}/restore', [CategoryController::class, 'restore'])->name('categories.restore');

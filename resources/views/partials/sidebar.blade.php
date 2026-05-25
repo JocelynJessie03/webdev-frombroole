@@ -176,7 +176,7 @@
                     <i data-lucide="receipt" class="shrink-0 w-5 h-5"></i>
 
                     <span class="hide-on-collapse whitespace-nowrap">
-                        Orders
+                        Order History
                     </span>
 
                 </a>

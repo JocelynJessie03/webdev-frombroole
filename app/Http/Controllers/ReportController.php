@@ -2,108 +2,150 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\OrderHistory;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request; // WAJIB DITAMBAHKAN agar bisa membaca form
+use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
-    public function index(Request $request) // Tambahkan parameter Request di sini
+    public function index(Request $request)
     {
-        // 1. Tangkap parameter filter dari URL / Form
+        $view = $request->input('view', 'weekly'); 
         $startDate = $request->input('start_date'); 
         $endDate = $request->input('end_date');     
-        $view = $request->input('view', 'weekly'); 
 
-        // 2. Query dasar untuk Top Stats (Total Revenue & Orders)
-        $revenueQuery = OrderHistory::where('status', 'Complete');
-        $ordersQuery = OrderHistory::query();
-
-        // Jika user melakukan filter tanggal, Top Stats ikut berubah sesuai rentang tanggal tersebut
-        if ($startDate && $endDate) {
-            if ($view === 'monthly') {
-                $revenueQuery->whereRaw('order_date >= ? AND order_date <= ?', [$startDate . '-01 00:00:00', $endDate . '-31 23:59:59']);
-                $ordersQuery->whereRaw('order_date >= ? AND order_date <= ?', [$startDate . '-01 00:00:00', $endDate . '-31 23:59:59']);
-            } else {
-                $revenueQuery->whereBetween('order_date', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
-                $ordersQuery->whereBetween('order_date', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+        // 1. AMANKAN DAN SET DEFAULT DATE
+        if (!$startDate) {
+            if ($view === 'weekly') {
+                $endDate = date('Y-m-d'); 
+                $startDate = date('Y-m-d', strtotime($endDate . ' -6 days')); 
+            } elseif ($view === 'daily') {
+                $startDate = date('Y-m-d');
+                $endDate = $startDate;
+            } else { // monthly
+                $startDate = date('Y-m'); // Default: 2026-05
+                $endDate = date('Y-m-t', strtotime($startDate . '-01'));
+            }
+        } else {
+            if ($view === 'weekly' && !$endDate) {
+                $endDate = date('Y-m-d', strtotime($startDate . ' +6 days'));
             }
         }
 
-        $totalRevenue = $revenueQuery->sum('total_price');
-        $totalOrders = $ordersQuery->count();
-        $avgTicket = $revenueQuery->avg('total_price') ?? 0;
-
-
-        // ========================================================
-        // 1. DAILY REVENUE (7 Hari Terakhir / 7 Hari Pilihan User)
-        // ========================================================
-        $dailyQuery = OrderHistory::where('status', 'Complete');
-
-        if ($startDate && $endDate && $view === 'daily') {
-            // Jika user memfilter, gunakan tanggal pilihan user
-            $dailyQuery->whereBetween('order_date', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
-        } else {
-            // Jika normal, jalankan logic asli kamu (6 hari lalu sampai hari ini)
-            $dailyQuery->whereRaw('order_date >= DATE(DATE_SUB(NOW(), INTERVAL 6 DAY))');
+        // 2. STANDARISASI FORMAT UNTUK QUERY SQL
+        if ($view === 'daily') {
+            $sqlStart = $startDate . ' 00:00:00';
+            $sqlEnd = $startDate . ' 23:59:59';
+        } elseif ($view === 'weekly') {
+            $sqlStart = $startDate . ' 00:00:00';
+            $sqlEnd = $endDate . ' 23:59:59';
+        } else { // monthly
+            $cleanMonth = date('Y-m', strtotime($startDate)); 
+            
+            $sqlStart = $cleanMonth . '-01 00:00:00'; 
+            $sqlEnd = date('Y-m-t', strtotime($sqlStart)) . ' 23:59:59'; 
+            
+            $startDate = $cleanMonth; 
         }
 
-        $dailyRevenue = $dailyQuery->select(
-                DB::raw('DATE_FORMAT(order_date, "%a") as day'),
-                DB::raw('SUM(total_price) as total'),
-                DB::raw('DATE(order_date) as exact_date')
-            )
-            ->groupBy('day', 'exact_date')
-            ->orderBy('exact_date', 'asc')
+        // Query Utama untuk Top Cards
+        $totalRevenue = DB::table('order_histories')
+            ->where('status', 'Complete')
+            ->whereBetween('order_date', [$sqlStart, $sqlEnd])
+            ->sum('total_price');
+
+        $totalOrders = DB::table('order_histories')
+            ->whereBetween('order_date', [$sqlStart, $sqlEnd])
+            ->count();
+
+        // 3. QUERY PRODUCTS SOLD
+        $productsSold = DB::table('order_items')
+            ->join('order_histories', 'order_items.order_id', '=', 'order_histories.id')
+            ->join('products', 'order_items.product_id', '=', 'products.id') 
+            ->select('products.pro_name as product_name', DB::raw('SUM(order_items.quantity) as total_sold'))
+            ->whereBetween('order_histories.order_date', [$sqlStart, $sqlEnd])
+            ->groupBy('products.id', 'products.pro_name') 
+            ->orderBy('total_sold', 'desc')
             ->get();
 
-        // ========================================================
-        // 2. WEEKLY REVENUE (Kunci Permanen dari Week 1 Tahun Ini)
-        // ========================================================
-        $weeklyRevenue = OrderHistory::where('status', 'Complete')
-        // Dikunci mati hanya untuk tahun berjalan saat ini
-        ->whereRaw('YEAR(order_date) = YEAR(NOW())')
-        ->select(
-        DB::raw('CONCAT("Week ", WEEK(order_date) + 1) as week_num'), 
-        DB::raw('SUM(total_price) as total'),
-        DB::raw('WEEK(order_date) as raw_week')
-        )
-        ->groupBy('week_num', 'raw_week')
-        ->orderBy('raw_week', 'asc') // Mulai dari Week 1 di sebelah kiri
-        ->get();
+        $maxSold = $productsSold->first()->total_sold ?? 1;
 
+        // =====================================================================
+        // TAMBAHAN BARU: QUERY TOP CATEGORIES BANYAK TERJUAL
+        // =====================================================================
+        $topCategories = DB::table('order_items')
+            ->join('order_histories', 'order_items.order_id', '=', 'order_histories.id')
+            ->join('products', 'order_items.product_id', '=', 'products.id')
+            ->join('categories', 'products.category_id', '=', 'categories.id') // Hubungkan produk ke kategorinya
+            ->select('categories.category_name', DB::raw('SUM(order_items.quantity) as total_qty'))
+            ->whereBetween('order_histories.order_date', [$sqlStart, $sqlEnd])
+            ->groupBy('categories.id', 'categories.category_name')
+            ->orderBy('total_qty', 'desc')
+            ->get();
 
-        // ========================================================
-        // 3. MONTHLY REVENUE (5 Bulan Terakhir / 5 Bulan Pilihan User)
-        // ========================================================
-        $monthlyQuery = OrderHistory::where('status', 'Complete');
+        // Asset Array Container untuk Chart
+        $dailyLabelsJson = []; $dailyTotalsJson = [];
+        $weeklyLabelsJson = []; $weeklyTotalsJson = [];
+        $monthlyLabelsJson = []; $monthlyTotalsJson = [];
 
-        if ($startDate && $endDate && $view === 'monthly') {
-            // Jika difilter, ubah format YYYY-MM jadi rentang tanggal penuh SQL
-            $monthlyQuery->whereRaw('order_date >= ? AND order_date <= ?', [$startDate . '-01 00:00:00', $endDate . '-31 23:59:59']);
-        } else {
-            // Jika normal, gunakan logic asli kamu (4 bulan ke belakang)
-            $monthlyQuery->whereRaw('order_date >= DATE_SUB(DATE_FORMAT(NOW(), "%Y-%m-01"), INTERVAL 4 MONTH)');
+        // LOGIKA DAILY (KEMBALI KE PER JAM)
+        if ($view === 'daily') {
+            for ($h = 0; $h < 24; $h++) {
+                $hourStr = sprintf('%02d:00', $h);
+                $dailyLabelsJson[] = $hourStr;
+                $dailyTotalsJson[$hourStr] = 0;
+            }
+            $dbData = DB::table('order_histories')->where('status', 'Complete')->whereBetween('order_date', [$sqlStart, $sqlEnd])
+                ->select(DB::raw('DATE_FORMAT(order_date, "%H:00") as label'), DB::raw('SUM(total_price) as total'))->groupBy('label')->get();
+            foreach ($dbData as $row) { $dailyTotalsJson[$row->label] = (float)$row->total; }
+            $dailyTotalsJson = array_values($dailyTotalsJson);
+        } 
+        
+        // LOGIKA WEEKLY (ROLLING 7 HARI MUNDUR)
+        elseif ($view === 'weekly') {
+            $current = strtotime($startDate);
+            $targetEnd = strtotime($endDate);
+            
+            while ($current <= $targetEnd) {
+                $dateStr = date('Y-m-d', $current);
+                $weeklyLabelsJson[$dateStr] = date('D (d/m)', $current); 
+                $weeklyTotalsJson[$dateStr] = 0;
+                $current = strtotime('+1 day', $current);
+            }
+
+            $dbData = DB::table('order_histories')->where('status', 'Complete')->whereBetween('order_date', [$sqlStart, $sqlEnd])
+                ->select(DB::raw('DATE(order_date) as exact_date'), DB::raw('SUM(total_price) as total'))->groupBy('exact_date')->get();
+            
+            foreach ($dbData as $row) {
+                if (isset($weeklyTotalsJson[$row->exact_date])) { 
+                    $weeklyTotalsJson[$row->exact_date] = (float)$row->total; 
+                }
+            }
+            $weeklyLabelsJson = array_values($weeklyLabelsJson);
+            $weeklyTotalsJson = array_values($weeklyTotalsJson);
+        } 
+        
+        // LOGIKA MONTHLY
+        else { 
+            $cleanStart = (strlen($startDate) === 7) ? $startDate . '-01' : date('Y-m-01', strtotime($startDate));
+            $totalDays = date('t', strtotime($cleanStart));
+            for ($d = 1; $d <= $totalDays; $d++) {
+                $dayStr = sprintf('%02d', $d);
+                $monthlyLabelsJson[] = $dayStr;
+                $monthlyTotalsJson[$dayStr] = 0;
+            }
+            $dbData = DB::table('order_histories')->where('status', 'Complete')->whereBetween('order_date', [$cleanStart.' 00:00:00', $sqlEnd])
+                ->select(DB::raw('DATE_FORMAT(order_date, "%d") as label'), DB::raw('SUM(total_price) as total'))->groupBy('label')->get();
+            foreach ($dbData as $row) { $monthlyTotalsJson[$row->label] = (float)$row->total; }
+            $monthlyTotalsJson = array_values($monthlyTotalsJson);
         }
 
-        $monthlyRevenue = $monthlyQuery->select(
-                DB::raw('DATE_FORMAT(order_date, "%b") as month'),
-                DB::raw('SUM(total_price) as total'),
-                DB::raw('DATE_FORMAT(order_date, "%Y-%m") as month_order')
-            )
-            ->groupBy('month', 'month_order')
-            ->orderBy('month_order', 'asc')
-            ->get();
-
-
-        // Return data aman ke view blade
+        // Variabel 'topCategories' sekarang dikirim ke view blade
         return view('reports', compact(
-            'totalRevenue',
-            'totalOrders',
-            'avgTicket',
-            'dailyRevenue',
-            'weeklyRevenue',
-            'monthlyRevenue'
+            'totalRevenue', 'totalOrders', 'startDate', 'endDate', 'view',
+            'dailyLabelsJson', 'dailyTotalsJson', 
+            'weeklyLabelsJson', 'weeklyTotalsJson', 
+            'monthlyLabelsJson', 'monthlyTotalsJson',
+            'productsSold', 'maxSold', 'topCategories' 
         ));
     }
 }

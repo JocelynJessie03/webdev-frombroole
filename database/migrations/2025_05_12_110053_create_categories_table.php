@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('category_ID')->unique(); // Contoh: CAT-001
             $table->string('category_name')->unique();
             $table->softDeletes(); // Menambahkan soft deletes
+            $table->boolean('category_delete')->default(false); // Kolom untuk soft delete manual
             $table->timestamps();
         });
     }

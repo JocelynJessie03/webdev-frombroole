@@ -1,5 +1,15 @@
 @extends('partials.sidebar')
 
+{{-- Tambahkan CSS Flatpickr di paling atas --}}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<style>
+    /* Sedikit custom warna biar matching sama tema merah maroon kamu */
+    .flatpickr-day.selected, .flatpickr-day.selected:hover {
+        background: #7b0000 !important;
+        border-color: #7b0000 !important;
+    }
+</style>
+
 @section('content')
 
 <div class="space-y-4">
@@ -10,20 +20,28 @@
             <h1 class="text-[26px] font-black text-[#7b0000] leading-none mb-2">
                 Reports & Analytics
             </h1>
-            <p class="text-gray-600 text-sm">
+            <p class="text-gray-600 text-sm mb-3">
                 Review your business performance and insights.
             </p>
+            
+            {{-- TOMBOL EXPORT CSV --}}
+            <button onclick="exportReportToCSV()" class="bg-[#7b0000] hover:bg-[#650000] text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow transition cursor-pointer">
+                <i data-lucide="download" class="w-4 h-4"></i>
+                <span class="font-semibold text-sm">
+                    Export CSV
+                </span>
+            </button>
         </div>
 
         {{-- FILTER TABS --}}
         <div class="bg-[#f6f3f1] rounded-xl p-1 flex gap-1 h-fit">
-            <a href="{{ url()->current() }}?view=daily" id="btnDaily" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold {{ request('view', 'weekly') === 'daily' ? 'bg-white shadow-sm text-[#7b0000]' : 'text-gray-500' }}">
+            <a href="{{ url()->current() }}?view=daily" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold {{ $view === 'daily' ? 'bg-white shadow-sm text-[#7b0000]' : 'text-gray-500' }}">
                 Daily
             </a>
-            <a href="{{ url()->current() }}?view=weekly" id="btnWeekly" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold {{ request('view', 'weekly') === 'weekly' ? 'bg-white shadow-sm text-[#7b0000]' : 'text-gray-500' }}">
+            <a href="{{ url()->current() }}?view=weekly" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold {{ $view === 'weekly' ? 'bg-white shadow-sm text-[#7b0000]' : 'text-gray-500' }}">
                 Weekly
             </a>
-            <a href="{{ url()->current() }}?view=monthly" id="btnMonthly" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold {{ request('view', 'weekly') === 'monthly' ? 'bg-white shadow-sm text-[#7b0000]' : 'text-gray-500' }}">
+            <a href="{{ url()->current() }}?view=monthly" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold {{ $view === 'monthly' ? 'bg-white shadow-sm text-[#7b0000]' : 'text-gray-500' }}">
                 Monthly
             </a>
         </div>
@@ -31,37 +49,25 @@
 
     {{-- TOP STATS --}}
     <div class="grid grid-cols-2 gap-4">
-        {{-- CARD REVENUE --}}
         <div class="bg-white rounded-2xl border p-4 shadow-sm">
             <div class="flex justify-between items-start mb-4">
                 <div class="w-10 h-10 rounded-xl bg-[#f7ecec] flex items-center justify-center">
                     <i data-lucide="wallet" class="w-5 h-5 text-[#7b0000]"></i>
                 </div>
-                <div class="bg-[#f9eded] text-[#7b0000] text-xs font-bold px-3 py-1 rounded-full">
-                    ↗ +12.5%
-                </div>
             </div>
-            <p class="uppercase tracking-widest text-xs text-gray-400 font-bold mb-2">
-                Total Revenue
-            </p>
+            <p class="uppercase tracking-widest text-xs text-gray-400 font-bold mb-2">Total Revenue</p>
             <h2 class="text-[28px] font-black text-[#7b0000] leading-none">
                 Rp {{ number_format($totalRevenue ?? 0,0,',','.') }}
             </h2>
         </div>
 
-        {{-- CARD ORDERS --}}
         <div class="bg-white rounded-2xl border p-4 shadow-sm">
             <div class="flex justify-between items-start mb-4">
                 <div class="w-10 h-10 rounded-xl bg-[#eef2e3] flex items-center justify-center">
                     <i data-lucide="shopping-cart" class="w-5 h-5 text-[#7f8b67]"></i>
                 </div>
-                <div class="bg-[#f9eded] text-[#7b0000] text-xs font-bold px-3 py-1 rounded-full">
-                    ↗ +8.2%
-                </div>
             </div>
-            <p class="uppercase tracking-widest text-xs text-gray-400 font-bold mb-2">
-                Total Orders
-            </p>
+            <p class="uppercase tracking-widest text-xs text-gray-400 font-bold mb-2">Total Orders</p>
             <h2 class="text-[28px] font-black leading-none">
                 {{ number_format($totalOrders ?? 0) }}
             </h2>
@@ -70,259 +76,234 @@
 
     {{-- CHART SECTION --}}
     <div class="grid grid-cols-4 gap-4">
-
-        {{-- CHART MAIN --}}
         <div class="col-span-3 bg-white rounded-2xl border p-5 shadow-sm relative flex flex-col justify-between">
-            
             <div class="flex justify-between items-center mb-4">
                 <div>
-                    <h2 class="text-[18px] font-black">
-                        Revenue Performance
-                    </h2>
-                    @if(request('start_date') && request('end_date') && request('view', 'weekly') !== 'weekly')
-                        <span class="text-xs bg-red-50 text-[#7b0000] px-2 py-1 rounded-md font-semibold mt-1 inline-block">
-                            📅 Range: {{ request('start_date') }} - {{ request('end_date') }}
-                        </span>
-                    @endif
-                </div>
-
-                {{-- Sembunyikan tombol View Details total jika sedang di tab weekly --}}
-                @if(request('view', 'weekly') !== 'weekly')
-                    <button id="btnViewDetails" class="text-[#7b0000] text-sm font-bold flex items-center gap-2 hover:opacity-80 transition-all">
-                        View Details
-                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    </button>
-                @else
-                    <span class="text-xs text-gray-400 italic flex items-center gap-1">
-                        📊 Tren mingguan otomatis sepanjang tahun ini
+                    <h2 class="text-[18px] font-black">Revenue Performance</h2>
+                    <span class="text-xs bg-red-50 text-[#7b0000] px-2 py-1 rounded-md font-semibold mt-1 inline-block">
+                        @if($view === 'daily')
+                            📅 Operational Date :  {{ $startDate }}
+                        @elseif($view === 'monthly')
+                            📅 Month Data :  {{ date('F Y', strtotime($startDate . '-01')) }}
+                        @else
+                            📅 Range (the last 7 days): {{ date('d M Y', strtotime($startDate)) }} s/d {{ date('d M Y', strtotime($endDate)) }}
+                        @endif
                     </span>
-                @endif
+                </div>
+                <button id="btnViewDetails" class="text-[#7b0000] text-sm font-bold flex items-center gap-2 hover:opacity-80 transition-all">
+                    Time Filter <i data-lucide="calendar" class="w-4 h-4"></i>
+                </button>
             </div>
 
             {{-- FILTER TANGGAL MELAYANG --}}
             <div id="filterDateContainer" class="hidden absolute top-[70px] left-5 right-5 z-10 bg-white p-4 rounded-xl border border-gray-200 shadow-xl transition-all">
                 <form id="filterForm" action="{{ url()->current() }}" method="GET" class="flex flex-col gap-3">
-                    <input type="hidden" name="view" id="activeTabInput" value="{{ request('view', 'weekly') }}">
-    
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
+                    <input type="hidden" name="view" id="activeTabInput" value="{{ $view }}">
+                    <div id="dateInputGrid" class="grid grid-cols-2 gap-4">
+                        <div id="startInputWrapper">
                             <label id="labelStart" class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Start Date</label>
-                            <input type="date" name="start_date" id="startDateInput" value="{{ request('start_date') }}" class="w-full border rounded-lg p-2 text-sm">
+                            <input type="text" name="start_date" id="startDateInput" value="{{ $startDate }}" class="w-full border rounded-lg p-2 text-sm focus:outline-none focus:border-[#7b0000]">
                         </div>
-                        <div>
-                            <label id="labelEnd" class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">End Date</label>
-                            <input type="date" name="end_date" id="endDateInput" value="{{ request('end_date') }}" class="w-full border rounded-lg p-2 text-sm">
+                        <div id="endInputWrapper">
+                            <label id="labelEnd" class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">End Date (Auto Lock 7 Days)</label>
+                            <input type="text" name="end_date" id="endDateInput" value="{{ $endDate }}" class="w-full border rounded-lg p-2 text-sm bg-gray-50 readonly pointer-events-none">
                         </div>
                     </div>
-    
                     <div class="flex justify-end gap-2 mt-2">
                         <button type="submit" class="bg-[#7b0000] text-white text-xs font-bold px-4 py-2 rounded-lg hover:opacity-90">Apply Filter</button>
                     </div>
                 </form>
             </div>
 
-            {{-- Grafik menempati sisa ruang container secara penuh --}}
             <div class="flex-1 min-h-[250px] mt-2">
                 <canvas id="revenueChart"></canvas>
             </div>
         </div>
 
         {{-- RIGHT SIDE --}}
-        <div class="space-y-4">
-            {{-- TOP PRODUCTS --}}
-            <div class="bg-white rounded-2xl border p-5 shadow-sm">
-                <h2 class="text-[18px] font-black mb-6">
-                    Top Products
-                </h2>
-
-                @php
-                    $products = [
-                        ['name'=>'Kopi Susu Gula Aren','sold'=>'420 sold','width'=>'w-full'],
-                        ['name'=>'Signature Croissant','sold'=>'315 sold','width'=>'w-[75%]'],
-                        ['name'=>'Earl Grey Tea','sold'=>'284 sold','width'=>'w-[60%]'],
-                        ['name'=>'Almond Milk Latte','sold'=>'190 sold','width'=>'w-[45%]'],
-                    ];
-                @endphp
-
-                <div class="space-y-5">
-                    @foreach($products as $product)
-                    <div>
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="font-bold text-sm leading-tight">
-                                {{ $product['name'] }}
-                            </h3>
-                            <span class="font-bold text-gray-600 text-xs">
-                                {{ $product['sold'] }}
-                            </span>
+        <div class="space-y-4 flex flex-col justify-between">
+            
+            {{-- BOX 1: PRODUCTS SOLD --}}
+            <div class="bg-white rounded-2xl border p-4 shadow-sm flex flex-col h-[220px]">
+                <div class="mb-2">
+                    <h2 class="text-[16px] font-black leading-tight">Products Sold</h2>
+                    <p class="text-[11px] text-gray-400 font-medium">Based on selected time filter</p>
+                </div>
+                
+                <div class="space-y-3 flex-1 max-h-[120px] overflow-y-auto pr-1" style="scrollbar-width: thin; scrollbar-color: #7b0000 #f1eded;">
+                    @if($productsSold->count() > 0)
+                        @foreach($productsSold as $product)
+                            @php
+                                $percentage = ($product->total_sold / $maxSold) * 100;
+                            @endphp
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <h3 class="font-bold text-xs leading-tight text-gray-800 truncate max-w-[150px]">{{ $product->product_name }}</h3>
+                                    <span class="font-bold text-gray-600 text-[11px]">{{ number_format($product->total_sold) }} sold</span>
+                                </div>
+                                <div class="bg-[#f1eded] h-1.5 rounded-full overflow-hidden">
+                                    <div class="h-full rounded-full bg-[#8b0000]" style="width: {{ $percentage }}%"></div>
+                                </div>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="text-center py-4 text-gray-400 text-xs">
+                            <i data-lucide="shopping-bag" class="w-5 h-5 mx-auto mb-1 opacity-40"></i>
+                            <p class="font-medium text-gray-500">No products sold</p>
                         </div>
-                        <div class="bg-[#f1eded] h-2 rounded-full overflow-hidden">
-                            <div class="h-full rounded-full bg-[#8b0000] {{ $product['width'] }}"></div>
-                        </div>
-                    </div>
-                    @endforeach
+                    @endif
                 </div>
             </div>
 
-            {{-- INSIGHT --}}
-            <div class="bg-white rounded-2xl border p-5 shadow-sm">
-                <div class="bg-[#f7f1ef] rounded-xl p-4 border border-[#eedfda]">
-                    <p class="uppercase tracking-widest text-[10px] text-[#7b0000] font-black mb-3">
-                        Insight Of The Week
-                    </p>
-                    <p class="text-sm leading-relaxed text-gray-700">
-                        Beverage sales are up 14% on weekends. Consider a
-                        <span class="font-black text-[#7b0000]">
-                            "Weekend Brunch Bundle".
-                        </span>
-                    </p>
+            {{-- BOX 2: TOP CATEGORY --}}
+            <div class="bg-white rounded-2xl border p-4 shadow-sm flex flex-col h-[220px]">
+                <div class="mb-2">
+                    <h2 class="text-[16px] font-black leading-tight">Top Categories</h2>
+                    <p class="text-[11px] text-gray-400 font-medium">Most popular categories</p>
+                </div>
+
+                <div class="space-y-3 flex-1 max-h-[120px] overflow-y-auto pr-1" style="scrollbar-width: thin; scrollbar-color: #7b0000 #f1eded;">
+                    @if(isset($topCategories) && $topCategories->count() > 0)
+                        @php 
+                            $maxCategorySold = $topCategories->first()->total_qty ?? 1; 
+                        @endphp
+                        @foreach($topCategories as $category)
+                            @php
+                                $catPercentage = ($category->total_qty / $maxCategorySold) * 100;
+                            @endphp
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <h3 class="font-bold text-xs leading-tight text-gray-800 truncate max-w-[150px]">{{ $category->category_name }}</h3>
+                                    <span class="font-bold text-gray-500 text-[11px]">{{ number_format($category->total_qty) }} items</span>
+                                </div>
+                                <div class="bg-[#f1eded] h-1.5 rounded-full overflow-hidden">
+                                    <div class="h-full rounded-full bg-[#7f8b67]" style="width: {{ $catPercentage }}%"></div>
+                                </div>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="text-center py-4 text-gray-400 text-xs">
+                            <i data-lucide="tag" class="w-5 h-5 mx-auto mb-1 opacity-40"></i>
+                            <p class="font-medium text-gray-500">No category data</p>
+                        </div>
+                    @endif
                 </div>
             </div>
-        </div>
-    </div>
 
-    {{-- RECENT REPORTS --}}
-    <div class="bg-white rounded-2xl border p-5 shadow-sm">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-[18px] font-black">
-                Recent Reports
-            </h2>
-            <button class="flex items-center gap-2 text-gray-500 text-sm font-bold">
-                <i data-lucide="filter" class="w-4 h-4"></i>
-                Filter By Category
-            </button>
-        </div>
-
-        <div class="overflow-x-auto">
-            <table class="w-full">
-                <thead>
-                    <tr class="border-b">
-                        <th class="text-left py-4 uppercase text-[10px] tracking-widest text-gray-400">Report ID</th>
-                        <th class="text-left py-4 uppercase text-[10px] tracking-widest text-gray-400">Category</th>
-                        <th class="text-left py-4 uppercase text-[10px] tracking-widest text-gray-400">Generated Date</th>
-                        <th class="text-left py-4 uppercase text-[10px] tracking-widest text-gray-400">Status</th>
-                        <th class="text-right py-4 uppercase text-[10px] tracking-widest text-gray-400">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @php
-                        $reports = [
-                            ['id'=>'#REP-2023-081','category'=>'Financial Summary','date'=>'Oct 24, 2023','status'=>'Completed'],
-                            ['id'=>'#REP-2023-080','category'=>'Inventory Audit','date'=>'Oct 22, 2023','status'=>'Completed'],
-                            ['id'=>'#REP-2023-079','category'=>'Employee Performance','date'=>'Oct 21, 2023','status'=>'Pending'],
-                            ['id'=>'#REP-2023-078','category'=>'Customer Loyalty Analytics','date'=>'Oct 19, 2023','status'=>'Completed'],
-                        ];
-                    @endphp
-
-                    @foreach($reports as $report)
-                    <tr class="border-b last:border-0">
-                        <td class="py-4 font-black text-sm">{{ $report['id'] }}</td>
-                        <td class="py-4 text-sm text-gray-700">{{ $report['category'] }}</td>
-                        <td class="py-4 text-sm text-gray-700">{{ $report['date'] }}</td>
-                        <td class="py-4">
-                            @if($report['status'] == 'Completed' || $report['status'] == 'Complete')
-                            <span class="bg-[#f7ecec] text-[#7b0000] px-3 py-1 rounded-full text-xs font-black">
-                                COMPLETED
-                            </span>
-                            @else
-                            <span class="bg-[#eef2e3] text-[#7f8b67] px-3 py-1 rounded-full text-xs font-black">
-                                PENDING
-                            </span>
-                            @endif
-                        </td>
-                        <td class="py-4 text-right">
-                            <button class="text-[#7b0000] text-sm font-black flex items-center gap-2 ml-auto">
-                                <i data-lucide="download" class="w-4 h-4"></i>
-                                DOWNLOAD CSV
-                            </button>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-
-        <div class="text-center mt-6">
-            <button class="text-gray-400 font-black text-sm hover:text-[#7b0000] transition">
-                View All Archived Reports
-            </button>
         </div>
     </div>
 </div>
 
-{{-- SCRIPT DATA PLUCKING --}}
-@php
-    $dailyLabels = isset($dailyRevenue) ? $dailyRevenue->pluck('day')->toArray() : [];
-    $dailyTotals = isset($dailyRevenue) ? $dailyRevenue->pluck('total')->toArray() : [];
-
-    // Ambil string 'Week X' utuh dari controller baru kita, jangan di-map manual lagi
-    $weeklyLabels = isset($weeklyRevenue) ? $weeklyRevenue->pluck('week_num')->toArray() : [];
-    $weeklyTotals = isset($weeklyRevenue) ? $weeklyRevenue->pluck('total')->toArray() : [];
-
-    $monthlyLabels = isset($monthlyRevenue) ? $monthlyRevenue->pluck('month')->toArray() : [];
-    $monthlyTotals = isset($monthlyRevenue) ? $monthlyRevenue->pluck('total')->toArray() : [];
-@endphp
+{{-- Tambahkan script JS Flatpickr sebelum script kustom --}}
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css">
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-
     const ctx = document.getElementById('revenueChart');
     if(!ctx) return;
 
-    const dailyData = { labels: @json($dailyLabels), values: @json($dailyTotals) };
-    const weeklyData = { labels: @json($weeklyLabels), values: @json($weeklyTotals) };
-    const monthlyData = { labels: @json($monthlyLabels), values: @json($monthlyTotals) };
+    const dailyData = { labels: @json($dailyLabelsJson), values: @json($dailyTotalsJson) };
+    const weeklyData = { labels: @json($weeklyLabelsJson), values: @json($weeklyTotalsJson) };
+    const monthlyData = { labels: @json($monthlyLabelsJson), values: @json($monthlyTotalsJson) };
 
     const btnViewDetails = document.getElementById('btnViewDetails');
     const filterContainer = document.getElementById('filterDateContainer');
     const activeTabInput = document.getElementById('activeTabInput');
-    const filterForm = document.getElementById('filterForm');
-
     const startDateInput = document.getElementById('startDateInput');
     const endDateInput = document.getElementById('endDateInput');
-    const labelStart = document.getElementById('labelStart');
-    const labelEnd = document.getElementById('labelEnd');
+    const filterForm = document.getElementById('filterForm');
     
-    const urlParams = new URLSearchParams(window.location.search);
-    const currentView = urlParams.get('view') || 'weekly';
-    const isFiltering = urlParams.has('start_date') && urlParams.has('end_date');
+    const currentView = "{{ $view }}";
 
     let initialLabels = weeklyData.labels;
     let initialValues = weeklyData.values;
+    let chartType = 'line'; 
 
     if (currentView === 'daily') {
-        initialLabels = dailyData.labels;
-        initialValues = dailyData.values;
+        initialLabels = dailyData.labels; 
+        initialValues = dailyData.values; 
+        chartType = 'line';
     } else if (currentView === 'monthly') {
-        initialLabels = monthlyData.labels;
-        initialValues = monthlyData.values;
+        initialLabels = monthlyData.labels; 
+        initialValues = monthlyData.values; 
+        chartType = 'line';
     }
 
-    if (startDateInput && endDateInput) {
-        configureInputFields(currentView);
+    let pickerConfig = {
+        allowInput: true,
+        dateFormat: "Y-m-d",
+    };
+
+    if (currentView === 'monthly') {
+        pickerConfig = {
+            allowInput: true,
+            dateFormat: "Y-m",
+            altInput: true,
+            altFormat: "m-Y",
+            plugins: [
+                new monthSelectPlugin({
+                    shorthand: true, 
+                    dateFormat: "Y-m", 
+                    altFormat: "m-Y"
+                })
+            ]
+        };
     }
 
-    if (isFiltering && filterContainer && currentView !== 'weekly') {
-        filterContainer.classList.remove('hidden');
+    let startPicker = flatpickr(startDateInput, pickerConfig);
+    
+    if (currentView === 'weekly') {
+        flatpickr(endDateInput, { dateFormat: "Y-m-d" });
+
+        startDateInput.addEventListener('change', function() {
+            if (this.value) {
+                let start = new Date(this.value);
+                start.setDate(start.getDate() + 6); 
+                
+                let yyyy = start.getFullYear();
+                let mm = String(start.getMonth() + 1).padStart(2, '0');
+                let dd = String(start.getDate()).padStart(2, '0');
+                endDateInput.value = `${yyyy}-${mm}-${dd}`;
+            }
+        });
     }
 
-    // INIT CHART
+    if (filterForm) {
+        filterForm.addEventListener('submit', function(e) {
+            if (activeTabInput.value === 'monthly') {
+                let val = startDateInput.value.trim();
+                if (val.includes('-')) {
+                    let parts = val.split('-');
+                    if (parts[0].length <= 2 && parts[1].length === 4) {
+                        let month = parts[0].padStart(2, '0');
+                        let year = parts[1];
+                        startDateInput.value = `${year}-${month}`;
+                    }
+                }
+            }
+        });
+    }
+
+    // DRAW CHART JS
+    window.currentChartData = { labels: initialLabels, values: initialValues }; // Simpan ke global scope untuk export
     let revenueChart = new Chart(ctx, {
-        type: 'line',
+        type: chartType,
         data: {
-            labels: initialLabels.length ? initialLabels : ['No Data'],
+            labels: initialLabels,
             datasets: [{
                 label: 'Revenue',
-                data: initialValues.length ? initialValues : [0],
+                data: initialValues,
                 borderColor: '#8b0000',
-                backgroundColor: 'rgba(139, 0, 0, 0.08)',
-                fill: true,
-                tension: 0.4,
+                backgroundColor: 'rgba(139, 0, 0, 0.1)', 
+                fill: true, 
+                tension: 0.4, 
                 pointBackgroundColor: '#8b0000',
                 pointBorderColor: '#ffffff',
-                pointBorderWidth: 3,
-                pointRadius: 6,
-                pointHoverRadius: 8,
-                borderWidth: 4
+                pointBorderWidth: 2,
+                pointRadius: currentView === 'daily' ? 2 : (currentView === 'weekly' ? 5 : 3),
+                borderWidth: 3 
             }]
         },
         options: {
@@ -330,72 +311,97 @@ document.addEventListener('DOMContentLoaded', function () {
             maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {
-                y: { display: true, grid: { display: true } },
+                y: { 
+                    grid: { color: 'rgba(0, 0, 0, 0.04)' },
+                    ticks: { callback: function(value) { return 'Rp ' + value.toLocaleString('id-ID'); } }
+                },
                 x: { grid: { display: false } }
             }
         }
     });
 
-    function configureInputFields(view) {
-        if (!startDateInput || !endDateInput) return;
-        if (view === 'monthly') {
-            startDateInput.type = 'month';
-            endDateInput.type = 'month';
-            if(labelStart) labelStart.innerText = 'START MONTH';
-            if(labelEnd) labelEnd.innerText = 'END MONTH';
-        } else {
-            startDateInput.type = 'date';
-            endDateInput.type = 'date';
-            if(labelStart) labelStart.innerText = 'START DATE';
-            if(labelEnd) labelEnd.innerText = 'END DATE';
-        }
+    const labelStart = document.getElementById('labelStart');
+    const endWrapper = document.getElementById('endInputWrapper');
+    const gridContainer = document.getElementById('dateInputGrid');
+
+    if (currentView === 'daily') {
+        if(labelStart) labelStart.innerText = 'PILIH TANGGAL KAS';
+        if(endWrapper) endWrapper.classList.add('hidden');
+        if(gridContainer) gridContainer.classList.replace('grid-cols-2', 'grid-cols-1');
+    } else if (currentView === 'monthly') {
+        if(labelStart) labelStart.innerText = 'KETIK / PILIH BULAN (MM-YYYY)';
+        if(endWrapper) endWrapper.classList.add('hidden');
+        if(gridContainer) gridContainer.classList.replace('grid-cols-2', 'grid-cols-1');
+    } else {
+        if(labelStart) labelStart.innerText = 'START DATE';
+        if(endWrapper) endWrapper.classList.remove('hidden');
+        if(gridContainer) gridContainer.classList.replace('grid-cols-1', 'grid-cols-2');
     }
 
     if(btnViewDetails && filterContainer) {
-        btnViewDetails.addEventListener('click', function (e) {
-            e.preventDefault();
-            filterContainer.classList.toggle('hidden');
-        });
-    }
-
-    if(filterForm) {
-        filterForm.addEventListener('submit', function (e) {
-            const viewMode = activeTabInput.value;
-            const startVal = startDateInput.value;
-            const endVal = endDateInput.value;
-
-            if(!startVal || !endVal) {
-                e.preventDefault();
-                alert('Silakan pilih rentang waktu awal dan akhir terlebih dahulu!');
-                return;
-            }
-
-            if (viewMode === 'daily') {
-                const date1 = new Date(startVal);
-                const date2 = new Date(endVal);
-                const diffTime = Math.abs(date2 - date1);
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-
-                if (diffDays !== 7) {
-                    e.preventDefault();
-                    alert(`⚠️ Error: Untuk filter harian (Daily), Anda WAJIB memilih tepat 7 hari data. Rentang saat ini: ${diffDays} hari.`);
-                    return;
-                }
-            } 
-            else if (viewMode === 'monthly') {
-                const [year1, month1] = startVal.split('-').map(Number);
-                const [year2, month2] = endVal.split('-').map(Number);
-                const diffMonths = (year2 - year1) * 12 + (month2 - month1) + 1;
-
-                if (diffMonths !== 5) {
-                    e.preventDefault();
-                    alert(`⚠️ Error: Untuk filter bulanan (Monthly), Anda WAJIB memilih tepat rentang 5 bulan data. Rentang saat ini: ${diffMonths} bulan.`);
-                    return;
-                }
-            }
-        });
+        btnViewDetails.addEventListener('click', function (e) { e.preventDefault(); filterContainer.classList.toggle('hidden'); });
     }
 });
+
+// ==========================================
+// FUNGSI CLIENT-SIDE EXPORT CSV UNTUK REPORT
+// ==========================================
+function exportReportToCSV() {
+    let csv = [];
+    
+    // 1. Tambahkan Metadata Summary Block
+    csv.push('"--- SUMMARY REPORT ---"');
+    csv.push('"Filter Periode","' + "{{ strtoupper($view) }}" + '"');
+    csv.push('"Total Revenue","' + "{{ $totalRevenue ?? 0 }}" + '"');
+    csv.push('"Total Orders","' + "{{ $totalOrders ?? 0 }}" + '"');
+    csv.push(""); // Baris Kosong
+
+    // 2. Tambahkan Data Grafik Performa Keuangan
+    csv.push('"--- REVENUE PERFORMANCE TREND ---"');
+    csv.push('"Waktu / Tanggal","Revenue (Rp)"');
+    if (window.currentChartData && window.currentChartData.labels) {
+        for (let i = 0; i < window.currentChartData.labels.length; i++) {
+            csv.push('"' + window.currentChartData.labels[i] + '","' + window.currentChartData.values[i] + '"');
+        }
+    }
+    csv.push(""); 
+
+    // 3. Tambahkan Data Produk Terjual (Diambil dari Object JSON Backend)
+    csv.push('"--- PRODUCTS SOLD RANKING ---"');
+    csv.push('"Product Name","Quantity Sold"');
+    const productsData = @json($productsSold);
+    if(productsData && productsData.length > 0) {
+        productsData.forEach(p => {
+            csv.push('"' + p.product_name + '","' + p.total_sold + '"');
+        });
+    } else {
+        csv.push('"No data available","0"');
+    }
+    csv.push("");
+
+    // 4. Tambahkan Data Kategori Terpopuler
+    csv.push('"--- TOP CATEGORIES ---"');
+    csv.push('"Category Name","Items Sold"');
+    const categoriesData = @json($topCategories ?? []);
+    if(categoriesData && categoriesData.length > 0) {
+        categoriesData.forEach(c => {
+            csv.push('"' + c.category_name + '","' + c.total_qty + '"');
+        });
+    } else {
+        csv.push('"No data available","0"');
+    }
+
+    // Proses download berkas CSV langsung di browser
+    let csvFile = new Blob([csv.join("\n")], { type: "text/csv;charset=utf-8;" });
+    let downloadLink = document.createElement("a");
+    let viewName = "{{ $view }}";
+    downloadLink.download = "Business_Report_" + viewName.toUpperCase() + "_" + "{{ $startDate }}" + ".csv";
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+}
 </script>
 
 @endsection

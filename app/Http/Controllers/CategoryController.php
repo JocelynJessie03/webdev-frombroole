@@ -3,43 +3,96 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Product; 
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    // Menampilkan halaman form tambah kategori
-    public function create()
-    {
-        return view('categories.create');
-    }
-
-    // Memproses data yang dikirim dari form
+    // Memproses data tambah kategori baru dari form instan di pop-up modal
     public function store(Request $request)
     {
         $request->validate([
-            'category_name' => 'required|string|max:255'
+            // Tambahkan validasi unique agar user tidak bisa input nama yang sama persis
+            'category_name' => 'required|string|max:255|unique:categories,category_name'
         ]);
 
-        $lastCategory = \App\Models\Category::orderBy('category_ID', 'desc')->first();
+        // FIX UTAMA: Gunakan withTrashed() agar data yang di-soft delete tetap dihitung nomor ID-nya!
+        $lastCategory = Category::withTrashed()->orderBy('category_ID', 'desc')->first();
 
-        // 2. Tentukan angka urutan berikutnya
         if ($lastCategory && $lastCategory->category_ID) {
-            // Jika sudah ada data (misal: "CAT-004"), ambil angkanya saja ("004" menjadi 4), lalu tambah 1
+            // Mengambil angka di belakang 'CAT-', contoh 'CAT-004' diambil angka 4
             $lastNumber = (int) substr($lastCategory->category_ID, 4);
             $nextNumber = $lastNumber + 1;
         } else {
-            // Jika tabel categories masih kosong sama sekali
             $nextNumber = 1;
         }
 
-        // 3. Gabungkan "CAT-" dengan angka yang sudah diformat (misal: 1 menjadi "001")
+        // Generate ID baru secara berurutan tanpa takut duplikat (contoh: CAT-005)
         $newCategoryID = 'CAT-' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+        
         Category::create([
             'category_name' => $request->category_name,
             'category_ID' => $newCategoryID
         ]);
 
-        // Setelah berhasil simpan, arahkan kembali ke halaman form tambah produk
-        return redirect()->route('products.create')->with('success', 'Kategori baru berhasil ditambahkan!');
+        return redirect()->back()->with('success', 'Kategori baru berhasil ditambahkan!');
     }
+
+    // Memproses perubahan nama kategori dari inline modal
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'category_name' => 'required|string|max:255|unique:categories,category_name,'.$id
+        ]);
+
+        $category = Category::findOrFail($id);
+        
+        $category->update([
+            'category_name' => $request->category_name
+        ]);
+
+        return redirect()->back()->with('success', 'Kategori berhasil diperbarui!');
+    }
+
+    // Memproses hapus kategori
+    public function destroy($id)
+    {
+        // Gunakan withTrashed() saat mencari atau membuat kategori penampung
+        $uncategorized = Category::withTrashed()->firstOrCreate(
+            ['category_name' => 'Uncategorized'],
+            ['category_ID' => 'CAT-000'] 
+        );
+
+        $category = Category::findOrFail($id);
+
+        // JANGAN HAPUS jika yang mau dihapus adalah kategori penampung itu sendiri
+        if ($category->id == $uncategorized->id) {
+            return redirect()->back()->with('error', 'Kategori utama Uncategorized tidak boleh dihapus!');
+        }
+
+        // Pindahkan semua produk dari kategori yang mau dihapus ke 'Uncategorized'
+        Product::where('category_id', $id)->update(['category_id' => $uncategorized->id]);
+
+        // Perbaikan alur penghapusan ganda (Bawaan Laravel + Kolom manual kamu)
+        $category->category_delete = true; // 1. Tandai kolom boolean manualmu
+        $category->save();                 // 2. Simpan perubahannya dulu
+
+        $category->delete();               // 3. Jalankan softDeletes bawaan Laravel (mengisi kolom deleted_at)
+
+        return redirect()->back()->with('success', 'Kategori berhasil dihapus dan produk dialihkan ke Uncategorized!');
+    }
+    public function restore($id)
+{
+    // Mencari kategori yang statusnya terhapus (soft deleted)
+    $category = Category::withTrashed()->findOrFail($id);
+    
+    // Kembalikan statusnya menjadi aktif lagi
+    $category->restore();
+    
+    // Kembalikan status boolean manual kamu ke false
+    $category->category_delete = false;
+    $category->save();
+
+    return redirect()->back()->with('success', 'Kategori lama berhasil diaktifkan kembali!');
+}
 }

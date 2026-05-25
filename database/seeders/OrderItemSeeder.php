@@ -3,9 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\OrderHistory;
-use App\Models\Product;
-use App\Models\OrderItem; 
+use Illuminate\Support\Facades\DB;
 
 class OrderItemSeeder extends Seeder
 {
@@ -14,10 +12,19 @@ class OrderItemSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Ambil semua mapping produk (Nama => ID)
-        $products = Product::pluck('id', 'pro_name');
+        // 1. Ambil semua data produk langsung menggunakan DB Query Builder (Nama => [ID, Harga])
+        $productsData = DB::table('products')->get();
+        
+        $products = [];
+        $prices = [];
+        
+        foreach ($productsData as $product) {
+            // Mapping nama produk ke ID dan Harga berdasarkan kolom tabel Anda
+            $products[$product->pro_name] = $product->id;
+            $prices[$product->id] = $product->pro_price;
+        }
 
-        // 2. Blueprint item transaksi
+        // 2. Blueprint item transaksi (Tetap sama seperti bawaan Anda)
         $blueprints = [
             // Budi Santoso (CUST-0001)
             [['n' => 'Cheesecake Tiramisu', 'q' => 2], ['n' => 'Cheesecake Oreo', 'q' => 3]],
@@ -145,10 +152,13 @@ class OrderItemSeeder extends Seeder
             [['n' => 'Cheesecake Original', 'q' => 1]],
         ];
 
-        // 3. Ambil semua data Order History
-        $orders = OrderHistory::orderBy('id', 'asc')->get();
+        // 3. Ambil semua data Order History menggunakan DB
+        $orders = DB::table('order_histories')->orderBy('id', 'asc')->get();
 
-        // 4. Proses Insert ke tabel order_items
+        // Array penampung untuk bulk insert (jauh lebih cepat & anti-error)
+        $insertData = [];
+
+        // 4. Proses Looping Data
         foreach ($orders as $index => $order) {
             if (isset($blueprints[$index])) {
                 foreach ($blueprints[$index] as $item) {
@@ -157,18 +167,25 @@ class OrderItemSeeder extends Seeder
                     $productId = $products[$productName] ?? null;
 
                     if ($productId) {
-                        $realPrice = Product::find($productId)->pro_price;
+                        $realPrice = $prices[$productId] ?? 0;
 
-                        // Perubahan ada di blok ini: menyesuaikan nama kolom dengan migrasi Anda
-                        OrderItem::create([
+                        // BARIS DI BAWAH INI SUDAH BERSIH DARI KOLOM 'product_name'
+                        $insertData[] = [
                             'order_id'          => $order->id, 
                             'product_id'        => $productId,
                             'quantity'          => $item['q'],
                             'price_at_purchase' => $realPrice,
-                        ]);
+                            'created_at'        => now(),
+                            'updated_at'        => now()
+                        ];
                     }
                 }
             }
+        }
+
+        // 5. Eksekusi Sekaligus (Bulk Insert) ke database menggunakan DB Builder
+        if (!empty($insertData)) {
+            DB::table('order_items')->insert($insertData);
         }
     }
 }
