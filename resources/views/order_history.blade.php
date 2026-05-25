@@ -6,9 +6,6 @@
 
     {{-- HEADER --}}
     <div class="flex justify-between items-start">
-        
-
-        {{-- TOMBOL EXPORT CSV DIUBAH --}}
         <button onclick="exportTableToCSV('Order_History.csv')" class="bg-[#7b0000] hover:bg-[#650000] text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow transition">
             <i data-lucide="download" class="w-4 h-4"></i>
             <span class="font-semibold text-sm">
@@ -19,7 +16,7 @@
 
     {{-- STATS --}}
     <div class="grid grid-cols-3 gap-3">
-        {{-- CARD --}}
+        {{-- CARD TOTAL --}}
         <div class="bg-white rounded-2xl p-5 border shadow-sm">
             <div class="w-9 h-9 bg-[#f7ebeb] rounded-xl flex items-center justify-center mb-3">
                 <i data-lucide="receipt" class="w-4 h-4 text-[#7b0000]"></i>
@@ -28,7 +25,7 @@
             <h2 class="text-3xl font-black">{{ number_format($stats['total'] ?? 0) }}</h2>
         </div>
 
-        {{-- CARD --}}
+        {{-- CARD COMPLETED --}}
         <div class="bg-white rounded-2xl p-5 border shadow-sm">
             <div class="w-9 h-9 bg-[#eaf8ef] rounded-xl flex items-center justify-center mb-3">
                 <i data-lucide="check-circle-2" class="w-4 h-4 text-green-600"></i>
@@ -37,7 +34,7 @@
             <h2 class="text-3xl font-black">{{ number_format($stats['completed'] ?? 0) }}</h2>
         </div>
 
-        {{-- CARD --}}
+        {{-- CARD PENDING --}}
         <div class="bg-white rounded-2xl p-5 border shadow-sm">
             <div class="w-9 h-9 bg-[#fff6e8] rounded-xl flex items-center justify-center mb-3">
                 <i data-lucide="clock-3" class="w-4 h-4 text-yellow-600"></i>
@@ -47,7 +44,7 @@
         </div>
     </div>
 
-    {{-- TABLE --}}
+    {{-- TABLE CONTROLLER --}}
     <div class="bg-white rounded-3xl border shadow-sm overflow-hidden">
 
          {{-- SEARCH & FILTER --}}
@@ -57,7 +54,7 @@
                 <input id="searchInput" type="text" placeholder="Search order or customer..." class="bg-transparent outline-none w-full text-sm">
             </div>
 
-            <div class="flex gap-2">
+            <div class="flex gap-2 relative">
                 <div class="relative flex items-center border px-4 py-2 rounded-xl gap-2 font-medium text-sm">
                     <i data-lucide="filter" class="w-4 h-4 text-gray-500"></i>
                     <select id="statusFilter" class="bg-transparent outline-none cursor-pointer appearance-none pr-4">
@@ -66,10 +63,31 @@
                         <option value="pending">Pending</option>
                     </select>
                 </div>
-                <button class="border px-4 py-2 rounded-xl flex items-center gap-2 font-medium text-sm">
-                    <i data-lucide="clock-3" class="w-4 h-4"></i>
-                    Date
-                </button>
+
+                {{-- FILTER TANGGAL SINGLE DENGAN DROPDOWN POPUP --}}
+                <div class="relative">
+                    <button id="dateRangeBtn" onclick="toggleDatePopup()" class="border px-4 py-2 rounded-xl flex items-center gap-2 font-medium text-sm hover:bg-gray-50 transition">
+                        <i data-lucide="calendar" class="w-4 h-4 text-gray-500"></i>
+                        <span id="dateRangeLabel">Date Filter</span>
+                        <i data-lucide="chevron-down" class="w-3 h-3 text-gray-400 ml-1"></i>
+                    </button>
+
+                    {{-- POPUP FLOATING CARD SINGLE DATE --}}
+                    <div id="datePickerPopup" class="hidden absolute right-0 top-12 bg-white rounded-2xl border shadow-xl p-5 z-50 w-[280px] space-y-4">
+                        <p class="text-xs font-bold text-red-600 uppercase tracking-wider">Time Filter</p>
+                        
+                        <div>
+                            <label class="text-[10px] uppercase font-bold text-gray-400 block mb-1">Select Date</label>
+                            <input type="date" id="targetDateInput" class="w-full bg-gray-50 border rounded-xl px-3 py-2 text-sm font-semibold outline-none focus:ring-2 focus:ring-[#7b0000]/20">
+                        </div>
+
+                        <div class="flex justify-end gap-2 pt-2 border-t">
+                            <button onclick="clearDateFilter()" class="px-4 py-2 text-xs font-bold text-gray-500 hover:text-black transition">
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -90,12 +108,12 @@
 
             <tbody>
                 @foreach($orders as $order)
-                <tr class="border-t hover:bg-gray-50 transition">
+                <tr class="border-t hover:bg-gray-50 transition" data-date="{{ $order->order_date->format('Y-m-d') }}">
                     <td class="px-6 py-5 font-bold text-[#7b0000] text-lg">{{ $order->order_id }}</td>
                     <td class="px-6 py-5">
                         <h3 class="font-bold text-base">{{ $order->customer->customer_name ?? 'Guest' }}</h3>
                     </td>
-                    <td class="px-6 py-5 text-sm text-gray-600">{{ $order->order_date->format('M d, H:i') }}</td>
+                    <td class="px-6 py-5 text-sm text-gray-600">{{ $order->order_date->format('M d, Y H:i') }}</td>
                     <td class="px-6 py-5 text-sm font-semibold">{{ $order->total_items }} items</td>
                     <td class="px-6 py-5 text-base font-bold">Rp {{ number_format($order->total_price, 0, ',', '.') }}</td>
                     
@@ -129,12 +147,10 @@
 
                     <td class="px-6 py-5 no-print">
                         <div class="flex gap-3">
-                            {{-- TOMBOL MATA: Selalu aktif untuk semua status --}}
                             <button title="View Receipt" onclick="openReceiptModal(this)" data-order="{{ json_encode($order) }}" class="text-[#7b0000] hover:scale-110 transition">
                                 <i data-lucide="eye" class="w-4 h-4"></i>
                             </button>
                             
-                            {{-- TOMBOL PRINTER: Hanya aktif jika status Complete --}}
                             @if($order->status == 'Complete')
                                 <button title="Download PDF" onclick="downloadReceiptPDF(this)" data-order="{{ json_encode($order) }}" class="text-[#7b0000] hover:scale-110 transition">
                                     <i data-lucide="printer" class="w-4 h-4"></i>
@@ -163,9 +179,7 @@
             </button>
         </div>
         
-        {{-- Area ini akan diisi dinamis oleh JavaScript --}}
-        <div class="p-8 overflow-y-auto bg-white" id="receiptModalContent">
-            </div>
+        <div class="p-8 overflow-y-auto bg-white" id="receiptModalContent"></div>
 
         <div class="p-6 border-t bg-gray-50 flex justify-end">
             <button onclick="closeReceiptModal()" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-xl font-bold text-sm hover:bg-gray-300 transition">
@@ -181,9 +195,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const statusFilter = document.getElementById("statusFilter");
     const rows = document.querySelectorAll("tbody tr");
 
-    function filterTable() {
+    window.filterTable = function() {
         const searchValue = searchInput.value.toLowerCase().trim();
         const statusValue = statusFilter.value.toLowerCase().trim();
+        const targetDateVal = document.getElementById('targetDateInput').value; // Format: YYYY-MM-DD
 
         rows.forEach(row => {
             const rowText = row.innerText.toLowerCase();
@@ -194,10 +209,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 rowStatus = 'completed';
             }
 
+            const rowDateStr = row.getAttribute("data-date"); 
+
             const matchSearch = rowText.includes(searchValue);
             const matchStatus = (statusValue === "all" || rowStatus === statusValue);
+            
+            // Logika pencocokan eksak tanggal tunggal
+            let matchDate = true;
+            if (targetDateVal && rowDateStr) {
+                matchDate = (rowDateStr === targetDateVal);
+            }
 
-            if (matchSearch && matchStatus) {
+            if (matchSearch && matchStatus && matchDate) {
                 row.style.display = "";
             } else {
                 row.style.display = "none";
@@ -207,10 +230,49 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (searchInput) searchInput.addEventListener("keyup", filterTable);
     if (statusFilter) statusFilter.addEventListener("change", filterTable);
+    document.getElementById('targetDateInput').addEventListener("change", filterTable);
+});
+
+// POPUP INTERACTION
+function toggleDatePopup() {
+    const popup = document.getElementById('datePickerPopup');
+    popup.classList.toggle('hidden');
+}
+
+function applyDateFilter() {
+    const targetDate = document.getElementById('targetDateInput').value;
+    const label = document.getElementById('dateRangeLabel');
+
+    if (targetDate) {
+        // Mengubah format tampilan tombol agar rapi saat filter aktif
+        label.innerText = targetDate;
+        label.classList.add('text-[#7b0000]', 'font-bold');
+    }
+    
+    filterTable();
+    document.getElementById('datePickerPopup').classList.add('hidden');
+}
+
+function clearDateFilter() {
+    document.getElementById('targetDateInput').value = "";
+    document.getElementById('dateRangeLabel').innerText = "Date Filter";
+    document.getElementById('dateRangeLabel').classList.remove('text-[#7b0000]', 'font-bold');
+    
+    filterTable();
+    document.getElementById('datePickerPopup').classList.add('hidden');
+}
+
+// Tutup popup ketika klik di luar area komponen date
+document.addEventListener('click', function(e) {
+    const btn = document.getElementById('dateRangeBtn');
+    const popup = document.getElementById('datePickerPopup');
+    if (btn && popup && !btn.contains(e.target) && !popup.contains(e.target)) {
+        popup.classList.add('hidden');
+    }
 });
 
 // ==========================================
-// 1. FUNGSI EXPORT CSV
+// EXPORT CSV
 // ==========================================
 function exportTableToCSV(filename) {
     let csv = [];
@@ -219,16 +281,13 @@ function exportTableToCSV(filename) {
     for (let i = 0; i < rows.length; i++) {
         let row = [], cols = rows[i].querySelectorAll("td, th");
         
-        // Loop mengabaikan kolom terakhir (Action) agar tidak ikut ke CSV
         for (let j = 0; j < cols.length - 1; j++) {
-            // Bersihkan teks dari newline agar rapi di excel
             let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").trim();
             row.push('"' + data + '"');
         }
         csv.push(row.join(","));
     }
 
-    // Proses Download
     let csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
     let downloadLink = document.createElement("a");
     downloadLink.download = filename;
@@ -240,7 +299,7 @@ function exportTableToCSV(filename) {
 }
 
 // ==========================================
-// 2. LOGIKA GENERATE HTML UNTUK RECEIPT
+// RECEIPT GENERATOR
 // ==========================================
 function generateReceiptHTML(order) {
     let itemsHtml = '';
@@ -307,9 +366,6 @@ function generateReceiptHTML(order) {
     `;
 }
 
-// ==========================================
-// 3. FUNGSI BUKA MODAL RECEIPT (MATA)
-// ==========================================
 function openReceiptModal(btn) {
     try {
         const orderData = JSON.parse(btn.getAttribute('data-order'));
@@ -334,18 +390,13 @@ window.onclick = function(event) {
     }
 }
 
-// ==========================================
-// 4. FUNGSI DOWNLOAD PDF / PRINT (NATIVE JAVASCRIPT)
-// ==========================================
+// NATIVE PRINT RECEIPT
 function downloadReceiptPDF(btn) {
     try {
         const orderData = JSON.parse(btn.getAttribute('data-order'));
         const receiptHTML = generateReceiptHTML(orderData);
-        
-        // Buka tab/jendela baru khusus untuk area print
         const printWindow = window.open('', '_blank', 'width=800,height=600');
         
-        // Tulis struktur HTML murni ke dalam jendela baru
         printWindow.document.write(`
             <!DOCTYPE html>
             <html>
@@ -353,34 +404,21 @@ function downloadReceiptPDF(btn) {
                 <title>Receipt_${orderData.order_id}</title>
                 <script src="https://cdn.tailwindcss.com"><\/script>
                 <style>
-                    /* Styling khusus saat masuk ke kertas PDF/Printer */
                     @media print {
-                        body { 
-                            padding: 20px; 
-                            -webkit-print-color-adjust: exact; 
-                            color-adjust: exact;
-                        }
-                        /* Menghilangkan header/footer link bawaan Chrome */
+                        body { padding: 20px; -webkit-print-color-adjust: exact; color-adjust: exact;}
                         @page { size: auto; margin: 0mm; }
                     }
                 </style>
             </head>
             <body class="p-8 max-w-md mx-auto">
                 ${receiptHTML}
-                
                 <script>
-                    // Beri waktu 1 detik agar Tailwind selesai merapikan CSS, lalu print
-                    setTimeout(function() {
-                        window.print();
-                        window.close(); // Tab akan otomatis tertutup setelah selesai diprint/disave
-                    }, 1000);
+                    setTimeout(function() { window.print(); window.close(); }, 1000);
                 <\/script>
             </body>
             </html>
         `);
-        
         printWindow.document.close();
-
     } catch(e) {
         console.error("Gagal mencetak struk", e);
         alert("Terjadi kesalahan saat menyiapkan struk.");
