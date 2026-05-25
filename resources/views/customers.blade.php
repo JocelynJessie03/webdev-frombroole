@@ -129,7 +129,7 @@
                     <td class="px-6 py-5">
                         <div class="flex items-center gap-3">
                             <div class="w-24 h-2 bg-gray-100 rounded-full overflow-hidden">
-                                <div class="bg-[#7f876e] h-full rounded-full" style="width: {{ min(($customer->member_points / 5000) * 100, 100) }}%"></div>
+                                <div class="bg-[#7f876e] h-full rounded-full" style="width: {{ $customer->progress_percentage }}%"></div>
                             </div>
                             <span class="text-sm font-semibold text-[#7f876e]">
                                 {{ $customer->member_points }} pts

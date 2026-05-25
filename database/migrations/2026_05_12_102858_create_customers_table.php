@@ -20,11 +20,11 @@ return new class extends Migration
         $table->string('phone');
         $table->decimal('total_spend', 15, 2)->default(0);
         $table->integer('member_points')->default(0);
+        $table->integer('progress_percentage')->default(15); 
         $table->enum('tier', ['Bronze', 'Silver', 'Gold'])->default('Bronze');
         $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      */
