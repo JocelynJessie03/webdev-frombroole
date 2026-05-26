@@ -175,55 +175,45 @@ class OrderHistoryController extends Controller
     */
 
     public function updateStatus($id)
-    {
-        $order = OrderHistory::findOrFail($id);
+{
+    $order = OrderHistory::findOrFail($id);
+
+    /*
+    |--------------------------------------------------------------------------
+    | DIRECT COMPLETE
+    |--------------------------------------------------------------------------
+    */
+
+    $order->status = 'Complete';
 
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | ORDER FLOW
-        |--------------------------------------------------------------------------
-        */
+    /*
+    |--------------------------------------------------------------------------
+    | PAYMENT STATUS
+    |--------------------------------------------------------------------------
+    */
 
-        if ($order->status === 'Pending') {
+    if (
+        Schema::hasColumn('order_histories', 'payment_status')
+        &&
+        !$order->payment_status
+    ) {
 
-            $order->status = 'Processing';
-        }
-
-        elseif ($order->status === 'Processing') {
-
-            $order->status = 'Complete';
-        }
-
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | PAYMENT STATUS
-        |--------------------------------------------------------------------------
-        */
-
-        if (
-            Schema::hasColumn('order_histories', 'payment_status')
-            &&
-            !$order->payment_status
-        ) {
-
-            $order->payment_status = 'PAID';
-        }
-
-
-
-        $order->save();
-
-
-
-        return redirect()
-            ->back()
-            ->with(
-                'success',
-                'Order status updated successfully!'
-            );
+        $order->payment_status = 'PAID';
     }
+
+
+
+    $order->save();
+
+
+
+    return redirect()
+        ->back()
+        ->with(
+            'success',
+            'Order completed successfully!'
+        );
+}
 }

@@ -9,6 +9,7 @@ use App\Http\Controllers\PosController;
 use App\Http\Controllers\OrderHistoryController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\NotificationController;
 
 Route::get('/', function () {
     return redirect('/dashboard');
@@ -101,3 +102,14 @@ Route::get('/home', function () {
     return view('customer.home');
 
 });
+
+
+Route::post(
+    '/notifications/{id}/read',
+    [NotificationController::class, 'markAsRead']
+);
+
+Route::post(
+    '/notifications/read-all',
+    [NotificationController::class, 'markAllAsRead']
+);

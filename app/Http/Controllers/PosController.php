@@ -6,10 +6,12 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\OrderHistory;
 use App\Models\OrderItem;
+use App\Models\Notification;
 use Midtrans\Config;
 use Midtrans\Snap;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
 
 class PosController extends Controller
 {
@@ -231,6 +233,64 @@ class PosController extends Controller
                 }
 
                 DB::commit();
+
+
+
+/*
+|--------------------------------------------------------------------------
+| REVENUE NOTIFICATION
+|--------------------------------------------------------------------------
+*/
+
+$todayRevenue =
+    OrderHistory::whereDate(
+        'created_at',
+        today()
+    )->sum('total_price');
+
+
+
+Notification::create([
+
+    'title' => 'Revenue Updated',
+
+    'message' =>
+        "Today's sales reached Rp " .
+        number_format(
+            $todayRevenue,
+            0,
+            ',',
+            '.'
+        ),
+
+    'type' => 'revenue',
+
+]);
+
+
+
+/*
+|--------------------------------------------------------------------------
+| NEW ORDER NOTIFICATION
+|--------------------------------------------------------------------------
+*/
+
+Notification::create([
+
+    'title' => 'New Order Received',
+
+    'message' =>
+        $order->order_id .
+        ' successfully created',
+
+    'type' => 'order',
+
+]);
+
+
+
+return redirect()
+    ->route('receipt', $order->id);
                 return redirect()->route('receipt', $order->id);
 
             } catch (\Exception $e) {
@@ -270,119 +330,364 @@ class PosController extends Controller
     }
 
     public function paymentSuccess()
-    {
-        $cart = session('cart');
-        $customerId = session('customer_id');
-        $pointsUsed = session('points_used');
-        $paymentMethod = session('payment_method', 'QRIS/GoPay');
+{
+    $cart = session('cart');
+    $customerId = session('customer_id');
+    $pointsUsed = session('points_used');
+    $paymentMethod = session('payment_method', 'QRIS/GoPay');
 
-        if (!$cart) {
-            return redirect()->route('pos')->with('error', 'Session Is Expired.');
-        }
+    if (!$cart) {
+        return redirect()->route('pos')
+            ->with('error', 'Session Is Expired.');
+    }
 
-        DB::beginTransaction();
+    DB::beginTransaction();
 
-        try {
-            $order = OrderHistory::create([
-                'order_id' => session('order_id'),
-                'customer_id' => $customerId ?: null,
-                'order_date' => now(),
-                'total_items' => count($cart),
-                'total_price' => session('total'),
-                'status' => 'Complete',
-                'payment_method' => $paymentMethod
+    try {
+
+        $order = OrderHistory::create([
+
+            'order_id' => session('order_id'),
+
+            'customer_id' => $customerId ?: null,
+
+            'order_date' => now(),
+
+            'total_items' => count($cart),
+
+            'total_price' => session('total'),
+
+            'status' => 'Complete',
+
+            'payment_method' => $paymentMethod
+
+        ]);
+
+
+
+        foreach ($cart as $item)
+        {
+
+            OrderItem::create([
+
+                'order_id' => $order->id,
+
+                'product_id' => $item['id'],
+
+                'quantity' => $item['qty'],
+
+                'price_at_purchase' => $item['price']
+
             ]);
 
-            foreach ($cart as $item) {
-                OrderItem::create([
-                    'order_id' => $order->id,
-                    'product_id' => $item['id'],
-                    'quantity' => $item['qty'],
-                    'price_at_purchase' => $item['price']
-                ]);
 
-                $product = \App\Models\Product::with(['ingredients' => function($q) {
+
+            $product = \App\Models\Product::with([
+
+                'ingredients' => function($q) {
+
                     $q->withPivot('amount_needed');
-                }])->find($item['id']);
 
-                if ($product && $product->ingredients) {
-                    foreach ($product->ingredients as $ingredient) {
-                        $takaran = $ingredient->pivot->amount_needed ?: 1;
-                        $totalPotongan = $takaran * $item['qty'];
-                        
-                        $ingredient->stock = $ingredient->stock - $totalPotongan;
-                        $ingredient->save();
+                }
 
-                        DB::table('ingredient_histories')->insert([
-                            'ingredient_id' => $ingredient->id,
-                            'amount'        => $totalPotongan,
-                            'type'          => 'out',
-                            'date'          => today()->toDateString(),
-                            'created_at'    => now(),
-                            'updated_at'    => now()
+            ])->find($item['id']);
+
+
+
+            if ($product && $product->ingredients)
+            {
+
+                foreach ($product->ingredients as $ingredient)
+                {
+
+                    $takaran =
+                        $ingredient->pivot->amount_needed ?: 1;
+
+                    $totalPotongan =
+                        $takaran * $item['qty'];
+
+
+
+                    $ingredient->stock =
+                        $ingredient->stock - $totalPotongan;
+
+                    $ingredient->save();
+
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | LOW STOCK NOTIFICATION
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if($ingredient->stock <= 5)
+                    {
+
+                        Notification::create([
+
+                            'title' => 'Low Ingredient Stock',
+
+                            'message' =>
+                                $ingredient->name .
+                                ' stock remaining only ' .
+                                $ingredient->stock,
+
+                            'type' => 'stock',
+
                         ]);
+
                     }
+
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | INGREDIENT HISTORY
+                    |--------------------------------------------------------------------------
+                    */
+
+                    DB::table('ingredient_histories')->insert([
+
+                        'ingredient_id' => $ingredient->id,
+
+                        'amount'        => $totalPotongan,
+
+                        'type'          => 'out',
+
+                        'date'          => today()->toDateString(),
+
+                        'created_at'    => now(),
+
+                        'updated_at'    => now()
+
+                    ]);
+
                 }
+
             }
 
-            if ($customerId && $pointsUsed > 0) {
-                DB::table('customers')->where('id', $customerId)->decrement('member_points', $pointsUsed);
-            }
+        }
 
-            if ($customerId) {
-                $grandTotal = session('total');
-                DB::table('customers')->where('id', $customerId)->increment('total_spend', $grandTotal);
-                $customer = DB::table('customers')->where('id', $customerId)->first();
-                
-                if ($customer) {
-                    $newTier = 'Bronze';
-                    if ($customer->total_spend >= 1000000) { $newTier = 'Gold'; } 
-                    elseif ($customer->total_spend >= 750000) { $newTier = 'Silver'; }
 
-                    if ($customer->tier !== $newTier) {
-                        DB::table('customers')->where('id', $customerId)->update(['tier' => $newTier]);
-                    }
-                    
-                    $pointsEarned = floor($grandTotal / 10000); 
-                    if ($pointsEarned > 0) {
-                        DB::table('customers')->where('id', $customerId)->increment('member_points', $pointsEarned);
-                    }
+
+        /*
+        |--------------------------------------------------------------------------
+        | MEMBER SYSTEM
+        |--------------------------------------------------------------------------
+        */
+
+        if ($customerId && $pointsUsed > 0)
+        {
+
+            DB::table('customers')
+                ->where('id', $customerId)
+                ->decrement('member_points', $pointsUsed);
+
+        }
+
+
+
+        if ($customerId)
+        {
+
+            $grandTotal = session('total');
+
+            DB::table('customers')
+                ->where('id', $customerId)
+                ->increment('total_spend', $grandTotal);
+
+            $customer = DB::table('customers')
+                ->where('id', $customerId)
+                ->first();
+
+
+
+            if ($customer)
+            {
+
+                $newTier = 'Bronze';
+
+                if ($customer->total_spend >= 1000000)
+                {
+                    $newTier = 'Gold';
                 }
+                elseif ($customer->total_spend >= 750000)
+                {
+                    $newTier = 'Silver';
+                }
+
+
+
+                if ($customer->tier !== $newTier)
+                {
+
+                    DB::table('customers')
+                        ->where('id', $customerId)
+                        ->update([
+                            'tier' => $newTier
+                        ]);
+
+                }
+
+
+
+                $pointsEarned =
+                    floor($grandTotal / 10000);
+
+
+
+                if ($pointsEarned > 0)
+                {
+
+                    DB::table('customers')
+                        ->where('id', $customerId)
+                        ->increment(
+                            'member_points',
+                            $pointsEarned
+                        );
+
+                }
+
             }
 
-            DB::commit();
-            session()->forget(['cart', 'subtotal', 'tax', 'total', 'order_id', 'customer_id', 'points_used', 'payment_method']);
-
-            return redirect()->route('receipt', $order->id);
-
-        } catch (\Exception $e) {
-            DB::rollback();
-            return redirect()->route('pos')->with('error', 'Gagal memproses transaksi: ' . $e->getMessage());
         }
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | REVENUE NOTIFICATION
+        |--------------------------------------------------------------------------
+        */
+
+        $todayRevenue =
+            OrderHistory::whereDate(
+                'created_at',
+                today()
+            )->sum('total_price');
+
+
+
+        Notification::create([
+
+            'title' => 'Revenue Updated',
+
+            'message' =>
+                "Today's sales reached Rp " .
+                number_format(
+                    $todayRevenue,
+                    0,
+                    ',',
+                    '.'
+                ),
+
+            'type' => 'revenue',
+
+        ]);
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | NEW ORDER NOTIFICATION
+        |--------------------------------------------------------------------------
+        */
+
+        Notification::create([
+
+            'title' => 'New Order Received',
+
+            'message' =>
+                $order->order_id .
+                ' successfully created',
+
+            'type' => 'order',
+
+        ]);
+
+
+
+        DB::commit();
+
+
+
+        session()->forget([
+
+            'cart',
+            'subtotal',
+            'tax',
+            'total',
+            'order_id',
+            'customer_id',
+            'points_used',
+            'payment_method'
+
+        ]);
+
+
+
+        return redirect()
+            ->route('receipt', $order->id);
+
     }
-
-    public function receipt($id)
+    catch (\Exception $e)
     {
-        $order = OrderHistory::with('items.product')
-            ->findOrFail($id);
 
-        return view('receipt', compact('order'));
-    }
+        DB::rollback();
 
-    public function checkMember(Request $request)
-    {
-        $customer = DB::table('customers')->where('phone', $request->phone)->first();
+        return redirect()
+            ->route('pos')
+            ->with(
+                'error',
+                'Gagal memproses transaksi: ' .
+                $e->getMessage()
+            );
 
-        if ($customer) {
-            return response()->json([
-                'status' => 'success',
-                'data' => $customer
-            ]);
-        } else {
-            return response()->json([
-                'status' => 'not_found',
-                'message' => 'Member Not Found.'
-            ]);
-        }
     }
 }
+
+    public function receipt($id)
+{
+    $order = OrderHistory::with('items.product')
+        ->findOrFail($id);
+
+    return view('receipt', compact('order'));
+}
+
+
+
+public function checkMember(Request $request)
+{
+    $customer = DB::table('customers')
+        ->where('phone', $request->phone)
+        ->first();
+
+    if ($customer)
+    {
+
+        return response()->json([
+
+            'status' => 'success',
+
+            'data' => $customer
+
+        ]);
+
+    }
+    else
+    {
+
+        return response()->json([
+
+            'status' => 'not_found',
+
+            'message' => 'Member Not Found.'
+
+        ]);
+
+    }
+}
+
+}
+

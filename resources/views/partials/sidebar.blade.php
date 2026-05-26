@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>From Broole</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -317,71 +318,144 @@
 
 {{-- ICONS --}}
 <div class="flex items-center gap-6 text-gray-400 relative">
+{{-- NOTIFICATION --}}
+<div class="relative">
 
-    {{-- NOTIFICATION --}}
-    <div class="relative">
+    {{-- BUTTON --}}
+    <button id="notif-btn" class="relative">
 
-        {{-- BUTTON --}}
-        <button id="notif-btn" class="relative">
+        <i data-lucide="bell"
+           class="w-7 h-7 cursor-pointer hover:text-[#7b0000] transition-colors">
+        </i>
 
-            <i data-lucide="bell"
-               class="w-7 h-7 cursor-pointer hover:text-[#7b0000] transition-colors">
-            </i>
+        {{-- RED DOT --}}
+        @if(\App\Models\Notification::where('is_read', false)->count() > 0)
 
-            {{-- RED DOT --}}
-            <span class="absolute -top-1 -right-1 bg-red-500 w-3 h-3 rounded-full"></span>
+              <span
+        id="notif-red-dot"
+        class="absolute -top-1 -right-1 bg-red-500 w-3 h-3 rounded-full">
+    </span>
+
+
+        @endif
+
+    </button>
+
+
+
+    {{-- DROPDOWN --}}
+    <div
+        id="notif-dropdown"
+        class="hidden absolute right-0 top-14 w-[360px] bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden z-50"
+    >
+
+       {{-- HEADER --}}
+<div class="p-5 border-b bg-[#7b0000] text-white">
+
+    <div class="flex items-center justify-between">
+
+        <div>
+
+            <h2 class="font-black text-lg">
+                Notifications
+            </h2>
+
+            <p class="text-xs opacity-80 mt-1">
+                Latest activity from your store
+            </p>
+
+        </div>
+
+
+
+        <button
+            onclick="markAllAsRead()"
+            class="text-[10px] bg-white/20 hover:bg-white/30 px-3 py-1 rounded-full transition"
+        >
+
+            Mark all read
 
         </button>
 
+    </div>
 
-
-        {{-- DROPDOWN --}}
-        <div
-            id="notif-dropdown"
-            class="hidden absolute right-0 top-14 w-[360px] bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden z-50"
-        >
-
-            {{-- HEADER --}}
-            <div class="p-5 border-b bg-[#7b0000] text-white">
-
-                <h2 class="font-black text-lg">
-                    Notifications
-                </h2>
-
-                <p class="text-xs opacity-80 mt-1">
-                    Latest activity from your store
-                </p>
-
-            </div>
+</div>
 
 
 
-            {{-- LIST --}}
-            <div class="max-h-[350px] overflow-y-auto">
+        {{-- LIST --}}
+        <div class="max-h-[350px] overflow-y-auto">
 
-                {{-- NOTIF ITEM --}}
-                <div class="px-5 py-4 border-b hover:bg-gray-50 transition cursor-pointer">
+            @forelse($notifications as $notif)
+
+                <div
+                    data-id="{{ $notif->id }}"
+                    class="notif-item px-5 py-4 border-b transition cursor-pointer
+
+                    {{ $notif->is_read
+                        ? 'bg-white opacity-60'
+                        : 'bg-red-50 hover:bg-red-100'
+                    }}"
+                >
 
                     <div class="flex items-start gap-3">
 
-                        <div class="bg-green-100 text-green-600 p-2 rounded-2xl">
+                        <div class="p-2 rounded-2xl
 
-                            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                            @if($notif->type == 'order')
+
+                                bg-green-100 text-green-600
+
+                            @elseif($notif->type == 'stock')
+
+                                bg-yellow-100 text-yellow-600
+
+                            @else
+
+                                bg-blue-100 text-blue-600
+
+                            @endif
+                        ">
+
+                            @if($notif->type == 'order')
+
+                                <i data-lucide="shopping-bag"
+                                   class="w-4 h-4"></i>
+
+                            @elseif($notif->type == 'stock')
+
+                                <i data-lucide="alert-triangle"
+                                   class="w-4 h-4"></i>
+
+                            @else
+
+                                <i data-lucide="bar-chart-3"
+                                   class="w-4 h-4"></i>
+
+                            @endif
 
                         </div>
+
+
 
                         <div>
 
                             <p class="font-bold text-sm text-black">
-                                New Order Received
+
+                                {{ $notif->title }}
+
                             </p>
 
-                            <p class="text-xs text-gray-400 mt-1">
-                                INV-20260525001 successfully created
+                            <p class="text-xs text-gray-500 mt-1">
+
+                                {{ $notif->message }}
+
                             </p>
 
                             <p class="text-[10px] text-gray-300 mt-2">
-                                2 minutes ago
+
+                                {{ $notif->created_at->diffForHumans() }}
+
                             </p>
 
                         </div>
@@ -390,77 +464,21 @@
 
                 </div>
 
+            @empty
 
+                <div class="p-8 text-center text-gray-400">
 
-                {{-- NOTIF ITEM --}}
-                <div class="px-5 py-4 border-b hover:bg-gray-50 transition cursor-pointer">
-
-                    <div class="flex items-start gap-3">
-
-                        <div class="bg-yellow-100 text-yellow-600 p-2 rounded-2xl">
-
-                            <i data-lucide="alert-triangle" class="w-4 h-4"></i>
-
-                        </div>
-
-                        <div>
-
-                            <p class="font-bold text-sm text-black">
-                                Low Ingredient Stock
-                            </p>
-
-                            <p class="text-xs text-gray-400 mt-1">
-                                Milk stock remaining only 2 liters
-                            </p>
-
-                            <p class="text-[10px] text-gray-300 mt-2">
-                                10 minutes ago
-                            </p>
-
-                        </div>
-
-                    </div>
+                    No notifications yet
 
                 </div>
 
-
-
-                {{-- NOTIF ITEM --}}
-                <div class="px-5 py-4 hover:bg-gray-50 transition cursor-pointer">
-
-                    <div class="flex items-start gap-3">
-
-                        <div class="bg-blue-100 text-blue-600 p-2 rounded-2xl">
-
-                            <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
-
-                        </div>
-
-                        <div>
-
-                            <p class="font-bold text-sm text-black">
-                                Revenue Updated
-                            </p>
-
-                            <p class="text-xs text-gray-400 mt-1">
-                                Today's sales reached Rp 2.500.000
-                            </p>
-
-                            <p class="text-[10px] text-gray-300 mt-2">
-                                1 hour ago
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
+            @endforelse
 
         </div>
 
     </div>
+
+</div>
 
 
 
@@ -836,6 +854,197 @@ document.addEventListener('click', function(e) {
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+document.querySelectorAll('.notif-item').forEach(item => {
+
+    item.addEventListener('click', async function() {
+
+        const id = this.dataset.id;
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | MARK AS READ
+        |--------------------------------------------------------------------------
+        */
+
+        await fetch(`/notifications/${id}/read`, {
+
+            method: 'POST',
+
+            headers: {
+
+                'X-CSRF-TOKEN':
+                    document.querySelector(
+                        'meta[name="csrf-token"]'
+                    ).content,
+
+                'Accept': 'application/json'
+
+            }
+
+        });
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | REMOVE RED BACKGROUND
+        |--------------------------------------------------------------------------
+        */
+
+        this.classList.remove(
+
+            'bg-red-50',
+            'hover:bg-red-100'
+
+        );
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ADD READ STYLE
+        |--------------------------------------------------------------------------
+        */
+
+        this.classList.add(
+
+            'bg-white',
+            'opacity-60'
+
+        );
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | REMOVE RED DOT ON BELL
+        |--------------------------------------------------------------------------
+        */
+
+        const unreadNotif =
+            document.querySelectorAll(
+                '.notif-item.bg-red-50'
+            );
+
+
+
+        if(unreadNotif.length <= 1)
+        {
+
+            const bellDot =
+                document.querySelector(
+                    '#notif-red-dot'
+                );
+
+            if(bellDot)
+            {
+
+                bellDot.remove();
+
+            }
+
+        }
+
+    });
+
+});
+
+</script>
+
+<script>
+
+/*
+|--------------------------------------------------------------------------
+| MARK ALL NOTIFICATIONS AS READ
+|--------------------------------------------------------------------------
+*/
+
+async function markAllAsRead() {
+
+    try {
+
+        await fetch('/notifications/read-all', {
+
+            method: 'POST',
+
+            headers: {
+
+                'X-CSRF-TOKEN':
+                    document.querySelector(
+                        'meta[name="csrf-token"]'
+                    ).content,
+
+                'Accept': 'application/json'
+
+            }
+
+        });
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CHANGE ALL NOTIFICATIONS STYLE
+        |--------------------------------------------------------------------------
+        */
+
+        document.querySelectorAll('.notif-item')
+            .forEach(item => {
+
+                item.classList.remove(
+
+                    'bg-red-50',
+                    'hover:bg-red-100'
+
+                );
+
+
+
+                item.classList.add(
+
+                    'bg-white',
+                    'opacity-60'
+
+                );
+
+            });
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | REMOVE RED DOT
+        |--------------------------------------------------------------------------
+        */
+
+        const bellDot =
+            document.querySelector(
+                '#notif-red-dot'
+            );
+
+        if(bellDot)
+        {
+
+            bellDot.remove();
+
+        }
+
+    }
+    catch(error)
+    {
+
+        console.error(error);
+
+    }
+
+}
+
+</script>
 
 </body>
 

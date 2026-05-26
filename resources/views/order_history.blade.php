@@ -423,7 +423,13 @@ function downloadReceiptPDF(btn) {
         console.error("Gagal mencetak struk", e);
         alert("Terjadi kesalahan saat menyiapkan struk.");
     }
+
+
+    
 }
+
+
+
 </script>
 
 @endsection
