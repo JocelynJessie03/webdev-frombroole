@@ -125,14 +125,25 @@
                         </div>
                     </td>
 
-                    {{-- LOYALTY POINTS --}}
+                    {{-- LOYALTY POINTS - DIBUAT DINAMIS BERDASARKAN POIN ASLI --}}
                     <td class="px-6 py-5">
+                        @php
+                            $targetPoinMaksimal = 10000; 
+                            $calculatedPercentage = min(100, max(0, ($customer->member_points / $targetPoinMaksimal) * 100));
+                        @endphp
+
                         <div class="flex items-center gap-3">
-                            <div class="w-24 h-2 bg-gray-100 rounded-full overflow-hidden">
-                                <div class="bg-[#7f876e] h-full rounded-full" style="width: {{ $customer->progress_percentage }}%"></div>
+                            {{-- Progress Bar Container --}}
+                            <div class="w-24 h-2 bg-gray-100 rounded-full overflow-hidden" title="{{ round($calculatedPercentage) }}% to Target">
+                                {{-- Lebar bar (width) dikontrol langsung oleh sisa poin terkini --}}
+                                <div class="bg-[#7f876e] h-full rounded-full transition-all duration-500 ease-in-out" 
+                                    style="width: {{ $calculatedPercentage }}%">
+                                </div>
                             </div>
+                            
+                            {{-- Teks Angka Poin --}}
                             <span class="text-sm font-semibold text-[#7f876e]">
-                                {{ $customer->member_points }} pts
+                                {{ number_format($customer->member_points, 0, ',', '.') }} pts
                             </span>
                         </div>
                     </td>
@@ -163,7 +174,6 @@
                                     title="View Transaction History">
                                 <i data-lucide="history" class="w-4 h-4"></i>
                             </button>
-                            {{-- TOMBOL TITIK TIGA DI SINI SUDAH DIHAPUS --}}
                         </div>
                     </td>
                 </tr>
@@ -259,7 +269,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (btnTopSpender) btnTopSpender.addEventListener("click", sortTopSpenders);
 });
 
-// FUNGSI MODAL HISTORY CUSTOMER (DENGAN ACCORDION)
+// FUNGSI MODAL HISTORY CUSTOMER (DENGAN ACCORDION NYATA)
 function openHistory(button) {
     const modal = document.getElementById('historyModal');
     const nameEl = document.getElementById('modalCustomerName');
@@ -285,6 +295,11 @@ function openHistory(button) {
             </div>
         `;
     } else {
+        // ========================================================
+        // TWEAK 1: BALIKKAN DATA ARRAY SUPAYA DARI YANG TERBARU
+        // ========================================================
+        historyData.reverse();
+
         historyData.forEach((trx, index) => {
             // Render detail list item dari transaksi
             let itemsList = '';
@@ -292,7 +307,7 @@ function openHistory(button) {
                 itemsList = trx.items.map(item => {
                     let productName = 'Unknown Product';
                     if (item.product) {
-                        productName = item.pro_name || item.product.pro_name || item.product.pro_name || 'Unnamed Product';
+                        productName = item.pro_name || item.product.pro_name || 'Unnamed Product';
                     }
 
                     return `
@@ -315,7 +330,7 @@ function openHistory(button) {
             let totalPrice = trx.total_price ? parseInt(trx.total_price) : 0;
             let formattedPrice = 'Rp ' + totalPrice.toLocaleString('id-ID');
 
-            // Format Tanggal dan Jam agar rapi (Contoh: 21 May 2026 - 11:35)
+            // Format Tanggal dan Jam agar rapi
             let displayDate = orderDate;
             if (orderDate !== '-') {
                 try {
@@ -333,6 +348,7 @@ function openHistory(button) {
                 }
             }
 
+            // KITA BERIKAN CLASS KHUSUS 'order-detail-container' UNTUK LOGIKA ACCORDION
             bodyEl.innerHTML += `
                 <div class="border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm">
                     <div class="flex items-center justify-between p-4 bg-white hover:bg-gray-50 transition">
@@ -357,7 +373,7 @@ function openHistory(button) {
                         </div>
                     </div>
 
-                    <div id="details-${index}" class="hidden bg-[#faf7f5] p-4 border-t">
+                    <div id="details-${index}" class="order-detail-container hidden bg-[#faf7f5] p-4 border-t">
                         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Items Ordered</p>
                         <ul class="space-y-1">
                             ${itemsList}
@@ -370,7 +386,6 @@ function openHistory(button) {
 
     modal.classList.remove('hidden');
     
-    // Refresh SVG Lucide yang baru saja di-inject
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
     }
@@ -380,10 +395,25 @@ function closeHistory() {
     document.getElementById('historyModal').classList.add('hidden');
 }
 
-// FUNGSI UNTUK MEMUNCULKAN DROPDOWN DETAIL MENU (MATA)
+// ========================================================
+// TWEAK 2: FUNGSI ACCORDION (SATU DIBUKA, LAIN TERTUTUP)
+// ========================================================
 function toggleOrderDetails(id) {
     const el = document.getElementById(id);
-    el.classList.toggle('hidden');
+    const isCurrentlyHidden = el.classList.contains('hidden');
+
+    // Ambil seluruh container detail transaksi yang ada di dalam modal
+    const allDetailContainers = document.querySelectorAll('.order-detail-container');
+
+    // Sembunyikan semuanya terlebih dahulu tanpa terkecuali
+    allDetailContainers.forEach(container => {
+        container.classList.add('hidden');
+    });
+
+    // Jika target yang diklik tadinya tertutup, sekarang kita buka sendirian
+    if (isCurrentlyHidden) {
+        el.classList.remove('hidden');
+    }
 }
 
 window.onclick = function(event) {

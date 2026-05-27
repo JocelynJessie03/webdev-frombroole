@@ -2,49 +2,44 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Notification;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class NotificationController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | MARK SINGLE NOTIFICATION
-    |--------------------------------------------------------------------------
-    */
-
+    /**
+     * Menandai satu notifikasi sebagai 'sudah dibaca' (is_read = true)
+     */
     public function markAsRead($id)
     {
-        $notification =
-            Notification::findOrFail($id);
-
-        $notification->is_read = true;
-
-        $notification->save();
+        DB::table('notifications')
+            ->where('id', $id)
+            ->update([
+                'is_read' => true,
+                'updated_at' => now()
+            ]);
 
         return response()->json([
-            'success' => true
+            'status' => 'success',
+            'message' => 'Notification marked as read.'
         ]);
     }
 
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | MARK ALL NOTIFICATIONS
-    |--------------------------------------------------------------------------
-    */
-
+    /**
+     * Menandai SEMUA notifikasi sekaligus sebagai 'sudah dibaca'
+     */
     public function markAllAsRead()
     {
-        Notification::where(
-            'is_read',
-            false
-        )->update([
-            'is_read' => true
-        ]);
+        DB::table('notifications')
+            ->where('is_read', false)
+            ->update([
+                'is_read' => true,
+                'updated_at' => now()
+            ]);
 
         return response()->json([
-            'success' => true
+            'status' => 'success',
+            'message' => 'All notifications marked as read.'
         ]);
     }
 }

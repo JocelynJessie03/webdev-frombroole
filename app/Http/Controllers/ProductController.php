@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Product;
-use App\Models\Ingredient;
 use App\Models\Category; // <--- 1. TAMBAHKAN INI DI ATAS CONTROLLER
+use App\Models\Ingredient;
+use App\Models\Product;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -121,6 +122,15 @@ class ProductController extends Controller
             }
         }
 
+        DB::table('notifications')->insert([
+            'title' => 'New Product Added',
+            'message' => 'Product "' . $request->pro_name . '" has been successfully registered to the inventory.',
+            'type' => 'product',
+            'is_read' => false,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
         return redirect('/pos')->with('success', 'Produk dan Resep berhasil disimpan!');
     }
 
@@ -171,6 +181,15 @@ class ProductController extends Controller
             }
         }
         $product->ingredients()->sync($syncData);
+        
+        DB::table('notifications')->insert([
+            'title' => 'Product Info Updated',
+            'message' => 'The data for product "' . $request->pro_name . '" has been successfully modified.',
+            'type' => 'product',
+            'is_read' => false,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
 
         return redirect()->route('product.inventory')->with('success', 'Product updated successfully!');
     }
@@ -182,6 +201,16 @@ class ProductController extends Controller
         $product->delete();
         $product->pro_delete = true; 
         $product->save();
+
+        DB::table('notifications')->insert([
+            'title' => 'Product Deleted',
+            'message' => 'Product "' . $product->pro_name . '" has been successfully removed from the inventory.',
+            'type' => 'product', // Tetap pakai type product agar warna ikonnya konsisten
+            'is_read' => false,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
         return redirect()->back()->with('success', 'Product successfully deleted!');
     }
 }

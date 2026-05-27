@@ -12,10 +12,11 @@
 @endphp
 
 <div class="max-w-6xl mx-auto">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-        {{-- LEFT (CART ITEMS) --}}
-        <div class="lg:col-span-2">
+    <div class="flex flex-col gap-8">
+
+        {{-- TOP (CART ITEMS) --}}
+        <div class="w-full">
             <div class="bg-white rounded-3xl border border-gray-200 shadow-sm p-8">
                 
                 {{-- TOMBOL BACK & JUDUL --}}
@@ -49,9 +50,9 @@
             </div>
         </div>
 
-        {{-- RIGHT (SUMMARY & PAYMENT) --}}
-        <div>
-            <div class="bg-white rounded-3xl border border-gray-200 shadow-sm p-8 sticky top-5">
+        {{-- BOTTOM (SUMMARY & PAYMENT) --}}
+        <div class="w-full">
+            <div class="bg-white rounded-3xl border border-gray-200 shadow-sm p-8">
                 <h2 class="text-2xl font-black mb-8">Payment Summary</h2>
 
                 {{-- CUSTOMER TYPE TOGGLE --}}
@@ -115,11 +116,17 @@
                         <span>Points Discount</span>
                         <span id="discount-amount">- Rp 0</span>
                     </div>
+                    
+                    {{-- GRAND TOTAL SEJAJAR HORIZONTAL DAN PRESISI BASELINE --}}
                     <div class="flex justify-between items-center border-t border-gray-200 pt-4">
-                        <span class="text-xl font-black">Grand Total</span>
-                        <span class="text-3xl font-black text-[#7b0000]" id="grand-total-text">
-                            Rp {{ number_format($total, 0, ',', '.') }}
-                        </span>
+                        <span class="text-xl font-black text-gray-800">Grand Total</span>
+                        
+                        <div class="flex items-baseline gap-1 text-[#7b0000]">
+                            <span class="text-lg font-black uppercase">Rp</span>
+                            <span class="text-2xl font-black tracking-tight" id="grand-total-text">
+                                {{ number_format($total, 0, ',', '.') }}
+                            </span>
+                        </div>
                     </div>
                 </div>
 
@@ -130,10 +137,10 @@
                     <input type="hidden" name="customer_id" id="hidden_customer_id" value="">
                     <input type="hidden" name="points_used" id="hidden_points_used" value="0">
 
-                    {{-- PILIHAN METODE PEMBAYARAN --}}
+                    {{-- PILIHAN METODE PEMBAYARAN DIUBAH MENJADI BERDAMPINGAN (2 KOLOM) KARENA AREA SUDAH LEBAR --}}
                     <div class="mb-6 bg-gray-50 p-4 rounded-2xl border border-gray-200">
                         <label class="block font-black text-gray-700 text-sm mb-3 uppercase tracking-wider">Payment Method</label>
-                        <div class="grid grid-cols-1 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             
                             <label class="flex items-center gap-3 bg-white p-4 rounded-xl border border-gray-200 cursor-pointer hover:border-[#7b0000] transition">
                                 <input type="radio" name="payment_method" value="cash" checked class="accent-[#7b0000] w-4 h-4">
@@ -248,7 +255,8 @@
 
         let newGrandTotal = baseTotal - pointsToUse;
 
-        document.getElementById('grand-total-text').innerText = 'Rp ' + newGrandTotal.toLocaleString('id-ID');
+        // JAVASCRIPT HANYA MENGISI ANGKA NOMINAL TANPA MARS 'Rp ' KARENA SUDAH DIWAKILI HTML ELEMEN
+        document.getElementById('grand-total-text').innerText = newGrandTotal.toLocaleString('id-ID');
         document.getElementById('hidden_points_used').value = pointsToUse;
 
         const discountRow = document.getElementById('discount-row');

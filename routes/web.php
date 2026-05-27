@@ -49,9 +49,9 @@ Route::get('/ingredients/create', [IngredientController::class, 'create'])->name
 
 Route::post('/ingredients/store', [IngredientController::class, 'store'])->name('ingredient.store');
 
-Route::get('/ingredients/{ingredient}/edit', [IngredientController::class, 'edit'])->name('ingredient.edit');
+Route::get('/ingredients/{id}/edit', [IngredientController::class, 'edit'])->name('ingredient.edit');
 
-Route::put('/ingredients/{ingredient}', [IngredientController::class, 'update'])->name('ingredient.update');
+Route::put('/ingredients/{id}', [IngredientController::class, 'update'])->name('ingredient.update');
 
 Route::delete('/ingredients/{id}', [IngredientController::class, 'destroy'])->name('ingredient.destroy');
 // ORDER HISTORY

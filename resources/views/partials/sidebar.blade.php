@@ -10,7 +10,6 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-
         body {
             background: #f7f5f3;
             margin: 0;
@@ -22,6 +21,7 @@
             background: linear-gradient(180deg, #7b0000, #8d0000);
         }
 
+        /* Memastikan transisi lebar sidebar berjalan mulus */
         aside {
             transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -43,7 +43,6 @@
             padding-left: 0;
             padding-right: 0;
         }
-
     </style>
 
 </head>
@@ -57,18 +56,6 @@
         id="sidebar"
         class="w-[280px] sidebar-gradient text-white flex flex-col justify-between relative shadow-2xl shrink-0 h-full"
     >
-
-        {{-- TOGGLE --}}
-        <button
-            id="toggle-btn"
-            class="absolute -right-5 top-14 bg-white text-[#7b0000] rounded-full p-2 shadow-xl border border-gray-100 z-50 hover:scale-110 active:scale-95 transition-all"
-        >
-
-            <i id="toggle-icon" data-lucide="chevron-left" class="w-5 h-5"></i>
-
-        </button>
-
-
 
         <div class="overflow-y-auto no-scrollbar">
 
@@ -193,7 +180,7 @@
                     <i data-lucide="users" class="shrink-0 w-5 h-5"></i>
 
                     <span class="hide-on-collapse whitespace-nowrap">
-                        Customers
+                        Members
                     </span>
 
                 </a>
@@ -261,10 +248,14 @@
             $title = match(Request::segment(1)) {
 
                 'dashboard' => 'Dashboard',
-                'pos' => 'Point of Sale',
+                'checkout-preview' => '',
+                'checkout' => 'Point of Sale',
+                'payment-success' => 'Receipt',
+                'receipt' => '',
+                'pos'=>'Point Of Sale',
                 'product-inventory' => 'Product Inventory',
                 'ingredient-inventory' => 'Ingredient Inventory',
-                'customers' => 'Customers',
+                'customers' => 'Members',
                 'reports' => 'Reports',
                 'order_history' => 'Order History',
 
@@ -524,28 +515,37 @@
     |--------------------------------------------------------------------------
     */
 
-    const sidebar = document.getElementById('sidebar');
-    const toggleBtn = document.getElementById('toggle-btn');
-    const toggleIcon = document.getElementById('toggle-icon');
+    /*
+|--------------------------------------------------------------------------
+| SIDEBAR COLLAPSE
+|--------------------------------------------------------------------------
+*/
 
-    toggleBtn.addEventListener('click', () => {
+const sidebar = document.getElementById('sidebar');
 
-        const isCollapsed = sidebar.classList.toggle('collapsed');
+// Set keadaan awal sidebar saat pertama kali dimuat (dalam kondisi menutup/collapsed)
+if (!sidebar.classList.contains('collapsed')) {
+    sidebar.classList.add('collapsed');
+    sidebar.classList.replace('w-[280px]', 'w-[95px]');
+}
 
-        if (isCollapsed)
-        {
-            sidebar.classList.replace('w-[280px]', 'w-[95px]');
-            toggleIcon.setAttribute('data-lucide', 'chevron-right');
-        }
-        else
-        {
-            sidebar.classList.replace('w-[95px]', 'w-[280px]');
-            toggleIcon.setAttribute('data-lucide', 'chevron-left');
-        }
+// Ketika kursor mendekat / masuk ke area sidebar
+sidebar.addEventListener('mouseenter', () => {
+    sidebar.classList.remove('collapsed');
+    sidebar.classList.replace('w-[95px]', 'w-[280px]');
+    
+    // Sinkronisasi ulang ikon Lucide jika dibutuhkan
+    lucide.createIcons();
+});
 
-        lucide.createIcons();
-
-    });
+// Ketika kursor menjauh / keluar dari area sidebar
+sidebar.addEventListener('mouseleave', () => {
+    sidebar.classList.add('collapsed');
+    sidebar.classList.replace('w-[280px]', 'w-[95px]');
+    
+    // Sinkronisasi ulang ikon Lucide jika dibutuhkan
+    lucide.createIcons();
+});
 
 
 

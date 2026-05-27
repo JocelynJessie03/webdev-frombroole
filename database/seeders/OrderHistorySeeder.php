@@ -146,8 +146,7 @@ class OrderHistorySeeder extends Seeder
         // 1. Insert riwayat order yang SUDAH BERURUTAN TANGGALNYA ke database
         foreach ($ordersData as $index => $order) {
             // ID Order terbuat runtut secara kronologis (ORD-00001, ORD-00002, dst.)
-            $orderId = 'ORD-' . str_pad($index + 1, 5, '0', STR_PAD_LEFT);
-
+            $orderId = 'INV-' . now()->format('YmdHis') . '-' . str_pad(OrderHistory::count() + 1, 3, '0', STR_PAD_LEFT);
             OrderHistory::create([
                 'order_id'       => $orderId,
                 'customer_id'    => $order['customer_id'],
