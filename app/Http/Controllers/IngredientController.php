@@ -35,11 +35,6 @@ class IngredientController extends Controller
 
         $query = Ingredient::query();
 
-        /*
-        |--------------------------------------------------------------------------
-        | SINKRONISASI FILTER TABEL DATA
-        |--------------------------------------------------------------------------
-        */
         if ($request->filter == 'low_stock') {
             $query->where(function($q) {
                 // 🌟 FIX: Pastikan stock harus di atas 0 agar barang habis tidak ikut masuk ke sini
@@ -54,14 +49,20 @@ class IngredientController extends Controller
                 $q->where('stock', '<=', 0);
             });
         }
+        elseif ($request->filter == 'all') {
+            $query->where(function($q) {
+                // Cukup hilangkan batas '> 0', maka otomatis barang habis (<= 0) dan mau habis akan tergabung di sini
+                $q->where(fn($sub) => $sub->where('unit', 'pcs')->where('stock', '<=', 50))
+                  ->orWhere(fn($sub) => $sub->where('unit', 'ml')->where('stock', '<=', 5000))
+                  ->orWhere(fn($sub) => $sub->where('unit', 'gr')->where('stock', '<=', 3000))
+                  ->orWhere(fn($sub) => $sub->where('unit', 'pack')->where('stock', '<=', 20))
+                  // Jaga-jaga jika ada barang dengan unit lain (selain 4 di atas) yang stoknya kebetulan habis
+                  ->orWhere('stock', '<=', 0); 
+            });
+        }
 
         $ingredients = $query->get();
 
-        /*
-        |--------------------------------------------------------------------------
-        | SINKRONISASI HITUNGAN UNTUK TOP CARDS
-        |--------------------------------------------------------------------------
-        */
         $totalIngredients = DB::table('ingredients')
             ->whereNull('deleted_at')
             ->count();

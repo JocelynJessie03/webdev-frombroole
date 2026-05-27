@@ -14,7 +14,6 @@
             Result for:
             <span class="font-bold">{{ $search }}</span>
         </p>
-
     </div>
 
 

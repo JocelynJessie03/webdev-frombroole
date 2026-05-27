@@ -37,6 +37,16 @@
                         <div class="flex justify-between items-center border-b pb-5">
                             <div>
                                 <h2 class="font-black text-xl mb-2">{{ $item['name'] }}</h2>
+                                {{-- BADGE SUGAR LEVEL JIKA MINUMAN --}}
+                                @if(isset($item['isDrink']) && $item['isDrink'])
+                                    @php
+                                        $sugarText = $item['sugarLevel'] == '100' ? 'Normal Sugar' : ($item['sugarLevel'] == '50' ? 'Less Sugar (50%)' : 'No Sugar');
+                                        $badgeColor = $item['sugarLevel'] == '100' ? 'bg-gray-100 text-gray-500' : 'bg-blue-50 text-blue-600';
+                                    @endphp
+                                    <span class="text-xs font-bold {{ $badgeColor }} px-2 py-1 rounded-md inline-block mb-2">
+                                        {{ $sugarText }}
+                                    </span>
+                                @endif
                                 <p class="text-gray-400">Qty : {{ $item['qty'] }}</p>
                             </div>
                             <div class="text-right">

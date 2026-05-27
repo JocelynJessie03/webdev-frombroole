@@ -15,7 +15,10 @@ class PosController extends Controller
 {
     public function index(Request $request)
     {
-        $categories = Category::all();
+        $categories = DB::table('categories')
+        ->where('category_name', '!=', 'Uncategorized')
+        ->where('category_delete', false)
+        ->get();
 
         // Pastikan meload relasi dengan pivot table amount_needed agar Accessor di Model bisa menghitungnya
         $query = Product::with(['category', 'ingredients' => function($q) {
@@ -27,6 +30,12 @@ class PosController extends Controller
         }
 
         $products = $query->latest()->get();
+
+        $products = $products->sortByDesc(function ($product) {
+            // Jika stok lebih dari 0, berikan nilai 1 (prioritas tinggi)
+            // Jika stok 0 atau kurang, berikan nilai 0 (prioritas rendah, akan turun ke bawah)
+            return $product->getCalculatedStockAttribute() > 0 ? 1 : 0;
+        })->values();
 
         return view('pos', compact('products', 'categories'));
     }
@@ -73,6 +82,7 @@ class PosController extends Controller
                     'order_id' => $order->id,
                     'product_id' => $item['id'],
                     'quantity' => $item['qty'],
+                    'sugar_level' => $item['sugarLevel'],
                     'price_at_purchase' => $item['price']
                 ]);
             }
@@ -147,7 +157,8 @@ class PosController extends Controller
         }
 
         // Tambah string acak di belakang ID agar terhindar dari duplikasi ID saat testing sandbox
-        $orderId = 'INV-' . now()->format('YmdHis') . '-' . str_pad(OrderHistory::count() + 1, 3, '0', STR_PAD_LEFT);
+        $banhyakOrder = DB::table('order_histories')->count();
+        $orderId = 'INV-' . now()->format('YmdHis') . '-' . str_pad($banhyakOrder + 1, 3, '0', STR_PAD_LEFT);
 
         // ================= PAY CASH =================
         if ($paymentMethod === 'cash') {
@@ -168,7 +179,8 @@ class PosController extends Controller
                         'order_id' => $order->id,
                         'product_id' => $item['id'],
                         'quantity' => $item['qty'],
-                        'price_at_purchase' => $item['price']
+                        'price_at_purchase' => $item['price'],
+                        'sugar_level' => $item['sugarLevel']
                     ]);
 
                     $product = \App\Models\Product::with(['ingredients' => function($q) {
@@ -178,6 +190,15 @@ class PosController extends Controller
                     if ($product && $product->ingredients) {
                         foreach ($product->ingredients as $ingredient) {
                             $takaran = $ingredient->pivot->amount_needed ?: 1;
+                            
+                            // --- TAMBAHAN LOGIKA SUGAR LEVEL UNTUK CASH ---
+                            $namaBahan = strtolower($ingredient->name);
+                            if (str_contains($namaBahan, 'gula') || str_contains($namaBahan, 'sugar')) {
+                                $persentaseGula = isset($item['sugarLevel']) ? ((int)$item['sugarLevel'] / 100) : 1;
+                                $takaran = $takaran * $persentaseGula;
+                            }
+                            // ----------------------------------------------
+
                             $totalPotongan = $takaran * $item['qty'];
                             
                             $ingredient->stock = $ingredient->stock - $totalPotongan;
@@ -301,7 +322,8 @@ class PosController extends Controller
                     'order_id' => $order->id,
                     'product_id' => $item['id'],
                     'quantity' => $item['qty'],
-                    'price_at_purchase' => $item['price']
+                    'price_at_purchase' => $item['price'],
+                    'sugar_level' => $item['sugarLevel']
                 ]);
 
                 $product = \App\Models\Product::with(['ingredients' => function($q) {
@@ -311,6 +333,12 @@ class PosController extends Controller
                 if ($product && $product->ingredients) {
                     foreach ($product->ingredients as $ingredient) {
                         $takaran = $ingredient->pivot->amount_needed ?: 1;
+                        $namaBahan = strtolower($ingredient->name);
+                        if (str_contains($namaBahan, 'gula') || str_contains($namaBahan, 'sugar')) {
+                            $persentaseGula = isset($item['sugarLevel']) ? ((int)$item['sugarLevel'] / 100) : 1;
+                            $takaran = $takaran * $persentaseGula;
+                        }
+
                         $totalPotongan = $takaran * $item['qty'];
                         
                         $ingredient->stock = $ingredient->stock - $totalPotongan;
@@ -357,14 +385,6 @@ class PosController extends Controller
                 }
             }
 
-            DB::table('notifications')->insert([
-                'title' => 'New Order Paid (Midtrans)',
-                'message' => 'Payment for Order ' . $orderId . ' via ' . $paymentMethod . ' has been verified.',
-                'type' => 'order',
-                'is_read' => false,
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);
 
             DB::commit();
             session()->forget(['cart', 'subtotal', 'tax', 'total', 'order_id', 'customer_id', 'points_used', 'payment_method']);

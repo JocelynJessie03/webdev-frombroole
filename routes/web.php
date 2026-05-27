@@ -110,6 +110,6 @@ Route::post(
 );
 
 Route::post(
-    '/notifications/read-all',
+    '/notifications/mark-all-read',
     [NotificationController::class, 'markAllAsRead']
 );

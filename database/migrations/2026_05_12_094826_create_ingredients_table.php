@@ -18,6 +18,7 @@ return new class extends Migration
     $table->string('unit'); // Contoh: gram, butir, ml
     $table->softDeletes(); // Menambahkan soft deletes
     $table->timestamps();
+    
 });
     }
 

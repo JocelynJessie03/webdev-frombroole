@@ -43,10 +43,14 @@
                     <p class="text-sm text-gray-500 mt-1">Top performing products by category</p>
                 </div>
                 <div class="bg-[#f6f3f1] rounded-xl p-1 flex gap-1 h-fit border border-gray-200/30">
-                    <button onclick="switchCategory('all')" id="btn-cat-all" class="cat-tab px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-[#7b0000] shadow-sm transition cursor-pointer">All</button>
-                    <button onclick="switchCategory('drink')" id="btn-cat-drink" class="cat-tab px-3 py-1.5 rounded-lg text-xs font-bold text-gray-400 hover:text-gray-600 transition cursor-pointer">Drink</button>
-                    <button onclick="switchCategory('broole')" id="btn-cat-broole" class="cat-tab px-3 py-1.5 rounded-lg text-xs font-bold text-gray-400 hover:text-gray-600 transition cursor-pointer">Broole</button>
-                    <button onclick="switchCategory('cheesecake')" id="btn-cat-cheesecake" class="cat-tab px-3 py-1.5 rounded-lg text-xs font-bold text-gray-400 hover:text-gray-600 transition cursor-pointer">Cheesecake</button>
+                    @foreach($chartDataGroup as $key => $data)
+                        <button onclick="switchCategory('{{ $key }}')" 
+                                id="btn-cat-{{ $key }}" 
+                                class="cat-tab px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer 
+                                {{ $key === 'all' ? 'bg-white text-[#7b0000] shadow-sm' : 'text-gray-400 hover:text-gray-600' }}">
+                            {{ $data['category_name'] }}
+                        </button>
+                    @endforeach
                 </div>
             </div>
             <div class="w-full min-h-[280px] relative">
@@ -94,7 +98,7 @@
             </div>
 
             <div class="h-[290px] overflow-y-auto pr-2 custom-scrollbar">
-                <div class="grid grid-cols-1 gap-4">
+                <div class="grid grid-cols-3 gap-4">
                     @forelse($lowStocks as $product)
                     <a href="{{ route('product.inventory') }}" class="border border-gray-100 rounded-2xl p-5 hover:shadow-lg transition flex items-center gap-5 bg-white h-[130px]">
                         <div class="w-16 h-16 rounded-xl overflow-hidden bg-[#f5f5f5] flex items-center justify-center shrink-0 border border-gray-50">
@@ -254,17 +258,20 @@ document.addEventListener('DOMContentLoaded', function () {
 function switchCategory(categoryKey) {
     if (!storeChartInstance || !globalChartData[categoryKey]) return;
 
+    // Ambil data labels & values dari key yang dipilih
     const targetData = globalChartData[categoryKey];
 
     storeChartInstance.data.labels = targetData.labels;
     storeChartInstance.data.datasets[0].data = targetData.values;
     storeChartInstance.update();
 
+    // Reset style semua button
     document.querySelectorAll('.cat-tab').forEach(btn => {
         btn.classList.remove('bg-white', 'text-[#7b0000]', 'shadow-sm');
         btn.classList.add('text-gray-400');
     });
 
+    // Aktifkan style button yang sedang diklik
     const activeBtn = document.getElementById(`btn-cat-${categoryKey}`);
     if (activeBtn) {
         activeBtn.classList.remove('text-gray-400');

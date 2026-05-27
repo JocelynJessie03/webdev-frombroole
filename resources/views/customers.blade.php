@@ -239,6 +239,33 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // ========================================================
+    // LOGIKA FILTER OTOMATIS DARI GLOBAL SEARCH (SIDEBAR)
+    // ========================================================
+    const itemToHighlight = new URLSearchParams(window.location.search).get('highlight');
+    if (itemToHighlight && searchInput) {
+        const targetWord = itemToHighlight.toLowerCase().trim();
+        
+        // 1. Ketik otomatis kata pencarian di input lokal
+        searchInput.value = itemToHighlight;
+        
+        // 2. Jalankan fungsi filter bawaan Anda
+        applyFilters();
+
+        // 3. Beri efek kilasan kuning & scroll halus ke target customer yang dicari
+        document.querySelectorAll(".customer-row").forEach(row => {
+            const nameAndId = row.getAttribute("data-name");
+            if (nameAndId && nameAndId.includes(targetWord)) {
+                row.style.backgroundColor = '#fef08a';
+                row.style.transition = 'background-color 1s ease';
+                row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Kembalikan ke warna semula setelah 1.5 detik
+                setTimeout(() => { row.style.backgroundColor = ''; }, 1500);
+            }
+        });
+    }
+
     // Fungsi Pengurutan Top Spender
     function sortTopSpenders() {
         const rows = Array.from(document.querySelectorAll(".customer-row"));
@@ -295,13 +322,9 @@ function openHistory(button) {
             </div>
         `;
     } else {
-        // ========================================================
-        // TWEAK 1: BALIKKAN DATA ARRAY SUPAYA DARI YANG TERBARU
-        // ========================================================
         historyData.reverse();
 
         historyData.forEach((trx, index) => {
-            // Render detail list item dari transaksi
             let itemsList = '';
             if (trx.items && trx.items.length > 0) {
                 itemsList = trx.items.map(item => {
@@ -321,16 +344,13 @@ function openHistory(button) {
                 itemsList = '<p class="text-xs text-gray-400 italic">No details available.</p>';
             }
 
-            // Fallback variable data transaksi dasar
             let orderId = trx.order_id || `TRX-${Math.floor(Math.random() * 10000)}`;
             let orderDate = trx.order_date || trx.created_at || '-';
             let totalItems = trx.total_items || (trx.items ? trx.items.length : 0);
             
-            // Mengambil dan memformat total_price ke mata uang Rupiah
             let totalPrice = trx.total_price ? parseInt(trx.total_price) : 0;
             let formattedPrice = 'Rp ' + totalPrice.toLocaleString('id-ID');
 
-            // Format Tanggal dan Jam agar rapi
             let displayDate = orderDate;
             if (orderDate !== '-') {
                 try {
@@ -348,7 +368,6 @@ function openHistory(button) {
                 }
             }
 
-            // KITA BERIKAN CLASS KHUSUS 'order-detail-container' UNTUK LOGIKA ACCORDION
             bodyEl.innerHTML += `
                 <div class="border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm">
                     <div class="flex items-center justify-between p-4 bg-white hover:bg-gray-50 transition">
@@ -395,22 +414,15 @@ function closeHistory() {
     document.getElementById('historyModal').classList.add('hidden');
 }
 
-// ========================================================
-// TWEAK 2: FUNGSI ACCORDION (SATU DIBUKA, LAIN TERTUTUP)
-// ========================================================
 function toggleOrderDetails(id) {
     const el = document.getElementById(id);
     const isCurrentlyHidden = el.classList.contains('hidden');
-
-    // Ambil seluruh container detail transaksi yang ada di dalam modal
     const allDetailContainers = document.querySelectorAll('.order-detail-container');
 
-    // Sembunyikan semuanya terlebih dahulu tanpa terkecuali
     allDetailContainers.forEach(container => {
         container.classList.add('hidden');
     });
 
-    // Jika target yang diklik tadinya tertutup, sekarang kita buka sendirian
     if (isCurrentlyHidden) {
         el.classList.remove('hidden');
     }
@@ -423,5 +435,4 @@ window.onclick = function(event) {
     }
 }
 </script>
-
 @endsection

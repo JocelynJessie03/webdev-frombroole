@@ -3,7 +3,6 @@
 @section('content')
 
 <div class="space-y-5">
-    {{-- CHART USAGE 5 DAYS AGO --}}
     <div class="bg-white rounded-2xl border p-6 shadow-sm mb-5">
         <div class="flex justify-between items-center mb-4">
             <div>
@@ -15,7 +14,6 @@
             
             {{-- FILTER BUTTONS --}}
             <div id="chartFilterGroup" class="bg-[#f6f3f1] rounded-xl p-1 flex gap-1 text-xs font-bold shrink-0">
-                <button onclick="filterChart('all')" class="chart-filter-btn bg-white shadow text-[#7b0000] px-4 py-1.5 rounded-lg transition">All</button>
                 <button onclick="filterChart('gr')" class="chart-filter-btn text-gray-500 hover:text-black px-4 py-1.5 rounded-lg transition">GR</button>
                 <button onclick="filterChart('ml')" class="chart-filter-btn text-gray-500 hover:text-black px-4 py-1.5 rounded-lg transition">ML</button>
                 <button onclick="filterChart('pcs')" class="chart-filter-btn text-gray-500 hover:text-black px-4 py-1.5 rounded-lg transition">PCS</button>
@@ -61,8 +59,9 @@
                             Empty Stock
                         </div>
                     @endif
-                @else
-                    {{-- Tampilan Kuning Standar (Kondisi All atau Low Stock) --}}
+                
+                @elseif(request('filter') == 'low_stock')
+                    {{-- Tampilan Kuning saat Filter LOW STOCK Aktif --}}
                     <div class="w-12 h-12 rounded-xl {{ $lowStockCount > 0 ? 'bg-amber-50' : 'bg-gray-50' }} flex items-center justify-center transition-colors">
                         <i data-lucide="triangle-alert" class="w-5 h-5 {{ $lowStockCount > 0 ? 'text-amber-500' : 'text-gray-400' }}"></i>
                     </div>
@@ -71,17 +70,45 @@
                             Monitor Stock
                         </div>
                     @endif
+
+                @else
+                    @php
+                        $totalWarningCount = $lowStockCount + $outOfStockCount;
+                        // Prioritaskan style visual Merah jika minimal ada 1 barang Out of Stock
+                        $isCritical = $outOfStockCount > 0;
+                    @endphp
+                    
+                    <div class="w-12 h-12 rounded-xl {{ $totalWarningCount > 0 ? ($isCritical ? 'bg-red-50' : 'bg-amber-50') : 'bg-gray-50' }} flex items-center justify-center transition-colors">
+                        <i data-lucide="{{ $isCritical ? 'info' : 'triangle-alert' }}" class="w-5 h-5 {{ $totalWarningCount > 0 ? ($isCritical ? 'text-red-600' : 'text-amber-500') : 'text-gray-400' }}"></i>
+                    </div>
+                    @if($totalWarningCount > 0)
+                        <div class="{{ $isCritical ? 'bg-red-100 text-red-700 animate-pulse' : 'bg-amber-100 text-amber-700' }} text-xs font-bold px-3 py-1 rounded-full">
+                            {{ $isCritical ? 'Action Needed' : 'Monitor Stock' }}
+                        </div>
+                    @endif
                 @endif
             
             </div>
 
             {{-- Judul dan Angka Berganti Sesuai Request Filter URL --}}
             <p class="uppercase tracking-widest text-xs text-gray-400 font-bold mb-1">
-                {{ request('filter') == 'out_of_stock' ? 'Out Of Stock' : 'Low Stock' }}
+                @if(request('filter') == 'out_of_stock')
+                    Out Of Stock
+                @elseif(request('filter') == 'low_stock')
+                    Low Stock
+                @else
+                    Stock Warnings
+                @endif
             </p>
 
             <h2 class="text-4xl font-black text-black">
-                {{ request('filter') == 'out_of_stock' ? $outOfStockCount : $lowStockCount }}
+                @if(request('filter') == 'out_of_stock')
+                    {{ $outOfStockCount }}
+                @elseif(request('filter') == 'low_stock')
+                    {{ $lowStockCount }}
+                @else
+                    {{ $lowStockCount + $outOfStockCount }}
+                @endif
             </h2>
         </div>
 
@@ -244,7 +271,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    // Manajemen Dropdown Aksion (Tiga Titik)
+    
     function toggleDropdown(button) {
         const dropdown = button.parentElement.querySelector('.action-dropdown');
         document.querySelectorAll('.action-dropdown').forEach(menu => {
@@ -295,7 +322,8 @@
         if (unitFilter === 'all') {
             filteredLabels = [...masterChartData.labels];
             filteredValues = [...masterChartData.values];
-        } else {
+        } 
+        else {
             for (let i = 0; i < masterChartData.units.length; i++) {
                 if (masterChartData.units[i] === unitFilter) {
                     filteredLabels.push(masterChartData.labels[i]);
@@ -328,16 +356,29 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         
-        // --- A. HIGHLIGHT OTOMATIS DARI SEARCH UTAMA ---
+        // --- A. FILTER OTOMATIS DARI SEARCH UTAMA ---
         const itemToHighlight = new URLSearchParams(window.location.search).get('highlight');
         if (itemToHighlight) {
             const targetWord = itemToHighlight.toLowerCase().trim();
+            
+            // 1. Isi otomatis kotak pencarian lokal agar user tahu data sedang difilter
+            const localSearchInput = document.getElementById('searchInput');
+            if (localSearchInput) {
+                localSearchInput.value = itemToHighlight;
+            }
+
+            // 2. Loop semua baris tabel: sembunyikan yang tidak cocok
             document.querySelectorAll('tbody tr').forEach(row => {
                 const nameElement = row.querySelector('h3');
                 if (nameElement && nameElement.textContent.trim().toLowerCase().includes(targetWord)) {
+                    row.style.display = ""; // Tampilkan baris
+                    
+                    // Opsional: Beri efek highlight kuning sejenak, lalu hilangkan
                     row.style.backgroundColor = '#fef08a';
-                    row.style.transition = 'all 0.5s ease';
-                    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    row.style.transition = 'background-color 1s ease';
+                    setTimeout(() => { row.style.backgroundColor = 'transparent'; }, 1500);
+                } else {
+                    row.style.display = "none"; // Sembunyikan baris yang tidak cocok
                 }
             });
         }
@@ -390,9 +431,7 @@
                     }
                 }
             });
-
-            // Jalankan fungsi filter pertama kali agar counter text terhitung otomatis
-            filterChart('all');
+            filterChart('gr');
         }
     });
 </script>

@@ -14,26 +14,17 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        /*
-        |--------------------------------------------------------------------------
-        | 1. FILTER TABS (DAILY / MONTHLY)
-        |--------------------------------------------------------------------------
-        */
+    
         $view = $request->input('view', 'daily');
 
-        /*
-        |--------------------------------------------------------------------------
-        | 2. TOTAL SALES & TOTAL ORDERS (DYNAMIC BASED ON VIEW) - NATIVE LARAVEL
-        |--------------------------------------------------------------------------
-        */
         if ($view === 'monthly') {
             $startOfMonth = now()->startOfMonth()->toDateTimeString();
             $endOfMonth   = now()->endOfMonth()->toDateTimeString();
 
-            $totalSales = OrderHistory::whereBetween('order_date', [$startOfMonth, $endOfMonth])
+            $totalSales = DB::table('order_histories')->whereBetween('order_date', [$startOfMonth, $endOfMonth])
                 ->sum('total_price');
 
-            $totalOrders = OrderHistory::whereBetween('order_date', [$startOfMonth, $endOfMonth])
+            $totalOrders = DB::table('order_histories')->whereBetween('order_date', [$startOfMonth, $endOfMonth])
                 ->count();
 
             $labelPeriode = "This Month (" . now()->format('F Y') . ")";
@@ -41,10 +32,10 @@ class DashboardController extends Controller
             $startOfDay = now()->startOfDay()->toDateTimeString();
             $endOfDay   = now()->endOfDay()->toDateTimeString();
 
-            $totalSales = OrderHistory::whereBetween('order_date', [$startOfDay, $endOfDay])
+            $totalSales = DB::table('order_histories')->whereBetween('order_date', [$startOfDay, $endOfDay])
                 ->sum('total_price');
 
-            $totalOrders = OrderHistory::whereBetween('order_date', [$startOfDay, $endOfDay])
+            $totalOrders = DB::table('order_histories')->whereBetween('order_date', [$startOfDay, $endOfDay])
                 ->count();
 
             $labelPeriode = "Today (" . now()->format('d M Y') . ")";
@@ -55,49 +46,65 @@ class DashboardController extends Controller
         | 3. BEST SELLER PRODUCTS (GROUPED BY REAL DATABASE CATEGORIES)
         |--------------------------------------------------------------------------
         */
-        $bestSellersAll = DB::table('order_items')
+       // Langkah 1: Cari 3 Kategori yang total item terjualnya paling banyak
+        $topCategories = DB::table('order_items')
+            ->join('products', 'order_items.product_id', '=', 'products.id')
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->select('categories.id', 'categories.category_name', DB::raw('SUM(order_items.quantity) as total_category_sold'))
+            ->groupBy('categories.id', 'categories.category_name')
+            ->orderByDesc('total_category_sold')
+            ->take(3)
+            ->get();
+
+        // Langkah 2: Ambil produk terlaris dari masing-masing kategori di atas
+        $chartDataGroup = [];
+
+        // 1. Ambil Top 3 Produk Paling Laris secara KESELURUHAN (untuk tab 'All')
+        $bestSellersOverall = DB::table('order_items')
             ->join('products', 'order_items.product_id', '=', 'products.id')
             ->select('products.pro_name', DB::raw('SUM(order_items.quantity) as total_sold'))
             ->groupBy('products.id', 'products.pro_name')
             ->orderByDesc('total_sold')
+            ->take(3) // Hanya tampilkan Top 3 saja
+            ->get();
+
+        $chartDataGroup['all'] = [
+            'category_name' => 'All',
+            'labels' => $bestSellersOverall->pluck('pro_name')->toArray(),
+            'values' => $bestSellersOverall->pluck('total_sold')->map(fn($v) => (int)$v)->toArray()
+        ];
+
+        // 2. Ambil Top 3 Kategori Terlaris
+        $topCategories = DB::table('order_items')
+            ->join('products', 'order_items.product_id', '=', 'products.id')
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->select('categories.id', 'categories.category_name', DB::raw('SUM(order_items.quantity) as total_category_sold'))
+            ->where('categories.category_name', '!=', 'Uncategorized') // Pastikan kategori 'Uncategorized' tidak ikut masuk
+            ->groupBy('categories.id', 'categories.category_name')
+            ->orderByDesc('total_category_sold')
             ->take(3)
             ->get();
 
-        $getBestByCategoryName = function($exactCategoryName) {
-            return DB::table('order_items')
+        // 3. Loop untuk mencari Top 3 produk di masing-masing kategori tersebut
+        foreach ($topCategories as $cat) {
+            $bestProducts = DB::table('order_items')
                 ->join('products', 'order_items.product_id', '=', 'products.id')
-                ->join('categories', 'products.category_id', '=', 'categories.id')
                 ->select('products.pro_name', DB::raw('SUM(order_items.quantity) as total_sold'))
-                ->where('categories.category_name', $exactCategoryName)
+                ->where('products.category_id', $cat->id)
                 ->groupBy('products.id', 'products.pro_name')
                 ->orderByDesc('total_sold')
-                ->take(3)
+                ->take(3) // Top 3 per kategori
                 ->get();
-        };
 
-        $bestSellersDrink      = $getBestByCategoryName('Drinks');
-        $bestSellersBroole     = $getBestByCategoryName('Broole Series'); 
-        $bestSellersCheese     = $getBestByCategoryName('Cheese Cake Series');
+            // Bikin slug/key untuk id button di Blade
+            $catKey = \Illuminate\Support\Str::slug($cat->category_name);
 
-        $chartDataGroup = [
-            'all'        => [
-                'labels' => $bestSellersAll->pluck('pro_name')->toArray(),
-                'values' => $bestSellersAll->pluck('total_sold')->map(fn($v) => (int)$v)->toArray()
-            ],
-            'drink'      => [
-                'labels' => $bestSellersDrink->pluck('pro_name')->toArray(),
-                'values' => $bestSellersDrink->pluck('total_sold')->map(fn($v) => (int)$v)->toArray()
-            ],
-            'broole'     => [
-                'labels' => $bestSellersBroole->pluck('pro_name')->toArray(),
-                'values' => $bestSellersBroole->pluck('total_sold')->map(fn($v) => (int)$v)->toArray()
-            ],
-            'cheesecake' => [
-                'labels' => $bestSellersCheese->pluck('pro_name')->toArray(),
-                'values' => $bestSellersCheese->pluck('total_sold')->map(fn($v) => (int)$v)->toArray()
-            ]
-        ];
-
+            $chartDataGroup[$catKey] = [
+                'category_name' => $cat->category_name,
+                'labels' => $bestProducts->pluck('pro_name')->toArray(),
+                'values' => $bestProducts->pluck('total_sold')->map(fn($v) => (int)$v)->toArray()
+            ];
+        }
         /*
         |--------------------------------------------------------------------------
         | 4. LOW STOCK PRODUCTS (KALKULASI DINAMIS DARI INGREDIENTS)
@@ -124,7 +131,7 @@ class DashboardController extends Controller
                 return $product->calculated_stock <= 10;
             })
             ->sortBy('calculated_stock')
-            ->take(5);
+            ->values();
 
        /*
         |--------------------------------------------------------------------------
@@ -179,11 +186,11 @@ class DashboardController extends Controller
         $query = $request->get('query');
 
         return response()->json([
-            'products' => Product::where('pro_name', 'LIKE', "%{$query}%")->take(5)->get(),
-            'ingredients' => Ingredient::where('name', 'LIKE', "%{$query}%")->take(5)->get(),
-            'customers' => Customer::where('customer_name', 'LIKE', "%{$query}%")->take(5)->get(),
-            'orders' => OrderHistory::where('order_id', 'LIKE', "%{$query}%")->take(5)->get(),
-            'reports' => OrderHistory::with('customer')
+            'products' => DB::table('products')->where('pro_name', 'LIKE', "%{$query}%")->take(5)->get(),
+            'ingredients' => DB::table('ingredients')->where('name', 'LIKE', "%{$query}%")->take(5)->get(),
+            'customers' => DB::table('customers')->where('customer_name', 'LIKE', "%{$query}%")->take(5)->get(),
+            'orders' => DB::table('order_histories')->where('order_id', 'LIKE', "%{$query}%")->take(5)->get(),
+            'reports' => DB::table('order_histories')->with('customer')
                 ->where('order_id', 'LIKE', "%{$query}%")
                 ->orWhere('status', 'LIKE', "%{$query}%")
                 ->orWhere('total_price', 'LIKE', "%{$query}%")
@@ -195,4 +202,4 @@ class DashboardController extends Controller
                 ->get(),
         ]);
     }
-} // Akhir dari class DashboardController
+}
