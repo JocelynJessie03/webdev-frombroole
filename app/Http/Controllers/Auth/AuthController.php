@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Models\EmailOtp;
 use App\Models\User;
+use App\Models\Admin;
+use App\Models\Customer;
 use App\Mail\SendOtpMail;
 
 use Illuminate\Support\Facades\Hash;
@@ -15,36 +17,39 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
+  public function login(Request $request)
     {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
+        // LOGIN ADMIN
+        if (Auth::guard('admin')->attempt($credentials)) {
+
+            $request->session()->regenerate();
+
+            return redirect('/dashboard');
+        }
+
+        // LOGIN CUSTOMER / USER
         if (Auth::attempt($credentials)) {
 
             $request->session()->regenerate();
 
-            if (Auth::user()->role === 'admin') {
-
-                return redirect('/dashboard');
-            }
-
-            return redirect('/home'); //nnt buat pelanggan
+            return redirect('/home');
         }
 
         return back()->withErrors([
             'email' => 'Invalid email or password.',
         ])->onlyInput('email');
     }
-
     public function logout(Request $request)
     {
-        Auth::logout();
+        Auth::guard('web')->logout();
+        Auth::guard('admin')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/login');
@@ -222,21 +227,39 @@ public function verifyOtp(Request $request)
 
     $role = str_ends_with($record->email, '@frombroole.com')
     ? 'admin'
-    : 'customer'; // check if email ends with @frombroole.com then it is an admin
+    : 'customer';
 
     $user = User::create([
-        'name' => $record->name,
-        'email' => $record->email,
-        'phone' => $record->phone,
-        'password' => $record->password,
-        'role' => $role,
-    ]);
+    'name' => $record->name,
+    'email' => $record->email,
+    'phone' => $record->phone,
+    'password' => $record->password,
+    'role' => $role,
+]);
 
-    EmailOtp::destroy($record->id);
+if ($role === 'customer') {
 
-    Auth::login($user);
+    Customer::create([
+    'customer_ID' => fake()->unique()->numerify('CUST###'),
+    'customer_name' => $record->name,
+    'email' => $record->email,
+    'phone' => $record->phone,
+    'password' => $record->password,
+    'total_spend' => 0,
+    'member_points' => 0,
+    'tier' => 'Bronze',
+]);
+}
 
+EmailOtp::destroy($record->id);
+
+Auth::login($user);
+
+if ($role === 'admin') {
     return redirect('/dashboard');
+}
+
+return redirect('/home');
 }
 
 public function verifyResetOtp(Request $request)

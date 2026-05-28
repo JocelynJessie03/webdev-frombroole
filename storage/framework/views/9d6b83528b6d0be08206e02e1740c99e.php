@@ -1,0 +1,1 @@
+<?php /**PATH C:\Users\Jessiee\Herd\frombroole\resources\views/customer/partials/masterpiece.blade.php ENDPATH**/ ?>

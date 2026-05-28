@@ -321,10 +321,40 @@ function togglePassword() {
 </script>
 
 
-</body>
-
 @if ($errors->any())
 
+<div
+    id="errorModal"
+    class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50"
+>
+
+    <div class="bg-white w-[90%] max-w-md rounded-[2rem] p-8 shadow-2xl text-center">
+
+        <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-5">
+            <span class="text-4xl">⚠️</span>
+        </div>
+
+        <h2 class="text-3xl font-black text-[#2a1111] mb-3">
+            Login Failed
+        </h2>
+
+        <p class="text-gray-500 font-medium mb-6 leading-relaxed">
+            {{ $errors->first() }}
+        </p>
+
+        <button
+            onclick="document.getElementById('errorModal').style.display='none'"
+            class="bg-[#8d1010] hover:bg-[#741010] transition-all text-white px-8 py-3 rounded-2xl font-black"
+        >
+            Try Again
+        </button>
+
+    </div>
+
+</div>
+
+@endif
+{{-- 
 <div
     id="errorModal"
     class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50"
@@ -360,4 +390,4 @@ function togglePassword() {
 </div>
 
 @endif
-</html>
+</html> --}}
