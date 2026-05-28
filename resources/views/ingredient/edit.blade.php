@@ -59,7 +59,7 @@
                         name="stock"
                         required
                         min="0"
-                        step="0.01"
+                        step="1"
                         value="{{ old('stock', $ingredient->stock) }}"
                         placeholder="e.g. 5000"
                         class="w-full h-14 border border-gray-300 rounded-xl px-5 outline-none focus:border-[#7b0000] transition"

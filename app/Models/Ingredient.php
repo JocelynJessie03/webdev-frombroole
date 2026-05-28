@@ -29,11 +29,10 @@ class Ingredient extends Model
     public function getIsLowStockAttribute()
     {
         return match ($this->unit) {
-            'pcs'  => $this->stock <= 100,
-            'ml'   => $this->stock <= 2000,
-            'gr'   => $this->stock <= 2000,
-            'pack' => $this->stock <= 5, // Tambahan untuk unit pack
-            default => $this->stock <= 10,
+            'pcs'  => $this->stock <= 50,
+            'ml'   => $this->stock <= 5000,
+            'gr'   => $this->stock <= 3000,
+            'pack' => $this->stock <= 20, 
         };
     }
 }

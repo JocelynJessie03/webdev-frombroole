@@ -16,7 +16,7 @@ class Product extends Model
 
     // Nama tabel (jika di DB namanya 'product' tanpa 's', aktifkan baris bawah)
     // protected $table = 'products'; 
-
+    
     protected $fillable = [
         'pro_ID',
         'pro_name',
@@ -49,5 +49,26 @@ class Product extends Model
         if ($this->stock <= 10) return 'Low Stock';
         
         return 'In Stock';
+    }
+    public function getCalculatedStockAttribute()
+    {
+        // Jika produk tidak punya bahan baku/resep, stok = 0
+        if (!$this->ingredients || $this->ingredients->isEmpty()) {
+            return 0;
+        }
+
+        $stocks = [];
+        foreach ($this->ingredients as $ingredient) {
+            // Ambil takaran kebutuhan dari pivot table
+            $needed = $ingredient->pivot ? $ingredient->pivot->amount_needed : 1;
+            $needed = $needed ?: 1; // Cegah pembagian dengan angka 0
+            
+            // Hitung sisa porsi yang bisa dibuat dari bahan baku ini
+            $available = floor($ingredient->stock / $needed);
+            $stocks[] = $available;
+        }
+
+        // Ambil nilai terkecil dari semua kesediaan bahan baku
+        return (int) max(0, min($stocks));
     }
 }

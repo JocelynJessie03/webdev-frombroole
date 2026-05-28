@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Product;
+use App\Models\Category; // <--- 1. TAMBAHKAN INI DI ATAS CONTROLLER
 use App\Models\Ingredient;
+use App\Models\Product;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -40,28 +42,58 @@ class ProductController extends Controller
         }
     }
 
-    // 3. Logika Filter (Menggunakan koleksi yang sudah dihitung stoknya)
+    // ==========================================
+    // DATA UNTUK BAR CHART (OTOMATIS & DINAMIS)
+    // ==========================================
+    $categories = \App\Models\Category::withTrashed()->get();
+    
+    // Filter hanya kategori aktif & bukan 'Uncategorized' untuk Chart
+    $activeCategoriesForChart = $categories->filter(fn($c) => !$c->category_delete && strtolower($c->category_name) !== 'uncategorized');
+    
+    $chartLabels = [];
+    $chartData = [];
+    
+    foreach ($activeCategoriesForChart as $cat) {
+        $chartLabels[] = $cat->category_name;
+        // Jumlahkan total stok produk dinamis yang masuk dalam kategori ini
+        $chartData[] = $allProducts->where('category_id', $cat->id)->sum('calculated_stock');
+    }
+    // ==========================================
+
+    // 3. Logika Filter Stok Level
     $products = $allProducts;
     if ($request->filter == 'low_stock') {
         $products = $allProducts->filter(fn($p) => $p->calculated_stock > 0 && $p->calculated_stock <= 10);
     } elseif ($request->filter == 'out_of_stock') {
         $products = $allProducts->filter(fn($p) => $p->calculated_stock <= 0);
+    } elseif ($request->filter == 'all') {
+    $products = $allProducts->filter(fn($p) => $p->calculated_stock <= 10);
+    }
+
+    // LOGIKA FILTER KATEGORI (OTOMATIS)
+    if ($request->filled('category_filter')) {
+        $products = $products->filter(fn($p) => $p->category_id == $request->category_filter);
     }
 
     // 4. Hitung Statistik untuk Card Atas
     $totalProducts = $allProducts->count();
     $lowStockCount = $allProducts->filter(fn($p) => $p->calculated_stock > 0 && $p->calculated_stock <= 10)->count();
-    
+    $outOfStockCount = $allProducts->filter(fn($p) => $p->calculated_stock <= 0)->count();
     // Hitung Total Value (Harga Produk x Stok Dinamis)
     $totalValue = $allProducts->sum(function($p) {
         return $p->pro_price * $p->calculated_stock;
     });
 
+    // 5. KIRIM VARIABEL KE BLADE VIEW
     return view('product.inventory', [
         'products' => $products,
         'totalProducts' => $totalProducts,
         'lowStockCount' => $lowStockCount,
-        'totalValue' => $totalValue // Tambahkan ini untuk Card Value
+        'outOfStockCount' => $outOfStockCount,
+        'totalValue' => $totalValue,
+        'categories' => $categories,
+        'chartLabels' => $chartLabels, // <--- TAMBAHKAN INI
+        'chartData' => $chartData       // <--- TAMBAHKAN INI
     ]);
 }
 
@@ -69,7 +101,10 @@ class ProductController extends Controller
     {
         // Ambil semua bahan baku untuk dipilih di form create product
         $ingredients = Ingredient::all();
-        $categories = \App\Models\Category::all();
+        $categories = \Illuminate\Support\Facades\DB::table('categories')
+    ->where('category_name', '!=', 'Uncategorized')
+    ->whereNull('deleted_at') // Memastikan kategori yang di-soft delete tidak ikut terbawa
+    ->get();
 
         return view('product.create', compact('ingredients', 'categories'));
     }
@@ -83,15 +118,40 @@ class ProductController extends Controller
             'pro_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'ingredients' => 'required|array', // Validasi input resep
         ]);
+        $category = DB::table('categories')->find($request->category_id);
+            $isDrink = stripos($category->category_name, 'drink') !== false || stripos($category->category_name, 'minuman') !== false;
+
+            if ($isDrink) {
+                $hasSugar = false;
+                // Cari ID bahan baku yang mengandung kata 'gula' atau 'sugar' di database
+                $sugarIngredientIds = DB::table('ingredients')->where('name', 'like', '%sugar%')
+                                        ->orWhere('name', 'like', '%gula%')
+                                        ->pluck('id')
+                                        ->toArray();
+                
+                // Cek apakah ada gula yang dimasukkan dengan jumlah lebih dari 0
+                foreach ($request->ingredients as $ingredientId => $amount) {
+                    if ((float)$amount > 0 && in_array($ingredientId, $sugarIngredientIds)) {
+                        $hasSugar = true;
+                        break;
+                    }
+                }
+
+                if (!$hasSugar) {
+                    return back()->withInput()->with('error', 'Warning: Sugar Ingredient must be added to the recipe for Drink categories!');
+                }
+            }
 
         $imageName = null;
         if($request->hasFile('pro_image')) {
             $imageName = time().'.'.$request->pro_image->extension();
             $request->pro_image->move(public_path('products'), $imageName);
         }
-            $cleanName = str_replace(' ', '', $request->pro_name);
-            $uniqueCode = strtoupper(substr($cleanName, 0, 3) . substr($cleanName, -3));
-            $generatedID = 'PRO-' . $uniqueCode . rand(1000, 9999);
+        $cleanName = str_replace(' ', '', $request->pro_name);
+        $uniqueCode = strtoupper(substr($cleanName, 0, 3) . substr($cleanName, -3));
+        $productCount = DB::table('products')->count() ;
+        $generatedID = 'PRO-' . $uniqueCode . '-' . str_pad($productCount + 1, 3, '0', STR_PAD_LEFT);
+        
         // 1. Simpan Data Produk
         $product = Product::create([
             'pro_ID' => $generatedID,
@@ -104,65 +164,124 @@ class ProductController extends Controller
         ]);
 
         // 2. Simpan Relasi Bahan Baku (Resep) ke tabel pivot
-        // Asumsi input form: ingredients[id_bahan] = jumlah_butuh
         foreach ($request->ingredients as $ingredientId => $amount) {
             if ($amount > 0) {
                 $product->ingredients()->attach($ingredientId, ['amount_needed' => $amount]);
             }
         }
 
+        DB::table('notifications')->insert([
+            'title' => 'New Product Added',
+            'message' => 'Product "' . $request->pro_name . '" has been successfully registered to the inventory.',
+            'type' => 'product',
+            'is_read' => false,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
         return redirect('/pos')->with('success', 'Produk dan Resep berhasil disimpan!');
     }
+
     public function edit($id)
-{
-    $product = Product::with('ingredients')->findOrFail($id);
-    $categories = \App\Models\Category::all();
-    $ingredients = Ingredient::all();
-    
-    return view('product.edit', compact('product', 'categories', 'ingredients'));
-}
-
-public function update(Request $request, $id)
-{
-    $product = Product::findOrFail($id);
-
-    $request->validate([
-        'pro_name' => 'required',
-        'category_id' => 'required|exists:categories,id',
-        'pro_price' => 'required|numeric',
-        'pro_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        'ingredients' => 'required|array',
-    ]);
-
-    if ($request->hasFile('pro_image')) {
-        // Hapus gambar lama jika ada
-        if ($product->pro_image && file_exists(public_path('products/' . $product->pro_image))) {
-            unlink(public_path('products/' . $product->pro_image));
-        }
-        $imageName = time().'.'.$request->pro_image->extension();
-        $request->pro_image->move(public_path('products'), $imageName);
-        $product->pro_image = $imageName;
+    {
+        $product = Product::with('ingredients')->findOrFail($id);
+        $categories = Category::all();
+        $ingredients = Ingredient::all();
+        
+        return view('product.edit', compact('product', 'categories', 'ingredients'));
     }
 
-    $product->update([
-        'category_id' => $request->category_id,
-        'pro_name' => $request->pro_name,
-        'pro_description' => $request->pro_description,
-        'pro_price' => $request->pro_price,
-        'pro_image' => $product->pro_image,
-    ]);
+    public function update(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
 
-    // Sync relasi pivot bahan baku
-    $syncData = [];
-    foreach ($request->ingredients as $ingredientId => $amount) {
-        if ($amount > 0) {
-            $syncData[$ingredientId] = ['amount_needed' => $amount];
+        $request->validate([
+            'pro_name' => 'required',
+            'category_id' => 'required|exists:categories,id',
+            'pro_price' => 'required|numeric',
+            'pro_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'ingredients' => 'required|array',
+        ]);
+        $category = DB::table('categories')->find($request->category_id);
+            $isDrink = stripos($category->category_name, 'drink') !== false || stripos($category->category_name, 'minuman') !== false;
+
+            if ($isDrink) {
+                $hasSugar = false;
+                // Cari ID bahan baku yang mengandung kata 'gula' atau 'sugar' di database
+                $sugarIngredientIds = DB::table('ingredients')->where('name', 'like', '%sugar%')
+                                        ->orWhere('name', 'like', '%gula%')
+                                        ->pluck('id')
+                                        ->toArray();
+                
+                // Cek apakah ada gula yang dimasukkan dengan jumlah lebih dari 0
+                foreach ($request->ingredients as $ingredientId => $amount) {
+                    if ((float)$amount > 0 && in_array($ingredientId, $sugarIngredientIds)) {
+                        $hasSugar = true;
+                        break;
+                    }
+                }
+
+                if (!$hasSugar) {
+                    return back()->withInput()->with('error', 'Warning: Sugar Ingredient must be added to the recipe for Drink categories!');
+                }
+            }
+
+        if ($request->hasFile('pro_image')) {
+            // Hapus gambar lama jika ada
+            if ($product->pro_image && file_exists(public_path('products/' . $product->pro_image))) {
+                unlink(public_path('products/' . $product->pro_image));
+            }
+            $imageName = time().'.'.$request->pro_image->extension();
+            $request->pro_image->move(public_path('products'), $imageName);
+            $product->pro_image = $imageName;
         }
+
+        $product->update([
+            'category_id' => $request->category_id,
+            'pro_name' => $request->pro_name,
+            'pro_description' => $request->pro_description,
+            'pro_price' => $request->pro_price,
+            'pro_image' => $product->pro_image,
+        ]);
+
+        // Sync relasi pivot bahan baku
+        $syncData = [];
+        foreach ($request->ingredients as $ingredientId => $amount) {
+            if ($amount > 0) {
+                $syncData[$ingredientId] = ['amount_needed' => $amount];
+            }
+        }
+        $product->ingredients()->sync($syncData);
+        
+        DB::table('notifications')->insert([
+            'title' => 'Product Info Updated',
+            'message' => 'The data for product "' . $request->pro_name . '" has been successfully modified.',
+            'type' => 'product',
+            'is_read' => false,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        return redirect()->route('product.inventory')->with('success', 'Product updated successfully!');
     }
-    $product->ingredients()->sync($syncData);
 
-    return redirect()->route('product.inventory')->with('success', 'Product updated successfully!');
-}
+    public function destroy($id)
+    {
+        $product = Product::findOrFail($id);
+        
+        $product->delete();
+        $product->pro_delete = true; 
+        $product->save();
 
+        DB::table('notifications')->insert([
+            'title' => 'Product Deleted',
+            'message' => 'Product "' . $product->pro_name . '" has been successfully removed from the inventory.',
+            'type' => 'product', // Tetap pakai type product agar warna ikonnya konsisten
+            'is_read' => false,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
 
+        return redirect()->back()->with('success', 'Product successfully deleted!');
+    }
 }

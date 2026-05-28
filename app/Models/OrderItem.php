@@ -22,7 +22,7 @@ class OrderItem extends Model
      */
     public function order()
     {
-        return $this->belongsTo(OrderHistory::class);
+        return $this->belongsTo(OrderHistory::class, 'order_id');
     }
 
     /**
@@ -33,4 +33,6 @@ class OrderItem extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+
 }

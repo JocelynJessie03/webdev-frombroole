@@ -22,8 +22,19 @@
 </div>
 
     {{-- FORM CARD --}}
+    {{-- NOTIFIKASI ERROR VALIDASI --}}
+        @if(session('error'))
+        <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-xl flex items-center gap-3 animate-pulse">
+            <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-500">
+                <svg xmlns="http://www.w3.org/2000/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-circle"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12" y1="16" y2="16.01"/></svg>
+            </div>
+            <div>
+                <p class="text-sm font-bold text-red-800">Validation Error!</p>
+                <p class="text-xs text-red-600">{{ session('error') }}</p>
+            </div>
+        </div>
+        @endif
     <div class="bg-white rounded-3xl border shadow-sm p-10">
-
         <form action="{{ route('products.store') }}"
               method="POST"
               enctype="multipart/form-data"
@@ -69,11 +80,15 @@
 
                 {{-- CATEGORY --}}
                 <div>
-                    <label class="block text-xl mb-3 font-bold text-gray-700">
-                        Category
-                    </label>
+                    <div class="flex justify-between items-end mb-3">
+                        <label class="block text-xl font-bold text-gray-700 leading-none">
+                            Category
+                        </label>
+                    
+                    </div>
                     <select 
                         name="category_id" 
+                        id="category_select"
                         required 
                         class="w-full h-14 border border-gray-300 rounded-xl px-5 outline-none focus:border-[#7b0000] bg-white transition"
                     >
@@ -151,7 +166,7 @@
                                 name="ingredients[{{ $ingredient->id }}]" 
                                 value="0" 
                                 min="0" 
-                                step="0.01"
+                                step="1"
                                 disabled
                                 placeholder="Amount"
                                 class="w-full h-10 text-center border border-gray-200 bg-gray-100 rounded-xl outline-none focus:border-[#7b0000] focus:bg-white transition text-sm font-bold"
@@ -201,6 +216,40 @@
             card.classList.remove('border-[#7b0000]', 'bg-white');
         }
     }
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const categorySelect = document.querySelector('select[name="category_id"]');
+        
+        if (categorySelect && categorySelect.selectedIndex > 0) {
+            const categoryName = categorySelect.options[categorySelect.selectedIndex].text.toLowerCase();
+            
+            // Cek jika kategori adalah Drink / Minuman
+            if (categoryName.includes('drink') || categoryName.includes('minuman')) {
+                let hasSugar = false;
+                const inputs = document.querySelectorAll('input[name^="ingredients["]');
+                
+                inputs.forEach(input => {
+                    if (!input.disabled && parseFloat(input.value) > 0) {
+                        const card = input.closest('.ingredient-card') || input.closest('div.flex'); 
+                        if (card && (card.textContent.toLowerCase().includes('sugar') || card.textContent.toLowerCase().includes('gula'))) {
+                            hasSugar = true;
+                        }
+                    }
+                });
+
+                // Jika Sugar tidak di-add / diisi
+                if (!hasSugar) {
+                    e.preventDefault(); // Batalkan submit form
+                    
+                    // Beri alert pop-up informatif
+                    alert('⚠️ PERINGATAN REVALIASI:\nProduk dengan kategori Minuman (Drinks) WAJIB mencentang dan mengisi takaran untuk bahan baku "Sugar" atau "Gula"!');
+                    
+                    // Opsional: Arahkan layar otomatis fokus ke select kategori agar user tahu area yang bermasalah
+                    categorySelect.focus();
+                    categorySelect.classList.add('border-red-500', 'ring-2', 'ring-red-200');
+                }
+            }
+        }
+    });
 </script>
 
 @endsection
