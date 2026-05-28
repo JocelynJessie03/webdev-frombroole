@@ -50,7 +50,6 @@
 <body class="h-screen w-screen overflow-hidden">
 
 <div id="main-container">
-<<<<<<< HEAD
 
     
     <aside id="sidebar" class="w-[280px] sidebar-gradient text-white flex flex-col relative shadow-2xl shrink-0 h-full">
@@ -70,7 +69,7 @@
                 <p class="uppercase text-[8px] opacity-80 tracking-widest mt-1">FROM BROOLE TO YOU</p>
             </div>
 
-    {{-- SIDEBAR --}}
+    {{-- SIDEBAR
     <aside
         id="sidebar"
         class="w-[95px] collapsed sidebar-gradient text-white flex flex-col justify-between relative shadow-2xl shrink-0 h-full"
@@ -241,7 +240,6 @@
         </div>
     </div>
 
-<<<<<<< HEAD
     @php
         $admin = Auth::guard('admin')->user();
     @endphp

@@ -1,1 +1,0 @@
-<?php /**PATH C:\Users\Jessiee\Herd\frombroole\resources\views/customer/partials/hero.blade.php ENDPATH**/ ?>
