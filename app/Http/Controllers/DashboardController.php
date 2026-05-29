@@ -112,19 +112,7 @@ class DashboardController extends Controller
         */
         $allProducts = Product::with('ingredients')->get();
 
-        foreach ($allProducts as $product) {
-            if ($product->ingredients->isEmpty()) {
-                $product->calculated_stock = 0;
-            } else {
-                $stocks = [];
-                foreach ($product->ingredients as $ingredient) {
-                    $needed = $ingredient->pivot->amount_needed ?: 1;
-                    $available = floor($ingredient->stock / $needed);
-                    $stocks[] = $available;
-                }
-                $product->calculated_stock = (int) max(0, min($stocks));
-            }
-        }
+        
 
         $lowStocks = $allProducts
             ->filter(function($product) {
@@ -190,7 +178,8 @@ class DashboardController extends Controller
             'ingredients' => DB::table('ingredients')->where('name', 'LIKE', "%{$query}%")->take(5)->get(),
             'customers' => DB::table('customers')->where('customer_name', 'LIKE', "%{$query}%")->take(5)->get(),
             'orders' => DB::table('order_histories')->where('order_id', 'LIKE', "%{$query}%")->take(5)->get(),
-            'reports' => DB::table('order_histories')->with('customer')
+            
+            'reports'     => \App\Models\OrderHistory::with('customer')
                 ->where('order_id', 'LIKE', "%{$query}%")
                 ->orWhere('status', 'LIKE', "%{$query}%")
                 ->orWhere('total_price', 'LIKE', "%{$query}%")

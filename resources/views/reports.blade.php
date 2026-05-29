@@ -17,12 +17,12 @@
     {{-- HEADER --}}
     <div class="flex justify-between items-start">
         <div>
-            <h1 class="text-[26px] font-black text-[#7b0000] leading-none mb-2">
+            {{-- <h1 class="text-[26px] font-black text-[#7b0000] leading-none mb-2">
                 Reports & Analytics
             </h1>
             <p class="text-gray-600 text-sm mb-3">
                 Review your business performance and insights.
-            </p>
+            </p> --}}
             
             {{-- TOMBOL EXPORT CSV --}}
             <button onclick="exportReportToCSV()" class="bg-[#7b0000] hover:bg-[#650000] text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow transition cursor-pointer">

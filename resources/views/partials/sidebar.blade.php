@@ -50,26 +50,7 @@
 <body class="h-screen w-screen overflow-hidden">
 
 <div id="main-container">
-
-    
-    <aside id="sidebar" class="w-[280px] sidebar-gradient text-white flex flex-col relative shadow-2xl shrink-0 h-full">
-        <button id="toggle-btn" class="absolute -right-5 top-14 bg-white text-[#7b0000] rounded-full p-2 shadow-xl border border-gray-100 z-50 hover:scale-110 active:scale-95 transition-all">
-            <i id="toggle-icon" data-lucide="chevron-left" class="w-5 h-5"></i>
-        </button>
-
-        <div class="overflow-y-auto no-scrollbar flex-1 flex flex-col">
-
-    <div class="px-8 pt-8 pb-10">
-        <div class="flex items-center gap-4">
-            <div class="bg-white text-[#7b0000] min-w-[50px] h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-lg">
-                <i data-lucide="store" class="w-6 h-6"></i>
-            </div>
-            <div class="hide-on-collapse">
-                <h1 class="text-2xl font-black leading-none whitespace-nowrap">From Broole</h1>
-                <p class="uppercase text-[8px] opacity-80 tracking-widest mt-1">FROM BROOLE TO YOU</p>
-            </div>
-
-    {{-- SIDEBAR
+    {{-- SIDEBAR --}}
     <aside
         id="sidebar"
         class="w-[95px] collapsed sidebar-gradient text-white flex flex-col justify-between relative shadow-2xl shrink-0 h-full"
@@ -214,7 +195,7 @@
                     <i data-lucide="bar-chart-3" class="shrink-0 w-5 h-5"></i>
 
                     <span class="hide-on-collapse whitespace-nowrap">
-                        Reports
+                        Reports & Analytics
                     </span>
 
                 </a>
@@ -236,87 +217,6 @@
 
                 </button>
             </form>
-
-        </div>
-    </div>
-
-    @php
-        $admin = Auth::guard('admin')->user();
-    @endphp
-
-    <div class="px-5 space-y-1.5 flex-1">
-
-        <a href="{{ route('dashboard') }}" 
-           class="menu-item flex items-center gap-4 px-5 py-3 rounded-2xl text-lg transition-all 
-           {{ Route::is('dashboard') ? 'bg-white/10 border-r-4 border-white font-bold' : 'opacity-70 hover:bg-white/10' }}">
-            <i data-lucide="layout-dashboard" class="shrink-0 w-5 h-5"></i>
-            <span class="hide-on-collapse whitespace-nowrap">Dashboard</span>
-        </a>
-
-        <a href="{{ route('pos') }}" 
-           class="menu-item flex items-center gap-4 px-5 py-3 rounded-2xl text-lg transition-all 
-           {{ Route::is('pos') ? 'bg-white/10 border-r-4 border-white font-bold' : 'opacity-70 hover:bg-white/10' }}">
-            <i data-lucide="calculator" class="shrink-0 w-5 h-5"></i>
-            <span class="hide-on-collapse whitespace-nowrap">Point of Sale</span>
-        </a>
-
-        <a href="{{ route('product.inventory') }}" 
-           class="menu-item flex items-center gap-4 px-5 py-3 rounded-2xl text-lg transition-all 
-           {{ Route::is('product.inventory') ? 'bg-white/10 border-r-4 border-white font-bold' : 'opacity-70 hover:bg-white/10' }}">
-            <i data-lucide="package" class="shrink-0 w-5 h-5"></i>
-            <span class="hide-on-collapse whitespace-nowrap">Product Inventory</span>
-        </a>
-
-        <a href="{{ route('ingredient.inventory') }}" 
-           class="menu-item flex items-center gap-4 px-5 py-3 rounded-2xl text-lg transition-all 
-           {{ Route::is('ingredient.inventory') ? 'bg-white/10 border-r-4 border-white font-bold' : 'opacity-70 hover:bg-white/10' }}">
-            <i data-lucide="package" class="shrink-0 w-5 h-5"></i>
-            <span class="hide-on-collapse whitespace-nowrap">Ingredient Inventory</span>
-        </a>
-
-        <a href="{{ route('order_history') }}" 
-           class="menu-item flex items-center gap-4 px-5 py-3 rounded-2xl text-lg transition-all 
-           {{ Route::is('order_history') ? 'bg-white/10 border-r-4 border-white font-bold' : 'opacity-70 hover:bg-white/10' }}">
-            <i data-lucide="receipt" class="shrink-0 w-5 h-5"></i>
-            <span class="hide-on-collapse whitespace-nowrap">Orders</span>
-        </a>
-
-        <a 
-            href="{{ $admin && $admin->isSuperAdmin() ? route('customers') : '#' }}"
-            class="menu-item flex items-center gap-4 px-5 py-3 rounded-2xl text-lg transition-all
-            {{ $admin && $admin->isSuperAdmin()
-                ? (Route::is('customers') ? 'bg-white/10 border-r-4 border-white font-bold' : 'opacity-70 hover:bg-white/10')
-                : 'text-[#7b0000] pointer-events-none'
-            }}"
-        >
-            <i data-lucide="users" class="shrink-0 w-5 h-5"></i>
-            <span class="hide-on-collapse whitespace-nowrap">Customers</span>
-        </a>
-
-        <a 
-            href="{{ $admin && $admin->isSuperAdmin() ? route('reports') : '#' }}"
-            class="menu-item flex items-center gap-4 px-5 py-3 rounded-2xl text-lg transition-all
-            {{ $admin && $admin->isSuperAdmin()
-                ? (Route::is('reports') ? 'bg-white/10 border-r-4 border-white font-bold' : 'opacity-70 hover:bg-white/10')
-                : 'text-[#7b0000] pointer-events-none'
-            }}"
-        >
-            <i data-lucide="bar-chart-3" class="shrink-0 w-5 h-5"></i>
-            <span class="hide-on-collapse whitespace-nowrap">Reports</span>
-        </a>
-
-    </div>
-
-</div>
-
-        <div class="p-6 mt-auto">
-            <div class="bg-white/10 rounded-3xl p-4 flex items-center gap-4 overflow-hidden">
-                <img src="https://i.pravatar.cc/100" class="w-10 h-10 rounded-2xl shrink-0">
-                <div class="hide-on-collapse">
-                    <h3 class="text-base font-bold whitespace-nowrap">Ahmad's Coffee</h3>
-                    <p class="text-[10px] opacity-70">Store Manager</p>
-                </div>
-            </div>
         </div>
 
     </aside>
@@ -342,7 +242,7 @@
                 'product-inventory' => 'Product Inventory',
                 'ingredient-inventory' => 'Ingredient Inventory',
                 'customers' => 'Members',
-                'reports' => 'Reports',
+                'reports' => 'Reports & Analytics',
                 'order_history' => 'Order History',
                 
 

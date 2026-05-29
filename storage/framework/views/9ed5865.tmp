@@ -1,6 +1,4 @@
-
-
-
+<?php $__env->startSection('content'); ?>
 <?php
 
 $signatureDesserts = [
@@ -282,7 +280,7 @@ class="pb-20 bg-[#F8F5F2]"
         <?php $__currentLoopData = $masterpieces; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
 
         <div
-        class="group relative flex flex-col rounded-[30px] border transition-all duration-700 hover:-translate-y-3"
+        class="group relative rounded-[30px] border transition-all duration-700 hover:-translate-y-3"
 
         :class="{
         'bg-[#241915] border-[#5B4337] hover:shadow-[0_35px_90px_rgba(36,25,21,0.55)]': <?php echo e($index); ?> === 0,
@@ -337,14 +335,14 @@ class="pb-20 bg-[#F8F5F2]"
             </div>
 
             
-            <div class="px-7 pt-6 pb-7 flex flex-col flex-1">
+            <div class="px-7 pt-6 pb-7">
 
                 <span class="text-[10px] uppercase tracking-[0.25em] font-black text-[#E6C07B]">
                     <?php echo e(strtoupper($item['tagline'])); ?>
 
                 </span>
 
-                <h3 class="font-['Cormorant_Garamond'] text-[58px] leading-[0.9] font-bold text-[#F5EBDD] mt-5 min-h-[120px]">
+                <h3 class="font-['Cormorant_Garamond'] text-[58px] leading-[0.9] font-bold text-[#F5EBDD] mt-5">
 
                     <?php if($index === 0): ?>
                     Artisan Cheesecakes
@@ -356,14 +354,14 @@ class="pb-20 bg-[#F8F5F2]"
 
                 </h3>
 
-                <p class="text-[14px] leading-[1.9] text-white/75 mt-5 min-h-[80px]">
+                <p class="text-[14px] leading-[1.9] text-white/75 mt-5">
                     <?php echo e($item['desc']); ?>
 
                 </p>
 
                 
                 <button
-                    class="mt-auto w-full h-16 rounded-[18px] border border-white/20 bg-white/5 backdrop-blur-sm hover:bg-white hover:text-[#2A211D] transition-all duration-500 text-[11px] uppercase tracking-[0.25em] font-black text-[#F5EBDD]"
+                    class="mt-10 w-full h-16 rounded-[18px] border border-white/20 bg-white/5 backdrop-blur-sm hover:bg-white hover:text-[#2A211D] transition-all duration-500 text-[11px] uppercase tracking-[0.25em] font-black text-[#F5EBDD]"
                 >
 
                     <?php if($index === 0): ?>
@@ -442,6 +440,7 @@ class="pb-20 bg-[#F8F5F2]"
 
                 </div>
 
+
                 <div class="bg-[#F8F5F2] p-4 rounded-2xl">
 
                     <p class="text-2xl font-black text-[#8C1717]">
@@ -452,4 +451,5 @@ class="pb-20 bg-[#F8F5F2]"
                         Artisan Care
                     </p>
 
-<?php /**PATH C:\Users\Jessiee\Herd\frombroole\resources\views/customer/home.blade.php ENDPATH**/ ?>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('customer.layout', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Jessiee\Herd\frombroole\resources\views/customer/home.blade.php ENDPATH**/ ?>

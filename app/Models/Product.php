@@ -8,11 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-// <<<<<<< HEAD
-//     protected $table = 'products';
-// =======
-//     use HasFactory,SoftDeletes;
-// >>>>>>> 1c3f0bbbbcf7b1083f0714c702310f1f4678daba
+    use HasFactory,SoftDeletes;
 
     // Nama tabel (jika di DB namanya 'product' tanpa 's', aktifkan baris bawah)
     // protected $table = 'products'; 

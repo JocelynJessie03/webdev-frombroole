@@ -38,25 +38,10 @@ class CustomerController extends Controller
         // 5. Eksekusi Query
         $customers = $query->get();
 
-
-        // 6. Hitung Statistik untuk Card Atas
-        $goldCount = Customer::query()
-            ->where('tier', 'Gold')
-            ->count('*');
-
-        $silverCount = Customer::query()
-            ->where('tier', 'Silver')
-            ->count('*');
-
-        $bronzeCount = Customer::query()
-            ->where('tier', 'Bronze')
-            ->count('*');
-
         // 6. Hitung Statistik untuk Card Atas menggunakan DB::table
         $goldCount = DB::table('customers')->where('tier', '=', 'Gold')->count();
         $silverCount = DB::table('customers')->where('tier', '=', 'Silver')->count();
         $bronzeCount = DB::table('customers')->where('tier', '=', 'Bronze')->count();
-
 
         // 7. Kirim data ke View
         return view('customers', [
