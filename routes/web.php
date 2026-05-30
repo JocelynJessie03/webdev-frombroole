@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\ProductController;
 
 use App\Http\Controllers\Auth\GoogleController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\OrderHistoryController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\AiController;
 
 // LOGIN AND REGISTER
 
@@ -157,3 +159,7 @@ Route::post(
 
 // CUSTOMER SIDE
 Route::view('/home', 'customer.home')->name('customer.home');
+
+// AI
+
+Route::post('/ai-chat', [AiController::class, 'chat']);

@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    <meta
+    name="csrf-token"
+    content="<?php echo e(csrf_token()); ?>"
+>
 
     <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 
@@ -118,6 +124,8 @@
     
     <main>
         <?php echo $__env->yieldContent('content'); ?>
+
+        <?php echo $__env->make('customer.partials.ai-chat', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
     </main>
 
 </div>
