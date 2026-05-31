@@ -205,7 +205,7 @@
         </div>
 
         <div class="px-5 pb-8">
-            <form method="POST" action="" class="w-full">
+            <form method="POST" action="{{ route('logout') }}" class="w-full">
                 @csrf
                 <button type="submit" class="menu-item flex w-full items-center gap-4 px-5 py-3 rounded-2xl text-base opacity-70 hover:opacity-100 hover:bg-white/10 transition-all duration-200 group text-left">
                     

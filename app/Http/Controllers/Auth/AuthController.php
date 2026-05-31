@@ -26,10 +26,8 @@ class AuthController extends Controller
 
         // LOGIN ADMIN
         if (Auth::guard('admin')->attempt($credentials)) {
-
             $request->session()->regenerate();
-
-            return redirect('/dashboard');
+            return redirect()->intended('/dashboard');
         }
 
         // LOGIN CUSTOMER / USER
@@ -183,7 +181,7 @@ public function resetPassword(Request $request)
         'name' => $validated['name'],
         'email' => $validated['email'],
         'phone' => $validated['phone'],
-        'password' => Hash::make($validated['password']),
+        'password' => $validated['password'],
         'otp' => $otp,
         'expires_at' => now()->addMinutes(5),
     ]);

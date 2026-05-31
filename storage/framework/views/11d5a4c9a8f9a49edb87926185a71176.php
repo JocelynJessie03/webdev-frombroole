@@ -195,7 +195,7 @@
                     <i data-lucide="bar-chart-3" class="shrink-0 w-5 h-5"></i>
 
                     <span class="hide-on-collapse whitespace-nowrap">
-                        Reports
+                        Reports & Analytics
                     </span>
 
                 </a>
@@ -205,7 +205,7 @@
         </div>
 
         <div class="px-5 pb-8">
-            <form method="POST" action="" class="w-full">
+            <form method="POST" action="<?php echo e(route('logout')); ?>" class="w-full">
                 <?php echo csrf_field(); ?>
                 <button type="submit" class="menu-item flex w-full items-center gap-4 px-5 py-3 rounded-2xl text-base opacity-70 hover:opacity-100 hover:bg-white/10 transition-all duration-200 group text-left">
                     
@@ -242,7 +242,7 @@
                 'product-inventory' => 'Product Inventory',
                 'ingredient-inventory' => 'Ingredient Inventory',
                 'customers' => 'Members',
-                'reports' => 'Reports',
+                'reports' => 'Reports & Analytics',
                 'order_history' => 'Order History',
                 
 
@@ -713,5 +713,4 @@
         });
     }
     </script>
-</html>
-<?php /**PATH D:\Herd\webdev-frombroole\resources\views/partials/sidebar.blade.php ENDPATH**/ ?>
+</html><?php /**PATH D:\Herd\webdev-frombroole\resources\views/partials/sidebar.blade.php ENDPATH**/ ?>

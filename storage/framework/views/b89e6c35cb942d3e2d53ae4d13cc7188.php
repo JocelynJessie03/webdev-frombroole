@@ -3,7 +3,7 @@
     class="fixed bottom-6 right-6 z-[9999]"
 >
 
-    {{-- Floating Button --}}
+    
     <button
         x-show="!open"
         @click="open = true"
@@ -23,7 +23,7 @@
         <span x-show="open">✕</span>
     </button>
 
-    {{-- Chat Panel --}}
+    
     <div
     x-show="open"
     x-cloak
@@ -53,7 +53,7 @@
     "
     >
 
-        {{-- Header --}}
+        
         <div
             class="
             bg-gradient-to-r
@@ -107,13 +107,13 @@
 
         </div>
 
-        {{-- Body --}}
+        
         <div
             x-ref="chatContainer"
             class="flex-1 overflow-y-auto bg-[#FAF8F5]"
         >
 
-            {{-- Welcome Card --}}
+            
             <div class="p-4">
 
                 <div
@@ -154,7 +154,7 @@
 
             </div>
 
-            {{-- Quick Inquiries --}}
+            
             <div class="px-4 pb-4">
 
                 <p
@@ -256,7 +256,7 @@
 
             </div>
 
-            {{-- Messages --}}
+            
            <div class="p-4 space-y-3">
 
             <template
@@ -273,7 +273,7 @@
                     "
                 >
 
-                    {{-- Loading --}}
+                    
                     <template x-if="message.loading">
                         <div
                             class="
@@ -326,7 +326,7 @@
 
                     </template>
 
-                    {{-- Normal Message --}}
+                    
                     <template x-if="!message.loading">
 
                         <div
@@ -361,7 +361,7 @@
 
         </div>
 
-        {{-- Footer --}}
+        
         <div
             class="
             bg-white
@@ -419,3 +419,4 @@
 
 </div>
 
+<?php /**PATH D:\Herd\webdev-frombroole\resources\views/customer/partials/ai-chat.blade.php ENDPATH**/ ?>

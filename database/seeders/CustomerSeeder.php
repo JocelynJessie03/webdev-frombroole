@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Customer;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class CustomerSeeder extends Seeder
 {
@@ -46,7 +48,8 @@ class CustomerSeeder extends Seeder
         ];
 
         foreach ($customers as $index => $customer) {
-            $customer['password'] = '12345678';
+            $plainPassword = '12345678';
+            $customer['password'] = $plainPassword;
             $customer['customer_ID'] = 'CUST-' . str_pad($index + 1, 4, '0', STR_PAD_LEFT);
             
             // Set default awal ke 0, nanti dihitung otomatis dari transaksi
@@ -54,6 +57,16 @@ class CustomerSeeder extends Seeder
             $customer['member_points'] = 0;
             $customer['tier'] = 'Bronze';
 
+            // Create entry di tabel users untuk login
+            User::create([
+                'name' => $customer['customer_name'],
+                'email' => $customer['email'],
+                'phone' => $customer['phone'],
+                'password' => Hash::make($plainPassword),
+                'role' => 'customer',
+            ]);
+
+            // Create entry di tabel customers
             Customer::create($customer);
         }
     }
