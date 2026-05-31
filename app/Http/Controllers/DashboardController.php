@@ -190,7 +190,8 @@ class DashboardController extends Controller
             'ingredients' => DB::table('ingredients')->where('name', 'LIKE', "%{$query}%")->take(5)->get(),
             'customers' => DB::table('customers')->where('customer_name', 'LIKE', "%{$query}%")->take(5)->get(),
             'orders' => DB::table('order_histories')->where('order_id', 'LIKE', "%{$query}%")->take(5)->get(),
-            'reports' => DB::table('order_histories')->with('customer')
+            
+            'reports'     => \App\Models\OrderHistory::with('customer')
                 ->where('order_id', 'LIKE', "%{$query}%")
                 ->orWhere('status', 'LIKE', "%{$query}%")
                 ->orWhere('total_price', 'LIKE', "%{$query}%")
