@@ -429,4 +429,3 @@ public function receipt($id)
 }
 
 }
-

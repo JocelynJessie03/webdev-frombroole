@@ -112,19 +112,7 @@ class DashboardController extends Controller
         */
         $allProducts = Product::with('ingredients')->get();
 
-        foreach ($allProducts as $product) {
-            if ($product->ingredients->isEmpty()) {
-                $product->calculated_stock = 0;
-            } else {
-                $stocks = [];
-                foreach ($product->ingredients as $ingredient) {
-                    $needed = $ingredient->pivot->amount_needed ?: 1;
-                    $available = floor($ingredient->stock / $needed);
-                    $stocks[] = $available;
-                }
-                $product->calculated_stock = (int) max(0, min($stocks));
-            }
-        }
+        
 
         $lowStocks = $allProducts
             ->filter(function($product) {

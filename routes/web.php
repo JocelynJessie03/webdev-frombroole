@@ -1,7 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\ProductController;
+
+use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
@@ -10,6 +14,51 @@ use App\Http\Controllers\OrderHistoryController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\AiController;
+
+// LOGIN AND REGISTER
+
+// buat auth
+Route::view('/login', 'login')->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// forgot password
+Route::view('/forgot-password', 'forgot-password');
+
+Route::post('/forgot-password/send-otp', [AuthController::class, 'sendForgotOtp']);
+
+Route::view('/verify-reset-otp', 'verify-reset-otp');
+
+Route::post('/verify-reset-otp', [AuthController::class, 'verifyResetOtp']);
+
+Route::view('/new-password', 'new-password');
+
+Route::post('/new-password', [AuthController::class, 'updatePassword']);
+
+// buat oauth
+Route::get('/auth/google', [GoogleController::class, 'redirect']);
+Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
+
+// register & verify otp
+Route::view('/register', 'register')->name('register');
+
+Route::post('/register/send-otp', [AuthController::class, 'sendOtp']);
+
+Route::view('/verify-otp', 'verify-otp')->name('verify-otp');
+
+Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
+
+// resend otp
+Route::post('/resend-otp', [AuthController::class, 'resendOtp']);
+
+Route::post('/resend-reset-otp', [AuthController::class, 'resendResetOtp']);
+
+// ADMIN SIDE
+
+// POS
+Route::get('/pos', [ProductController::class, 'index'])
+    ->name('pos');
 
 Route::get('/', function () {
     return redirect('/dashboard');
@@ -97,12 +146,6 @@ Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name(
 // Tambahkan baris rute restore ini di routes/web.php kamu
 Route::post('/categories/{id}/restore', [CategoryController::class, 'restore'])->name('categories.restore');
 
-Route::get('/home', function () {
-
-    return view('customer.home');
-
-});
-
 
 Route::post(
     '/notifications/{id}/read',
@@ -113,3 +156,10 @@ Route::post(
     '/notifications/mark-all-read',
     [NotificationController::class, 'markAllAsRead']
 );
+
+// CUSTOMER SIDE
+Route::view('/home', 'customer.home')->name('customer.home');
+
+// AI
+
+Route::post('/ai-chat', [AiController::class, 'chat']);

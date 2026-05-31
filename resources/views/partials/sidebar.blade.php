@@ -195,7 +195,7 @@
                     <i data-lucide="bar-chart-3" class="shrink-0 w-5 h-5"></i>
 
                     <span class="hide-on-collapse whitespace-nowrap">
-                        Reports
+                        Reports & Analytics
                     </span>
 
                 </a>
@@ -242,7 +242,7 @@
                 'product-inventory' => 'Product Inventory',
                 'ingredient-inventory' => 'Ingredient Inventory',
                 'customers' => 'Members',
-                'reports' => 'Reports',
+                'reports' => 'Reports & Analytics',
                 'order_history' => 'Order History',
                 
 

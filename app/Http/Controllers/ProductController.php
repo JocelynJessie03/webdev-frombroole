@@ -11,11 +11,11 @@ use Illuminate\Support\Facades\DB;
 class ProductController extends Controller
 {
     public function index(Request $request)
-{
-    // 1. Ambil data dengan Eager Loading
-    $allProducts = Product::with(['category', 'ingredients' => function($q) {
-        $q->withPivot('amount_needed');
-    }])->where('pro_delete', false)->get();
+    {
+        // 1. Ambil data dengan Eager Loading
+        $allProducts = Product::with(['category', 'ingredients' => function($q) {
+            $q->withPivot('amount_needed');
+        }])->where('pro_delete', false)->get();
 
     // 2. Hitung Stok Dinamis & Status
     foreach ($allProducts as $product) {
