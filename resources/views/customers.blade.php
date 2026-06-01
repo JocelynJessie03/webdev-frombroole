@@ -68,6 +68,11 @@
                         <option value="bronze">Bronze</option>
                     </select>
                 </div>
+                {{-- TAMBAHAN BARU: TOMBOL PEMICU MODAL TASK --}}
+                <button onclick="openTaskModal()" class="bg-[#9E1111] hover:bg-[#8C1717] text-white px-4 py-2 rounded-xl flex items-center gap-2 font-medium text-sm transition shadow-sm">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                    <span>Manage Tier Tasks</span>
+                </button>
             </div>
         </div>
 
@@ -87,7 +92,7 @@
 
             <tbody id="customerTableBody">
                 @foreach($customers as $customer)
-                {{-- KITA SEMATKAN ATRIBUT DATA UNTUK FILTRASI JAVASCRIPT --}}
+                
                 <tr class="customer-row border-t hover:bg-gray-50 transition" 
                     data-name="{{ strtolower($customer->customer_name) }} {{ strtolower($customer->customer_ID) }}" 
                     data-spend="{{ $customer->total_spend }}" 
@@ -105,7 +110,7 @@
                         </div>
                     </td>
 
-                    {{-- CONTACT --}}
+                    
                     <td class="px-6 py-5">
                         <div class="space-y-1 text-sm text-gray-600">
                             <div class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i> {{ $customer->email }}</div>
@@ -113,19 +118,19 @@
                         </div>
                     </td>
 
-                    {{-- TOTAL SPEND --}}
+                    
                     <td class="px-6 py-5">
                         <h3 class="font-bold text-lg">Rp {{ number_format($customer->total_spend, 0, ',', '.') }}</h3>
                     </td>
 
-                    {{-- VISITS --}}
+                    
                     <td class="px-6 py-5">
                         <div class="font-semibold text-sm">
                             {{ $customer->orders ? $customer->orders->count() : 0 }} visits
                         </div>
                     </td>
 
-                    {{-- LOYALTY POINTS - DIBUAT DINAMIS BERDASARKAN POIN ASLI --}}
+                    
                     <td class="px-6 py-5">
                         @php
                             $targetPoinMaksimal = 10000; 
@@ -133,9 +138,9 @@
                         @endphp
 
                         <div class="flex items-center gap-3">
-                            {{-- Progress Bar Container --}}
+                            
                             <div class="w-24 h-2 bg-gray-100 rounded-full overflow-hidden" title="{{ round($calculatedPercentage) }}% to Target">
-                                {{-- Lebar bar (width) dikontrol langsung oleh sisa poin terkini --}}
+                                
                                 <div class="bg-[#7f876e] h-full rounded-full transition-all duration-500 ease-in-out" 
                                     style="width: {{ $calculatedPercentage }}%">
                                 </div>
@@ -163,10 +168,10 @@
                         </div>
                     </td>
 
-                    {{-- ACTION --}}
+                    
                     <td class="px-9 py-5">
                         <div class="flex gap-3 text-[#7b0000]">
-                            {{-- TOMBOL HISTORY --}}
+                        
                             <button onclick="openHistory(this)" 
                                     data-name="{{ $customer->customer_name }}"
                                     data-history="{{ json_encode($customer->orders ?? []) }}"
@@ -183,7 +188,6 @@
     </div>
 </div>
 
-{{-- MODAL HISTORY --}}
 <div id="historyModal" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm">
     <div class="bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh]">
         <div class="p-6 border-b flex justify-between items-center bg-[#faf7f5]">
@@ -196,9 +200,7 @@
             </button>
         </div>
 
-        {{-- AREA SCROLL UNTUK ACCORDION TRANSAKSI --}}
         <div class="p-6 overflow-y-auto flex-1 space-y-4" id="historyModalBody">
-            {{-- Data akan di inject otomatis via JS --}}
         </div>
 
         <div class="p-6 border-t bg-gray-50 flex justify-end">
@@ -208,8 +210,6 @@
         </div>
     </div>
 </div>
-
-{{-- INTEGRASI JAVASCRIPT ENGINE --}}
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const searchInput = document.getElementById("customerSearch");
@@ -239,9 +239,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // ========================================================
-    // LOGIKA FILTER OTOMATIS DARI GLOBAL SEARCH (SIDEBAR)
-    // ========================================================
     const itemToHighlight = new URLSearchParams(window.location.search).get('highlight');
     if (itemToHighlight && searchInput) {
         const targetWord = itemToHighlight.toLowerCase().trim();
@@ -434,5 +431,180 @@ window.onclick = function(event) {
         closeHistory();
     }
 }
+</script>
+<div id="taskModal" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white rounded-3xl w-full max-w-4xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+        <div class="p-6 border-b flex justify-between items-center bg-[#faf7f5]">
+            <div>
+                <h2 class="text-xl font-bold">⚙️ Manage Customer Tier Tasks</h2>
+                <p class="text-sm text-gray-500">Create rewards with specific product requirements or general purchase tasks</p>
+            </div>
+            <button onclick="closeTaskModal()" class="text-gray-400 hover:text-black">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <div class="p-6 overflow-y-auto flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-[#faf7f5] p-5 rounded-2xl border">
+                <h3 class="font-bold text-sm mb-4 text-[#7b0000] uppercase tracking-wider">📝 Create New Task</h3>
+                <form action="{{ route('admin.tasks.store') }}" method="POST" class="space-y-3" id="taskForm">
+                    @csrf
+                    
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-500 uppercase mb-1">Task Title</label>
+                        <input type="text" name="title" required placeholder="e.g. Matcha Day" class="w-full border rounded-xl px-3 py-2 text-sm focus:outline-[#9E1111] focus:ring-2 focus:ring-[#9E1111]/20">
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-500 uppercase mb-1">Description</label>
+                        <textarea name="description" rows="2" placeholder="What makes this task special..." class="w-full border rounded-xl px-3 py-2 text-sm focus:outline-[#9E1111]"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[11px] font-bold text-gray-500 uppercase mb-1">Tier</label>
+                            <select name="required_tier" required class="w-full border rounded-xl px-3 py-2 text-sm bg-white focus:outline-[#9E1111]">
+                                <option value="Bronze">Bronze</option>
+                                <option value="Silver">Silver</option>
+                                <option value="Gold">Gold</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-gray-500 uppercase mb-1">Points</label>
+                            <input type="number" name="points_reward" value="50" required class="w-full border rounded-xl px-3 py-2 text-sm focus:outline-[#9E1111]">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-500 uppercase mb-2">Task Type</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-3 cursor-pointer p-3 border rounded-xl hover:bg-white transition" onclick="toggleTaskType('general')">
+                                <input type="radio" name="task_type" value="general" checked class="w-4 h-4 cursor-pointer" onchange="updateProductSelector()">
+                                <div>
+                                    <p class="font-semibold text-sm">General Purchase</p>
+                                    <p class="text-xs text-gray-400">Any product purchase</p>
+                                </div>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer p-3 border rounded-xl hover:bg-white transition" onclick="toggleTaskType('product')">
+                                <input type="radio" name="task_type" value="product_specific" class="w-4 h-4 cursor-pointer" onchange="updateProductSelector()">
+                                <div>
+                                    <p class="font-semibold text-sm">Specific Products</p>
+                                    <p class="text-xs text-gray-400">Select products to include</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="productSelectorContainer" class="hidden">
+                        <label class="block text-[11px] font-bold text-gray-500 uppercase mb-2">Select Products</label>
+                        <div class="max-h-48 overflow-y-auto border rounded-xl p-3 bg-white space-y-2" id="productList">
+                            @php $products = \App\Models\Product::all(); @endphp
+                            @foreach($products as $product)
+                                <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                                    <input type="checkbox" name="product_ids[]" value="{{ $product->id }}" class="w-4 h-4 rounded cursor-pointer">
+                                    <span class="text-sm text-gray-700">{{ $product->pro_name }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[11px] font-bold text-gray-500 uppercase mb-1">Min Purchases</label>
+                            <input type="number" name="min_purchases_required" value="1" min="1" class="w-full border rounded-xl px-3 py-2 text-sm focus:outline-[#9E1111]">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-gray-500 uppercase mb-1">Min Orders</label>
+                            <input type="number" name="order_count" value="1" min="1" class="w-full border rounded-xl px-3 py-2 text-sm focus:outline-[#9E1111]">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-[#9E1111] hover:bg-[#8C1717] text-white font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider transition mt-2">
+                        ✓ Create Task
+                    </button>
+                </form>
+            </div>
+
+            <div class="space-y-4 overflow-y-auto max-h-96">
+                <h3 class="font-bold text-sm text-gray-700 uppercase tracking-wider sticky top-0 bg-white pb-2">📋 Active Tasks</h3>
+                @php 
+                    $allActiveTasks = \App\Models\Task::where('is_active', true)->get();
+                @endphp
+                
+                @foreach(['Bronze', 'Silver', 'Gold'] as $tName)
+                    <div class="border rounded-xl p-3 bg-white">
+                        <h4 class="font-black text-xs uppercase text-gray-400 mb-2 tracking-widest border-b pb-1">
+                            {{ $tName }} Tasks
+                        </h4>
+                        <div class="space-y-2">
+                            @forelse($allActiveTasks->where('required_tier', $tName) as $tAct)
+                                <div class="flex justify-between items-start bg-[#faf7f5] p-2.5 rounded-lg border border-gray-100 text-xs gap-2">
+                                    <div class="flex-1">
+                                        <p class="font-bold text-gray-800">{{ $tAct->title }}</p>
+                                        <p class="text-[10px] text-gray-400 mb-1">{{ Str::limit($tAct->description, 50) }}</p>
+                                        <div class="flex flex-wrap gap-1">
+                                            <span class="bg-white px-2 py-0.5 rounded text-[9px] font-semibold border">{{ $tAct->task_type === 'general' ? '🎯 General' : '📦 Specific' }}</span>
+                                            @if($tAct->task_type === 'product_specific' && $tAct->products->count() > 0)
+                                                <span class="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-[9px] font-semibold">{{ $tAct->products->count() }} products</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2 whitespace-nowrap">
+                                        <span class="font-mono bg-white border px-1.5 py-0.5 rounded text-gray-600 font-bold">+{{ $tAct->points_reward }}p</span>
+                                        <form action="{{ route('admin.tasks.destroy', $tAct->id) }}" method="POST" onsubmit="return confirm('Delete?')">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="text-red-600 hover:text-red-900 transition p-1" title="Delete">
+                                                <i data-lucide="trash-2" class="w-3 h-3"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            @empty
+                                <p class="text-[11px] text-gray-400 italic py-2">No tasks yet</p>
+                            @endforelse
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- JAVASCRIPT CONTROLLER UNTUK TRIGGER MODAL TASK & TASK TYPE TOGGLE --}}
+<script>
+function openTaskModal() {
+    document.getElementById('taskModal').classList.remove('hidden');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function closeTaskModal() {
+    document.getElementById('taskModal').classList.add('hidden');
+}
+
+function updateProductSelector() {
+    const taskType = document.querySelector('input[name="task_type"]:checked').value;
+    const productSelector = document.getElementById('productSelectorContainer');
+    
+    if (taskType === 'product_specific') {
+        productSelector.classList.remove('hidden');
+    } else {
+        productSelector.classList.add('hidden');
+        document.querySelectorAll('input[name="product_ids[]"]').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+    }
+}
+
+function toggleTaskType(type) {
+    const typeValue = type === 'general' ? 'general' : 'product_specific';
+    document.querySelector(`input[name="task_type"][value="${typeValue}"]`).checked = true;
+    updateProductSelector();
+}
+
+// Tambahan integrasi klik luar modal untuk menutup
+window.addEventListener('click', function(event) {
+    const taskModal = document.getElementById('taskModal');
+    if (event.target == taskModal) closeTaskModal();
+});
 </script>
 @endsection

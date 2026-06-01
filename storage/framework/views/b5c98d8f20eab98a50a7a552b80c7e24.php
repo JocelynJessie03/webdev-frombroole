@@ -76,7 +76,43 @@
             <div class="flex items-center gap-5">
                 
                 <button class="w-11 h-11 rounded-2xl bg-[#3D3833]/5 border border-[#3D3833]/5 flex items-center justify-center hover:scale-105 transition">🛒</button>
+                <a
+    href="<?php echo e(route('customer.tasks.index')); ?>"
+    class="text-[11px] uppercase tracking-[0.2em] font-black <?php echo e(Route::is('customer.tasks.index') ? 'text-[#8C1717]' : 'text-[#3D3833]/70'); ?> hover:text-[#8C1717] transition"
+>
+    Tasks & Coupons
+</a>
 
+<div class="relative flex items-center" x-data="{ openWidget: false, widgetTasks: [], fetchTasks() { fetch('<?php echo e(route('customer.tasks.widget')); ?>').then(res => res.json()).then(data => this.widgetTasks = data) } }" @mouseenter="openWidget = true; fetchTasks()" @mouseleave="openWidget = false">
+    <button class="w-11 h-11 rounded-2xl bg-[#3D3833]/5 border border-[#3D3833]/5 flex items-center justify-center hover:scale-105 transition relative">
+        📋
+        <?php if(auth()->guard('customer')->check()): ?>
+            <span class="absolute -top-1 -right-1 w-3 h-3 bg-[#9E1111] rounded-full animate-ping"></span>
+        <?php endif; ?>
+    </button>
+
+    <div x-show="openWidget" x-transition class="absolute right-0 top-12 w-72 bg-white rounded-2xl shadow-xl border p-4 z-50 text-left">
+        <h4 class="text-xs font-black uppercase tracking-wider text-[#8C1717] mb-2">Available Tier Tasks</h4>
+        <div class="space-y-2 max-h-60 overflow-y-auto">
+            <template x-for="item in widgetTasks" :key="item.id">
+                <div class="p-2 border rounded-xl text-xs flex justify-between items-center" :class="item.unlocked ? 'bg-white' : 'bg-gray-50 opacity-60'">
+                    <div>
+                        <p class="font-bold text-[#3D3833]" x-text="item.title"></p>
+                        <span class="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider" 
+                              :class="item.required_tier === 'Gold' ? 'bg-yellow-100 text-yellow-700' : (item.required_tier === 'Silver' ? 'bg-gray-100 text-gray-600' : 'bg-orange-100 text-orange-700')"
+                              x-text="item.required_tier"></span>
+                    </div>
+                    <div>
+                        <span x-if="item.claimed" class="text-green-600 font-bold">✓ Claimed</span>
+                        <span x-if="!item.claimed && item.unlocked" class="text-[#9E1111] font-bold">Available</span>
+                        <span x-if="!item.unlocked" class="text-gray-400">🔒 Locked</span>
+                    </div>
+                </div>
+            </template>
+        </div>
+        <a href="<?php echo e(route('customer.tasks.index')); ?>" class="block text-center text-[10px] uppercase tracking-wider font-black text-[#9E1111] mt-3 hover:underline">View All Tasks</a>
+    </div>
+</div>
                 <div class="flex items-center gap-4 border-l border-[#3D3833]/10 pl-5">
                     <?php if(auth()->guard()->check()): ?>
                         

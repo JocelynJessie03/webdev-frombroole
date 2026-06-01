@@ -801,8 +801,8 @@
                     <span class="summary-row-value free" id="discount-val">— Rp 0</span>
                 </div>
                 <div class="summary-row">
-                    <span class="summary-row-label">Service</span>
-                    <span class="summary-row-value free">Free</span>
+                    <span class="summary-row-label">Tax 10%</span>
+                    <span class="summary-row-value" id="tax-val">Rp 0</span>
                 </div>
 
                 {{-- Total --}}
@@ -958,7 +958,8 @@
     function updateSummary() {
         const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
         const discountAmt = Math.round(subtotal * discount / 100);
-        const total = subtotal - discountAmt;
+        const tax = Math.round(subtotal * 0.1); // 10% tax
+        const total = subtotal - discountAmt + tax;
         const totalQty = cart.reduce((s, i) => s + i.qty, 0);
 
         const linesEl = document.getElementById('summary-lines');
@@ -975,6 +976,7 @@
         }
 
         document.getElementById('subtotal-val').textContent    = 'Rp ' + fmt(subtotal);
+        document.getElementById('tax-val').textContent         = 'Rp ' + fmt(tax);
         document.getElementById('total-val').textContent       = 'Rp ' + fmt(total);
         document.getElementById('summary-item-count').textContent = totalQty + (totalQty === 1 ? ' item in cart' : ' items in cart');
 
@@ -1057,6 +1059,8 @@
             feedback.className   = 'promo-feedback error';
             return;
         }
+
+        // First check hardcoded promos
         if (PROMOS[code]) {
             discount     = PROMOS[code];
             promoApplied = code;
@@ -1064,13 +1068,44 @@
             feedback.className   = 'promo-feedback success';
             updateSummary();
             showToast(discount + '% discount applied 🎉');
-        } else {
-            discount     = 0;
+            return;
+        }
+
+        // Check database coupons via AJAX
+        const csrf = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+        fetch('{{ route("customer.validate-coupon") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrf,
+            },
+            body: JSON.stringify({ code: code }),
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.valid && data.discount_value) {
+                discount = data.discount_value;
+                promoApplied = code;
+                feedback.textContent = '✓ ' + discount + '% discount applied!';
+                feedback.className   = 'promo-feedback success';
+                updateSummary();
+                showToast(discount + '% discount applied 🎉');
+            } else {
+                discount = 0;
+                promoApplied = null;
+                feedback.textContent = '✗ Invalid or expired coupon code.';
+                feedback.className   = 'promo-feedback error';
+                updateSummary();
+            }
+        })
+        .catch(err => {
+            discount = 0;
             promoApplied = null;
-            feedback.textContent = '✗ Invalid promo code.';
+            feedback.textContent = '✗ Error validating coupon. Try again.';
             feedback.className   = 'promo-feedback error';
             updateSummary();
-        }
+        });
     };
     window.proceedCheckout = async function () {
         if (!cart.length) return;

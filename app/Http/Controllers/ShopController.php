@@ -129,4 +129,57 @@ class ShopController extends Controller
             'redirect_url' => route('customer.shop'), // change to order-confirmation route
         ]);
     }
+
+    // =========================================================================
+    //  VALIDATE COUPON — Validates a coupon code and returns discount percentage
+    // =========================================================================
+
+    public function validateCoupon(Request $request)
+    {
+        $code = $request->input('code', '');
+
+        if (!$code) {
+            return response()->json([
+                'valid' => false,
+                'message' => 'Coupon code is required.',
+            ]);
+        }
+
+        // Search for the coupon in discount_coupons table
+        $coupon = \App\Models\DiscountCoupon::where('code', strtoupper($code))
+            ->where('is_active', true)
+            ->first();
+
+        if (!$coupon) {
+            return response()->json([
+                'valid' => false,
+                'message' => 'Invalid coupon code.',
+            ]);
+        }
+
+        // Check if coupon has expired
+        if ($coupon->expires_at && now()->isAfter($coupon->expires_at)) {
+            return response()->json([
+                'valid' => false,
+                'message' => 'This coupon has expired.',
+            ]);
+        }
+
+        // Check if coupon has reached max uses
+        if ($coupon->max_uses && $coupon->times_used >= $coupon->max_uses) {
+            return response()->json([
+                'valid' => false,
+                'message' => 'This coupon has reached its usage limit.',
+            ]);
+        }
+
+        // Coupon is valid
+        return response()->json([
+            'valid' => true,
+            'code' => $coupon->code,
+            'discount_value' => $coupon->discount_value,
+            'discount_type' => $coupon->discount_type,
+            'message' => 'Coupon applied successfully!',
+        ]);
+    }
 }

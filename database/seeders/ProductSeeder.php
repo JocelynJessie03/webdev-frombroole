@@ -204,7 +204,7 @@ class ProductSeeder extends Seeder
                 'pro_name'    => $pData['name'],
                 'pro_price'   => $pData['price'],
                 'category_id' => $pData['cat'],
-                'pro_image'   => $pData['name'] . '.png',
+                'pro_image'   => $pData['name'] . '.jpg',
             ]);
 
             // Tambahkan relasi bahan baku ke tabel pivot

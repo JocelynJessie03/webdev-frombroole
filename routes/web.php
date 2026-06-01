@@ -1,20 +1,22 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\Auth\GoogleController;
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\IngredientController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\PosController;
-use App\Http\Controllers\OrderHistoryController;
-use App\Http\Controllers\ReportController;
-use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AiController;
-use App\Http\Controllers\ShopController;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\CategoryController;
+
+use App\Http\Controllers\Customer\MemberTaskController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EditMemberController; // <-- TAMBAHAN UNTUK EDIT PROFILE
+use App\Http\Controllers\IngredientController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\OrderHistoryController;
+use App\Http\Controllers\PosController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ShopController;
+use Illuminate\Support\Facades\Route;
 
 // ==========================================
 // 1. GUEST ROUTES (Hanya bisa diakses jika BELUM login)
@@ -101,6 +103,9 @@ Route::middleware(['auth:admin', 'admin'])->group(function () {
     // Notifications
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
+
+    Route::post('/admin/tasks', [App\Http\Controllers\AdminTaskController::class, 'store'])->name('admin.tasks.store');
+    Route::delete('/admin/tasks/{task}', [App\Http\Controllers\AdminTaskController::class, 'destroy'])->name('admin.tasks.destroy');
 });
 
 // ==========================================
@@ -111,10 +116,11 @@ Route::middleware(['auth', 'customer'])->group(function () {
     Route::view('/home', 'customer.home')->name('customer.home');
     Route::view('/about', 'customer.about')->name('customer.about');
     
-    // Shop
+    // Shop 
     Route::get('/shop', [ShopController::class, 'index'])->name('customer.shop');
     Route::get('/cart',  [ShopController::class, 'cart'])->name('customer.cart');
     Route::post('/checkout', [ShopController::class, 'checkout'])->name('customer.checkout');
+    Route::post('/validate-coupon', [ShopController::class, 'validateCoupon'])->name('customer.validate-coupon');
     
     Route::view('/transaction-history', 'customer.transactions_history')->name('customer.history');
     
@@ -122,6 +128,9 @@ Route::middleware(['auth', 'customer'])->group(function () {
     Route::get('/profile/edit', [EditMemberController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/update', [EditMemberController::class, 'update'])->name('profile.update');
     
+    Route::get('/tasks', [MemberTaskController::class, 'index'])->name('customer.tasks.index');
+    Route::post('/tasks/{task}/claim', [MemberTaskController::class, 'claim'])->name('customer.tasks.claim');
+    Route::get('/api/tasks/widget', [MemberTaskController::class, 'widget'])->name('customer.tasks.widget');
     // AI Chat
     Route::post('/ai-chat', [AiController::class, 'chat']);
 });
