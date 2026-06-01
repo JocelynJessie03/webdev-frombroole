@@ -104,6 +104,19 @@ Route::get('/home', function () {
 });
 
 
+Route::get('/', function () {
+    return view('customer.home');
+})->name('customer.home');
+
+Route::get('/about', function () {
+    return view('customer.about');
+})->name('customer.about');
+
+Route::get('/contact', function () {
+    return view('customer.contact');
+})->name('customer.contact');
+
+
 Route::post(
     '/notifications/{id}/read',
     [NotificationController::class, 'markAsRead']

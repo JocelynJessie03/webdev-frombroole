@@ -258,18 +258,29 @@
 
         @php
 
-            $title = match(Request::segment(1)) {
+           $title = match(Request::segment(1)) {
 
-                'dashboard' => 'Dashboard',
-                'pos' => 'Point of Sale',
-                'product-inventory' => 'Product Inventory',
-                'ingredient-inventory' => 'Ingredient Inventory',
-                'customers' => 'Customers',
-                'reports' => 'Reports',
-                'order_history' => 'Order History',
+    'dashboard' => 'Dashboard',
 
-                default => 'Dashboard',
-            };
+    'pos' => 'Point of Sale',
+
+    'product-inventory' => 'Product Inventory',
+
+    'products' => 'Product Inventory',
+
+    'ingredient-inventory' => 'Ingredient Inventory',
+
+    'ingredients' => 'Ingredient Inventory',
+
+    'customers' => 'Customers',
+
+    'reports' => 'Reports',
+
+    'order_history' => 'Order History',
+
+    default => 'Dashboard',
+
+};
 
         @endphp
 
