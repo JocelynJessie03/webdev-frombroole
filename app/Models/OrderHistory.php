@@ -10,6 +10,7 @@ class OrderHistory extends Model
     protected $fillable = ['order_id', 'customer_id', 'order_date', 'total_items', 'total_price', 'status','payment_method'];
     protected $casts = [
     'order_date' => 'datetime',];
+    
     public function customer()
     {
         return $this->belongsTo(Customer::class);
@@ -19,4 +20,5 @@ class OrderHistory extends Model
     {
     return $this->hasMany(OrderItem::class, 'order_id');
     }
+
 }

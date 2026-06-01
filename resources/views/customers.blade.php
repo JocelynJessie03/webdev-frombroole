@@ -125,14 +125,25 @@
                         </div>
                     </td>
 
-                    {{-- LOYALTY POINTS --}}
+                    {{-- LOYALTY POINTS - DIBUAT DINAMIS BERDASARKAN POIN ASLI --}}
                     <td class="px-6 py-5">
+                        @php
+                            $targetPoinMaksimal = 10000; 
+                            $calculatedPercentage = min(100, max(0, ($customer->member_points / $targetPoinMaksimal) * 100));
+                        @endphp
+
                         <div class="flex items-center gap-3">
-                            <div class="w-24 h-2 bg-gray-100 rounded-full overflow-hidden">
-                                <div class="bg-[#7f876e] h-full rounded-full" style="width: {{ $customer->progress_percentage }}%"></div>
+                            {{-- Progress Bar Container --}}
+                            <div class="w-24 h-2 bg-gray-100 rounded-full overflow-hidden" title="{{ round($calculatedPercentage) }}% to Target">
+                                {{-- Lebar bar (width) dikontrol langsung oleh sisa poin terkini --}}
+                                <div class="bg-[#7f876e] h-full rounded-full transition-all duration-500 ease-in-out" 
+                                    style="width: {{ $calculatedPercentage }}%">
+                                </div>
                             </div>
+                            
+                            {{-- Teks Angka Poin --}}
                             <span class="text-sm font-semibold text-[#7f876e]">
-                                {{ $customer->member_points }} pts
+                                {{ number_format($customer->member_points, 0, ',', '.') }} pts
                             </span>
                         </div>
                     </td>
@@ -163,7 +174,6 @@
                                     title="View Transaction History">
                                 <i data-lucide="history" class="w-4 h-4"></i>
                             </button>
-                            {{-- TOMBOL TITIK TIGA DI SINI SUDAH DIHAPUS --}}
                         </div>
                     </td>
                 </tr>
@@ -229,6 +239,33 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // ========================================================
+    // LOGIKA FILTER OTOMATIS DARI GLOBAL SEARCH (SIDEBAR)
+    // ========================================================
+    const itemToHighlight = new URLSearchParams(window.location.search).get('highlight');
+    if (itemToHighlight && searchInput) {
+        const targetWord = itemToHighlight.toLowerCase().trim();
+        
+        // 1. Ketik otomatis kata pencarian di input lokal
+        searchInput.value = itemToHighlight;
+        
+        // 2. Jalankan fungsi filter bawaan Anda
+        applyFilters();
+
+        // 3. Beri efek kilasan kuning & scroll halus ke target customer yang dicari
+        document.querySelectorAll(".customer-row").forEach(row => {
+            const nameAndId = row.getAttribute("data-name");
+            if (nameAndId && nameAndId.includes(targetWord)) {
+                row.style.backgroundColor = '#fef08a';
+                row.style.transition = 'background-color 1s ease';
+                row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Kembalikan ke warna semula setelah 1.5 detik
+                setTimeout(() => { row.style.backgroundColor = ''; }, 1500);
+            }
+        });
+    }
+
     // Fungsi Pengurutan Top Spender
     function sortTopSpenders() {
         const rows = Array.from(document.querySelectorAll(".customer-row"));
@@ -259,7 +296,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (btnTopSpender) btnTopSpender.addEventListener("click", sortTopSpenders);
 });
 
-// FUNGSI MODAL HISTORY CUSTOMER (DENGAN ACCORDION)
+// FUNGSI MODAL HISTORY CUSTOMER (DENGAN ACCORDION NYATA)
 function openHistory(button) {
     const modal = document.getElementById('historyModal');
     const nameEl = document.getElementById('modalCustomerName');
@@ -285,14 +322,15 @@ function openHistory(button) {
             </div>
         `;
     } else {
+        historyData.reverse();
+
         historyData.forEach((trx, index) => {
-            // Render detail list item dari transaksi
             let itemsList = '';
             if (trx.items && trx.items.length > 0) {
                 itemsList = trx.items.map(item => {
                     let productName = 'Unknown Product';
                     if (item.product) {
-                        productName = item.pro_name || item.product.pro_name || item.product.pro_name || 'Unnamed Product';
+                        productName = item.pro_name || item.product.pro_name || 'Unnamed Product';
                     }
 
                     return `
@@ -306,16 +344,13 @@ function openHistory(button) {
                 itemsList = '<p class="text-xs text-gray-400 italic">No details available.</p>';
             }
 
-            // Fallback variable data transaksi dasar
             let orderId = trx.order_id || `TRX-${Math.floor(Math.random() * 10000)}`;
             let orderDate = trx.order_date || trx.created_at || '-';
             let totalItems = trx.total_items || (trx.items ? trx.items.length : 0);
             
-            // Mengambil dan memformat total_price ke mata uang Rupiah
             let totalPrice = trx.total_price ? parseInt(trx.total_price) : 0;
             let formattedPrice = 'Rp ' + totalPrice.toLocaleString('id-ID');
 
-            // Format Tanggal dan Jam agar rapi (Contoh: 21 May 2026 - 11:35)
             let displayDate = orderDate;
             if (orderDate !== '-') {
                 try {
@@ -357,7 +392,7 @@ function openHistory(button) {
                         </div>
                     </div>
 
-                    <div id="details-${index}" class="hidden bg-[#faf7f5] p-4 border-t">
+                    <div id="details-${index}" class="order-detail-container hidden bg-[#faf7f5] p-4 border-t">
                         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Items Ordered</p>
                         <ul class="space-y-1">
                             ${itemsList}
@@ -370,7 +405,6 @@ function openHistory(button) {
 
     modal.classList.remove('hidden');
     
-    // Refresh SVG Lucide yang baru saja di-inject
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
     }
@@ -380,10 +414,18 @@ function closeHistory() {
     document.getElementById('historyModal').classList.add('hidden');
 }
 
-// FUNGSI UNTUK MEMUNCULKAN DROPDOWN DETAIL MENU (MATA)
 function toggleOrderDetails(id) {
     const el = document.getElementById(id);
-    el.classList.toggle('hidden');
+    const isCurrentlyHidden = el.classList.contains('hidden');
+    const allDetailContainers = document.querySelectorAll('.order-detail-container');
+
+    allDetailContainers.forEach(container => {
+        container.classList.add('hidden');
+    });
+
+    if (isCurrentlyHidden) {
+        el.classList.remove('hidden');
+    }
 }
 
 window.onclick = function(event) {
@@ -393,5 +435,4 @@ window.onclick = function(event) {
     }
 }
 </script>
-
 @endsection

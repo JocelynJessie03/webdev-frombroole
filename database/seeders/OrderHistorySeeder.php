@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\OrderHistory;
 use App\Models\Customer;
+use App\Models\OrderHistory;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class OrderHistorySeeder extends Seeder
 {
@@ -146,8 +147,8 @@ class OrderHistorySeeder extends Seeder
         // 1. Insert riwayat order yang SUDAH BERURUTAN TANGGALNYA ke database
         foreach ($ordersData as $index => $order) {
             // ID Order terbuat runtut secara kronologis (ORD-00001, ORD-00002, dst.)
-            $orderId = 'ORD-' . str_pad($index + 1, 5, '0', STR_PAD_LEFT);
-
+            $banyakOrder= DB::table('order_histories')->count();
+            $orderId = 'INV-' . now()->format('YmdHis') . '-' . str_pad($banyakOrder + 1, 3, '0', STR_PAD_LEFT);
             OrderHistory::create([
                 'order_id'       => $orderId,
                 'customer_id'    => $order['customer_id'],
@@ -164,7 +165,7 @@ class OrderHistorySeeder extends Seeder
 
         foreach ($allCustomers as $customer) {
             // Hitung total belanja riil dari data yang baru saja dimasukkan
-            $actualSpend = OrderHistory::where('customer_id', $customer->id)->sum('total_price');
+            $actualSpend = DB::table('order_histories')->where('customer_id', $customer->id)->sum('total_price');
             
             // 1 Poin tiap kelipatan Rp 100 belanja
             $calculatedPoints = floor($actualSpend / 100);

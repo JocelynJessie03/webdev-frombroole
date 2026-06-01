@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product; 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
 {
@@ -35,7 +36,7 @@ class CategoryController extends Controller
             'category_ID' => $newCategoryID
         ]);
 
-        return redirect()->back()->with('success', 'Kategori baru berhasil ditambahkan!');
+        return redirect()->back()->with('success', 'New Category Succesfully Added!');
     }
 
     // Memproses perubahan nama kategori dari inline modal
@@ -51,7 +52,7 @@ class CategoryController extends Controller
             'category_name' => $request->category_name
         ]);
 
-        return redirect()->back()->with('success', 'Kategori berhasil diperbarui!');
+        return redirect()->back()->with('success', 'Category Succesfully Updated!');
     }
 
     // Memproses hapus kategori
@@ -67,19 +68,18 @@ class CategoryController extends Controller
 
         // JANGAN HAPUS jika yang mau dihapus adalah kategori penampung itu sendiri
         if ($category->id == $uncategorized->id) {
-            return redirect()->back()->with('error', 'Kategori utama Uncategorized tidak boleh dihapus!');
+            return redirect()->back()->with('error', 'Uncategorized Cannot be Deleted!');
         }
 
         // Pindahkan semua produk dari kategori yang mau dihapus ke 'Uncategorized'
-        Product::where('category_id', $id)->update(['category_id' => $uncategorized->id]);
-
+        DB::table('products')->where('category_id', $id)->update(['category_id' => $uncategorized->id]);
         // Perbaikan alur penghapusan ganda (Bawaan Laravel + Kolom manual kamu)
         $category->category_delete = true; // 1. Tandai kolom boolean manualmu
         $category->save();                 // 2. Simpan perubahannya dulu
 
         $category->delete();               // 3. Jalankan softDeletes bawaan Laravel (mengisi kolom deleted_at)
 
-        return redirect()->back()->with('success', 'Kategori berhasil dihapus dan produk dialihkan ke Uncategorized!');
+        return redirect()->back()->with('success', 'Category Succesfully Deleted and Products Moved to Uncategorized!');
     }
     public function restore($id)
 {
@@ -93,6 +93,7 @@ class CategoryController extends Controller
     $category->category_delete = false;
     $category->save();
 
-    return redirect()->back()->with('success', 'Kategori lama berhasil diaktifkan kembali!');
+    return redirect()->back()->with('success', 'Old Category Succesfully Restored!');
 }
+    
 }

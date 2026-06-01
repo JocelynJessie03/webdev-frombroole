@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
@@ -10,68 +12,106 @@ use App\Http\Controllers\OrderHistoryController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\AiController;
+use App\Http\Controllers\ShopController;
+use App\Http\Controllers\EditMemberController; // <-- TAMBAHAN UNTUK EDIT PROFILE
 
-Route::get('/', function () {
-    return redirect('/dashboard');
+// ==========================================
+// 1. GUEST ROUTES (Hanya bisa diakses jika BELUM login)
+// ==========================================
+Route::middleware('guest')->group(function () {
+    // Login
+    Route::view('/login', 'login')->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+
+    // Register & OTP
+    Route::view('/register', 'register')->name('register');
+    Route::post('/register/send-otp', [AuthController::class, 'sendOtp']);
+    Route::view('/verify-otp', 'verify-otp')->name('verify-otp');
+    Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
+    Route::post('/resend-otp', [AuthController::class, 'resendOtp']);
+
+    // Forgot Password
+    Route::view('/forgot-password', 'forgot-password');
+    Route::post('/forgot-password/send-otp', [AuthController::class, 'sendForgotOtp']);
+    Route::view('/verify-reset-otp', 'verify-reset-otp');
+    Route::post('/verify-reset-otp', [AuthController::class, 'verifyResetOtp']);
+    Route::post('/resend-reset-otp', [AuthController::class, 'resendResetOtp']);
+    Route::view('/new-password', 'new-password');
+    Route::post('/new-password', [AuthController::class, 'updatePassword']);
+
+    // OAuth Google
+    Route::get('/auth/google', [GoogleController::class, 'redirect']);
+    Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->name('dashboard');
+// Logout (Harus login untuk bisa logout)
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/pos', [PosController::class, 'index'])->name('pos');
+// ==========================================
+// 2. ADMIN ROUTES (Hanya untuk Admin)
+// ==========================================
+Route::middleware(['auth:admin', 'admin'])->group(function () {
+    // Redirection
+    Route::get('/', function () { return redirect('/dashboard'); });
 
+    // Dashboard & Global Search
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/api/search', [DashboardController::class, 'apiSearch']);
 
-//Product
-Route::get('/product-inventory', [ProductController::class, 'index'])->name('product.inventory');
+    // POS & Checkout
+    Route::get('/pos', [PosController::class, 'index'])->name('pos');
+    Route::post('/pos/checkout', [PosController::class, 'checkout'])->name('pos.checkout');
+    Route::get('/checkout/{id}', [PosController::class, 'checkoutView'])->name('checkout.view');
+    Route::post('/checkout-preview', [PosController::class, 'checkoutPreview'])->name('checkout.preview');
+    Route::post('/payment-process', [PosController::class, 'processPayment'])->name('payment.process');
+    Route::get('/payment-success/{id}', [PosController::class, 'paymentSuccess'])->name('payment.success');
+    Route::get('/receipt/{id}', [PosController::class, 'receipt'])->name('receipt');
+    Route::post('/check-member', [PosController::class, 'checkMember'])->name('check.member');
 
-Route::get('/products/create', [ProductController::class, 'create'])
-    ->name('products.create');
+    // Inventory / Products
+    Route::get('/product-inventory', [ProductController::class, 'index'])->name('product.inventory');
+    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+    Route::post('/products/store', [ProductController::class, 'store'])->name('products.store');
+    Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('product.edit');
+    Route::put('/products/{id}', [ProductController::class, 'update'])->name('product.update');
+    Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
 
-Route::post('/products/store', [ProductController::class, 'store'])
-    ->name('products.store');
+    // Ingredients
+    Route::get('/ingredient-inventory', [IngredientController::class, 'index'])->name('ingredient.inventory');
+    Route::get('/ingredients/create', [IngredientController::class, 'create'])->name('ingredient.create');
+    Route::post('/ingredients/store', [IngredientController::class, 'store'])->name('ingredient.store');
+    Route::get('/ingredients/{id}/edit', [IngredientController::class, 'edit'])->name('ingredient.edit');
+    Route::put('/ingredients/{id}', [IngredientController::class, 'update'])->name('ingredient.update');
+    Route::delete('/ingredients/{id}', [IngredientController::class, 'destroy'])->name('ingredient.destroy');
 
-Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('product.edit');
+    // Categories
+    Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+    Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+    Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
+    Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+    Route::post('/categories/{id}/restore', [CategoryController::class, 'restore'])->name('categories.restore');
 
-Route::put('/products/{id}', [ProductController::class, 'update'])->name('product.update');
+    // Orders & Customers
+    Route::get('/order_history', [OrderHistoryController::class, 'index'])->name('order_history');
+    Route::patch('/order_history/{id}/update-status', [OrderHistoryController::class, 'updateStatus'])->name('order_history.update_status');
+    Route::get('/customers', [CustomerController::class, 'index'])->name('customers');
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports');
 
-Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+    // Notifications
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
+});
 
-
-//Category
-Route::get('/categories/create', [App\Http\Controllers\CategoryController::class, 'create'])->name('categories.create');
-Route::post('/categories', [App\Http\Controllers\CategoryController::class, 'store'])->name('categories.store');
-
-// INGREDIENT
-Route::get('/ingredient-inventory', [IngredientController::class, 'index'])
-    ->name('ingredient.inventory');
-
-Route::get('/ingredients/create', [IngredientController::class, 'create'])->name('ingredient.create');
-
-Route::post('/ingredients/store', [IngredientController::class, 'store'])->name('ingredient.store');
-
-Route::get('/ingredients/{ingredient}/edit', [IngredientController::class, 'edit'])->name('ingredient.edit');
-
-Route::put('/ingredients/{ingredient}', [IngredientController::class, 'update'])->name('ingredient.update');
-
-Route::delete('/ingredients/{id}', [IngredientController::class, 'destroy'])->name('ingredient.destroy');
-// ORDER HISTORY
-Route::get('/order_history', [OrderHistoryController::class, 'index'])->name('order_history');
-
-Route::patch('/order_history/{id}/update-status', [OrderHistoryController::class, 'updateStatus'])->name('order_history.update_status');
-
-//Customer
-Route::get('/customers', [CustomerController::class, 'index'])->name('customers');
-
-
-// REPORTS
-Route::get('/reports', [ReportController::class, 'index'])
-    ->name('reports');
-
-
-// CHECKOUT
-Route::post('/pos/checkout', [PosController::class, 'checkout'])
-    ->name('pos.checkout');
+// ==========================================
+// 3. CUSTOMER ROUTES (Hanya untuk Customer)
+// ==========================================
+Route::middleware(['auth', 'customer'])->group(function () {
+    // Halaman Customer
+    Route::view('/home', 'customer.home')->name('customer.home');
+    Route::view('/about', 'customer.about')->name('customer.about');
     
+<<<<<<< HEAD
 Route::get('/checkout/{id}', [PosController::class, 'checkoutView'])
     ->name('checkout.view');
 
@@ -126,3 +166,19 @@ Route::post(
     '/notifications/read-all',
     [NotificationController::class, 'markAllAsRead']
 );
+=======
+    // Shop
+    Route::get('/shop', [ShopController::class, 'index'])->name('customer.shop');
+    Route::get('/cart',  [ShopController::class, 'cart'])->name('customer.cart');
+    Route::post('/checkout', [ShopController::class, 'checkout'])->name('customer.checkout');
+    
+    Route::view('/transaction-history', 'customer.transactions_history')->name('customer.history');
+    
+    // --> DIUBAH: Menggunakan EditMemberController <--
+    Route::get('/profile/edit', [EditMemberController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile/update', [EditMemberController::class, 'update'])->name('profile.update');
+    
+    // AI Chat
+    Route::post('/ai-chat', [AiController::class, 'chat']);
+});
+>>>>>>> 5452588dc742a95560dbcd02ad75307a53c7778d

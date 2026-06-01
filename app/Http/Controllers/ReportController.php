@@ -9,7 +9,7 @@ class ReportController extends Controller
 {
     public function index(Request $request)
     {
-        $view = $request->input('view', 'weekly'); 
+        $view = $request->input('view', 'daily'); 
         $startDate = $request->input('start_date'); 
         $endDate = $request->input('end_date');     
 

@@ -10,7 +10,6 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-
         body {
             background: #f7f5f3;
             margin: 0;
@@ -22,6 +21,7 @@
             background: linear-gradient(180deg, #7b0000, #8d0000);
         }
 
+        /* Memastikan transisi lebar sidebar berjalan mulus */
         aside {
             transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -43,7 +43,6 @@
             padding-left: 0;
             padding-right: 0;
         }
-
     </style>
 
 </head>
@@ -51,24 +50,11 @@
 <body class="h-screen w-screen overflow-hidden">
 
 <div id="main-container">
-
     {{-- SIDEBAR --}}
     <aside
         id="sidebar"
-        class="w-[280px] sidebar-gradient text-white flex flex-col justify-between relative shadow-2xl shrink-0 h-full"
+        class="w-[95px] collapsed sidebar-gradient text-white flex flex-col justify-between relative shadow-2xl shrink-0 h-full"
     >
-
-        {{-- TOGGLE --}}
-        <button
-            id="toggle-btn"
-            class="absolute -right-5 top-14 bg-white text-[#7b0000] rounded-full p-2 shadow-xl border border-gray-100 z-50 hover:scale-110 active:scale-95 transition-all"
-        >
-
-            <i id="toggle-icon" data-lucide="chevron-left" class="w-5 h-5"></i>
-
-        </button>
-
-
 
         <div class="overflow-y-auto no-scrollbar">
 
@@ -193,7 +179,7 @@
                     <i data-lucide="users" class="shrink-0 w-5 h-5"></i>
 
                     <span class="hide-on-collapse whitespace-nowrap">
-                        Customers
+                        Members
                     </span>
 
                 </a>
@@ -209,7 +195,7 @@
                     <i data-lucide="bar-chart-3" class="shrink-0 w-5 h-5"></i>
 
                     <span class="hide-on-collapse whitespace-nowrap">
-                        Reports
+                        Reports & Analytics
                     </span>
 
                 </a>
@@ -218,32 +204,19 @@
 
         </div>
 
+        <div class="px-5 pb-8">
+            <form method="POST" action="{{ route('logout') }}" class="w-full">
+                @csrf
+                <button type="submit" class="menu-item flex w-full items-center gap-4 px-5 py-3 rounded-2xl text-base opacity-70 hover:opacity-100 hover:bg-white/10 transition-all duration-200 group text-left">
+                    
+                    <i data-lucide="log-out" class="shrink-0 w-5 h-5 group-hover:text-red-300"></i>
+                    
+                    <span class="hide-on-collapse whitespace-nowrap font-medium">
+                        Logout
+                    </span>
 
-
-        {{-- PROFILE --}}
-        <div class="p-6">
-
-            <div class="bg-white/10 rounded-3xl p-4 flex items-center gap-4 overflow-hidden">
-
-                <img
-                    src="https://i.pravatar.cc/100"
-                    class="w-10 h-10 rounded-2xl shrink-0"
-                >
-
-                <div class="hide-on-collapse">
-
-                    <h3 class="text-base font-bold whitespace-nowrap">
-                        Ahmad's Coffee
-                    </h3>
-
-                    <p class="text-[10px] opacity-70">
-                        Store Manager
-                    </p>
-
-                </div>
-
-            </div>
-
+                </button>
+            </form>
         </div>
 
     </aside>
@@ -260,6 +233,7 @@
 
            $title = match(Request::segment(1)) {
 
+<<<<<<< HEAD
     'dashboard' => 'Dashboard',
 
     'pos' => 'Point of Sale',
@@ -281,6 +255,23 @@
     default => 'Dashboard',
 
 };
+=======
+                'dashboard' => 'Dashboard',
+                'checkout-preview' => '',
+                'checkout' => 'Point of Sale',
+                'payment-success' => 'Receipt',
+                'receipt' => '',
+                'pos'=>'Point Of Sale',
+                'product-inventory' => 'Product Inventory',
+                'ingredient-inventory' => 'Ingredient Inventory',
+                'customers' => 'Members',
+                'reports' => 'Reports & Analytics',
+                'order_history' => 'Order History',
+                
+
+                default => '',
+            };
+>>>>>>> 5452588dc742a95560dbcd02ad75307a53c7778d
 
         @endphp
 
@@ -522,590 +513,225 @@
 </div>
 
 
-
-<script>
-
+    <script>
     lucide.createIcons();
 
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | SIDEBAR COLLAPSE
-    |--------------------------------------------------------------------------
-    */
-
     const sidebar = document.getElementById('sidebar');
-    const toggleBtn = document.getElementById('toggle-btn');
-    const toggleIcon = document.getElementById('toggle-icon');
 
-    toggleBtn.addEventListener('click', () => {
-
-        const isCollapsed = sidebar.classList.toggle('collapsed');
-
-        if (isCollapsed)
-        {
-            sidebar.classList.replace('w-[280px]', 'w-[95px]');
-            toggleIcon.setAttribute('data-lucide', 'chevron-right');
-        }
-        else
-        {
-            sidebar.classList.replace('w-[95px]', 'w-[280px]');
-            toggleIcon.setAttribute('data-lucide', 'chevron-left');
-        }
-
+    // Ketika kursor mendekat / masuk ke area sidebar (Membuka)
+    sidebar.addEventListener('mouseenter', () => {
+        sidebar.classList.remove('collapsed');
+        sidebar.classList.replace('w-[95px]', 'w-[280px]');
         lucide.createIcons();
+    });
 
+    // Ketika kursor menjauh / keluar dari area sidebar (Menutup)
+    sidebar.addEventListener('mouseleave', () => {
+        sidebar.classList.add('collapsed');
+        sidebar.classList.replace('w-[280px]', 'w-[95px]');
+        lucide.createIcons();
     });
 
 
+    // ==========================================
+    // LOGIKA TOGGLE NOTIFIKASI (KODE BARU)
+    // ==========================================
+    const notifBtn = document.getElementById('notif-btn');
+    const notifDropdown = document.getElementById('notif-dropdown');
+    const searchDropdown = document.getElementById('search-dropdown');
 
-    /*
-    |--------------------------------------------------------------------------
-    | GLOBAL SEARCH
-    |--------------------------------------------------------------------------
-    */
+    if (notifBtn && notifDropdown) {
+        notifBtn.addEventListener('click', function(e) {
+            e.stopPropagation(); // Mencegah benturan klik
+            notifDropdown.classList.toggle('hidden');
+            
+            // Tutup dropdown search jika sedang terbuka agar tidak tabrakan
+            if (searchDropdown) searchDropdown.classList.add('hidden');
+        });
 
+        // Tutup notifikasi jika klik di luar area notif
+        document.addEventListener('click', function(e) {
+            if (!notifBtn.contains(e.target) && !notifDropdown.contains(e.target)) {
+                notifDropdown.classList.add('hidden');
+            }
+        });
+    }
+
+    // Fungsi Menandai Semua Notifikasi Telah Dibaca
+    // ==========================================
+    // 1. FUNGSI MARK ALL AS READ
+    // ==========================================
+    window.markAllAsRead = async function() {
+        try {
+            // Mengirim request POST ke Laravel
+            const response = await fetch('/notifications/mark-all-read', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                // Hapus titik merah notifikasi
+                const redDot = document.getElementById('notif-red-dot');
+                if (redDot) redDot.remove();
+                
+                // Ubah style list item notifikasi jadi pudar (sudah dibaca)
+                document.querySelectorAll('.notif-item').forEach(item => {
+                    item.classList.remove('bg-red-50', 'hover:bg-red-100');
+                    item.classList.add('bg-white', 'opacity-60');
+                });
+            } else {
+                console.error("Gagal update ke database. Pastikan Route Laravel sudah dibuat.");
+            }
+        } catch (error) {
+            console.error('Network Error:', error);
+        }
+    }
+
+    // ==========================================
+    // 2. FUNGSI KLIK 1 NOTIFIKASI (MARK AS READ)
+    // ==========================================
+    document.querySelectorAll('.notif-item').forEach(item => {
+        item.addEventListener('click', async function() {
+            const notifId = this.getAttribute('data-id');
+            // Cek apakah item ini belum diread (masih ada background merah)
+            const isUnread = this.classList.contains('bg-red-50');
+
+            if (isUnread) {
+                try {
+                    // Kirim request ke Laravel untuk 1 notifikasi
+                    const response = await fetch(`/notifications/${notifId}/read`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        // Ubah tampilan 1 notifikasi ini jadi pudar
+                        this.classList.remove('bg-red-50', 'hover:bg-red-100');
+                        this.classList.add('bg-white', 'opacity-60');
+
+                        // Cek apakah masih ada notifikasi merah lainnya?
+                        const remainingUnread = document.querySelectorAll('.notif-item.bg-red-50').length;
+                        
+                        // Jika sudah habis dibaca semua, hapus titik merah di lonceng
+                        if (remainingUnread === 0) {
+                            const redDot = document.getElementById('notif-red-dot');
+                            if (redDot) redDot.remove();
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error klik notifikasi:', error);
+                }
+            }
+        });
+    });
+
+
+    // ==========================================
+    // FITUR SEARCH DROPDOWN DENGAN HIGHLIGHT
+    // ==========================================
     const searchInput = document.getElementById('global-search');
 
-    if(searchInput)
-    {
-
+    if(searchInput) {
         const dropdown = document.getElementById('search-dropdown');
         const results = document.getElementById('search-results');
 
-
-
-      searchInput.addEventListener('keyup', async function() {
-
-    const query = this.value;
-
-    if(query.length < 1)
-    {
-        dropdown.classList.add('hidden');
-        return;
-    }
-
-    try
-    {
-
-        const response = await fetch(`/api/search?query=${query}`);
-
-        const data = await response.json();
-
-        let html = '';
-
-
-
-        // PRODUCTS
-        if(data.products && data.products.length > 0)
-        {
-
-            html += `
-                <div class="p-4 border-b bg-gray-50 font-bold text-[#7b0000]">
-                    Products
-                </div>
-            `;
-
-            data.products.forEach(product => {
-
-                html += `
-                    <a href="/product-inventory"
-                        class="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition border-b">
-
-                        <div>
-
-                            <p class="font-bold">
-                                ${product.pro_name}
-                            </p>
-
-                            <p class="text-sm text-gray-400">
-                                Product
-                            </p>
-
-                        </div>
-
-                        <span class="text-[#7b0000] font-bold">
-                            View →
-                        </span>
-
-                    </a>
-                `;
-
-            });
-
+        function highlightText(text, query) {
+            if (!query || !text) return text;
+            const regex = new RegExp(`(${query})`, 'gi');
+            return String(text).replace(regex, `<mark class="bg-yellow-300 text-black px-1 rounded">$1</mark>`);
         }
 
+        searchInput.addEventListener('keyup', async function() {
+            const query = this.value;
 
+            if(query.length < 1) {
+                dropdown.classList.add('hidden');
+                return;
+            }
 
-        // INGREDIENTS
-        if(data.ingredients && data.ingredients.length > 0)
-        {
+            try {
+                const response = await fetch(`/api/search?query=${query}`);
+                const data = await response.json();
+                let html = '';
 
-            html += `
-                <div class="p-4 border-b bg-gray-50 font-bold text-[#7b0000]">
-                    Ingredients
-                </div>
-            `;
-
-            data.ingredients.forEach(ingredient => {
-
-                html += `
-                    <a href="/ingredient-inventory"
-                        class="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition border-b">
-
-                        <div>
-
-                            <p class="font-bold">
-                                ${ingredient.name}
-                            </p>
-
-                            <p class="text-sm text-gray-400">
-                                Stock: ${ingredient.stock}
-                            </p>
-
-                        </div>
-
-                        <span class="text-[#7b0000] font-bold">
-                            View →
-                        </span>
-
-                    </a>
-                `;
-
-            });
-
-        }
-
-
-
-        // REPORTS
-        if(data.reports && data.reports.length > 0)
-        {
-
-            html += `
-                <div class="p-4 border-b bg-gray-50 font-bold text-[#7b0000]">
-                    Reports & Analytics
-                </div>
-            `;
-
-            data.reports.forEach(report => {
-
-                let customerName = 'Customer';
-
-                if(report.customer)
-                {
-                    customerName = report.customer.customer_name;
+                // PRODUCTS
+                if(data.products && data.products.length > 0) {
+                    html += `<div class="p-4 border-b bg-gray-50 font-bold text-[#7b0000]">Products</div>`;
+                    data.products.forEach(product => {
+                        const highlightedName = highlightText(product.pro_name, query);
+                        html += `
+                            <a href="/product-inventory?highlight=${encodeURIComponent(product.pro_name)}" class="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition border-b">
+                                <div>
+                                    <p class="font-bold">${highlightedName}</p>
+                                    <p class="text-sm text-gray-400">Product</p>
+                                </div>
+                                <span class="text-[#7b0000] font-bold">View →</span>
+                            </a>
+                        `;
+                    });
                 }
 
-                html += `
-                    <a href="/reports"
-                        class="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition border-b">
-
-                        <div>
-
-                            <p class="font-bold">
-                                ${report.order_id}
-                            </p>
-
-                            <p class="text-sm text-gray-400">
-
-                                ${customerName}
-
-                                •
-
-                                ${report.status}
-
-                                •
-
-                                Rp ${new Intl.NumberFormat('id-ID').format(report.total_price)}
-
-                            </p>
-
-                        </div>
-
-                        <span class="text-[#7b0000] font-bold">
-                            Open →
-                        </span>
-
-                    </a>
-                `;
-
-            });
-
-        }
-
-
-
-        // CUSTOMERS
-        if(data.customers && data.customers.length > 0)
-        {
-
-            html += `
-                <div class="p-4 border-b bg-gray-50 font-bold text-[#7b0000]">
-                    Customers
-                </div>
-            `;
-
-            data.customers.forEach(customer => {
-
-                html += `
-                    <a href="/customers"
-                        class="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition border-b">
-
-                        <div>
-
-                            <p class="font-bold">
-                                ${customer.customer_name}
-                            </p>
-
-                        </div>
-
-                        <span class="text-[#7b0000] font-bold">
-                            View →
-                        </span>
-
-                    </a>
-                `;
-
-            });
-
-        }
-
-
-
-        // ORDERS
-        if(data.orders && data.orders.length > 0)
-        {
-
-            html += `
-                <div class="p-4 border-b bg-gray-50 font-bold text-[#7b0000]">
-                    Orders
-                </div>
-            `;
-
-            data.orders.forEach(order => {
-
-                html += `
-                    <a href="/order_history"
-                        class="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition border-b">
-
-                        <div>
-
-                            <p class="font-bold">
-                                ${order.order_id}
-                            </p>
-
-                            <p class="text-sm text-gray-400">
-                                Rp ${new Intl.NumberFormat('id-ID').format(order.total_price)}
-                            </p>
-
-                        </div>
-
-                        <span class="text-[#7b0000] font-bold">
-                            View →
-                        </span>
-
-                    </a>
-                `;
-
-            });
-
-        }
-
-        // EMPTY
-        if(html === '')
-        {
-
-            html = `
-                <div class="p-8 text-center text-gray-400">
-                    No results found.
-                </div>
-            `;
-
-        }
-
-        results.innerHTML = html;
-
-        dropdown.classList.remove('hidden');
-
-    }
-    catch(error)
-    {
-
-        console.error(error);
-
-    }
-
-});
-
-
-
-/*
-|--------------------------------------------------------------------------
-| CLOSE DROPDOWN
-|--------------------------------------------------------------------------
-*/
-
-document.addEventListener('click', function(e) {
-
-    if(
-        !searchInput.contains(e.target)
-        &&
-        !dropdown.contains(e.target)
-    )
-    {
-        dropdown.classList.add('hidden');
-    }
-
-});
-
-}
-
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script>
-
-document.querySelectorAll('.notif-item').forEach(item => {
-
-    item.addEventListener('click', async function() {
-
-        const id = this.dataset.id;
-
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | MARK AS READ
-        |--------------------------------------------------------------------------
-        */
-
-        await fetch(`/notifications/${id}/read`, {
-
-            method: 'POST',
-
-            headers: {
-
-                'X-CSRF-TOKEN':
-                    document.querySelector(
-                        'meta[name="csrf-token"]'
-                    ).content,
-
-                'Accept': 'application/json'
-
+                // INGREDIENTS
+                if(data.ingredients && data.ingredients.length > 0) {
+                    html += `<div class="p-4 border-b bg-gray-50 font-bold text-[#7b0000]">Ingredients</div>`;
+                    data.ingredients.forEach(ingredient => {
+                        const highlightedName = highlightText(ingredient.name, query);
+                        html += `
+                            <a href="/ingredient-inventory?highlight=${encodeURIComponent(ingredient.name)}" class="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition border-b">
+                                <div>
+                                    <p class="font-bold">${highlightedName}</p>
+                                    <p class="text-sm text-gray-400">Stock: ${ingredient.stock}</p>
+                                </div>
+                                <span class="text-[#7b0000] font-bold">View →</span>
+                            </a>
+                        `;
+                    });
+                }
+
+                // CUSTOMERS
+                if(data.customers && data.customers.length > 0) {
+                    html += `<div class="p-4 border-b bg-gray-50 font-bold text-[#7b0000]">Customers</div>`;
+                    data.customers.forEach(customer => {
+                        const highlightedName = highlightText(customer.customer_name, query);
+                        html += `
+                            <a href="/customers?highlight=${encodeURIComponent(customer.customer_name)}" class="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition border-b">
+                                <div>
+                                    <p class="font-bold">${highlightedName}</p>
+                                </div>
+                                <span class="text-[#7b0000] font-bold">View →</span>
+                            </a>
+                        `;
+                    });
+                }
+
+                if(html === '') {
+                    html = `<div class="p-8 text-center text-gray-400">No results found.</div>`;
+                }
+
+                results.innerHTML = html;
+                dropdown.classList.remove('hidden');
+                
+                // Otomatis tutup dropdown notifikasi jika user mulai mengetik pencarian
+                if(notifDropdown) notifDropdown.classList.add('hidden');
+
+            } catch(error) {
+                console.error(error);
             }
-
         });
-
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | REMOVE RED BACKGROUND
-        |--------------------------------------------------------------------------
-        */
-
-        this.classList.remove(
-
-            'bg-red-50',
-            'hover:bg-red-100'
-
-        );
-
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | ADD READ STYLE
-        |--------------------------------------------------------------------------
-        */
-
-        this.classList.add(
-
-            'bg-white',
-            'opacity-60'
-
-        );
-
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | REMOVE RED DOT ON BELL
-        |--------------------------------------------------------------------------
-        */
-
-        const unreadNotif =
-            document.querySelectorAll(
-                '.notif-item.bg-red-50'
-            );
-
-
-
-        if(unreadNotif.length <= 1)
-        {
-
-            const bellDot =
-                document.querySelector(
-                    '#notif-red-dot'
-                );
-
-            if(bellDot)
-            {
-
-                bellDot.remove();
-
-            }
-
-        }
-
-    });
-
-});
-
-</script>
-
-<script>
-
-/*
-|--------------------------------------------------------------------------
-| MARK ALL NOTIFICATIONS AS READ
-|--------------------------------------------------------------------------
-*/
-
-async function markAllAsRead() {
-
-    try {
-
-        await fetch('/notifications/read-all', {
-
-            method: 'POST',
-
-            headers: {
-
-                'X-CSRF-TOKEN':
-                    document.querySelector(
-                        'meta[name="csrf-token"]'
-                    ).content,
-
-                'Accept': 'application/json'
-
-            }
-
-        });
-
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | CHANGE ALL NOTIFICATIONS STYLE
-        |--------------------------------------------------------------------------
-        */
-
-        document.querySelectorAll('.notif-item')
-            .forEach(item => {
-
-                item.classList.remove(
-
-                    'bg-red-50',
-                    'hover:bg-red-100'
-
-                );
-
-
-
-                item.classList.add(
-
-                    'bg-white',
-                    'opacity-60'
-
-                );
-
-            });
-
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | REMOVE RED DOT
-        |--------------------------------------------------------------------------
-        */
-
-        const bellDot =
-            document.querySelector(
-                '#notif-red-dot'
-            );
-
-        if(bellDot)
-        {
-
-            bellDot.remove();
-
-        }
-
-    }
-    catch(error)
-    {
-
-        console.error(error);
-
-    }
-
-}
-
-</script>
-
-</body>
-
-<script>
-
-/*
-|--------------------------------------------------------------------------
-| NOTIFICATION DROPDOWN
-|--------------------------------------------------------------------------
-*/
-
-document.addEventListener('DOMContentLoaded', function () {
-
-    const notifBtn = document.getElementById('notif-btn');
-    const notifDropdown = document.getElementById('notif-dropdown');
-
-    if(notifBtn && notifDropdown)
-    {
-
-        notifBtn.addEventListener('click', function(e) {
-
-            e.stopPropagation();
-
-            notifDropdown.classList.toggle('hidden');
-
-        });
-
-
-
 
         document.addEventListener('click', function(e) {
-
-            if(
-                !notifDropdown.contains(e.target)
-                &&
-                !notifBtn.contains(e.target)
-            )
-            {
-                notifDropdown.classList.add('hidden');
+            if(!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.add('hidden');
             }
-
         });
-
     }
-
-});
-
-</script>
+    </script>
 </html>
-
-
-
-        

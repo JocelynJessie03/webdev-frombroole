@@ -11,24 +11,11 @@ class OrderHistoryController extends Controller
 {
     public function index(Request $request)
     {
-        /*
-        |--------------------------------------------------------------------------
-        | BASE QUERY
-        |--------------------------------------------------------------------------
-        */
-
         $query = OrderHistory::with([
             'customer',
             'items.product'
         ]);
 
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | SEARCH
-        |--------------------------------------------------------------------------
-        */
 
         if ($request->filled('search')) {
 
@@ -52,14 +39,6 @@ class OrderHistoryController extends Controller
 
                   });
 
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | PAYMENT STATUS SEARCH
-                |--------------------------------------------------------------------------
-                */
-
                 if (Schema::hasColumn('order_histories', 'payment_status')) {
 
                     $q->orWhere(
@@ -73,13 +52,6 @@ class OrderHistoryController extends Controller
         }
 
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | FILTER STATUS
-        |--------------------------------------------------------------------------
-        */
-
         if (
             $request->filled('status')
             &&
@@ -90,24 +62,11 @@ class OrderHistoryController extends Controller
         }
 
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | GET ORDERS
-        |--------------------------------------------------------------------------
-        */
-
         $orders = $query
             ->latest('order_date')
             ->get();
 
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | TOTAL REVENUE
-        |--------------------------------------------------------------------------
-        */
 
         $totalRevenueQuery = DB::table('order_histories');
 
@@ -128,13 +87,6 @@ class OrderHistoryController extends Controller
             );
         }
 
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | STATS
-        |--------------------------------------------------------------------------
-        */
 
         $stats = [
 
@@ -167,32 +119,11 @@ class OrderHistoryController extends Controller
     }
 
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | UPDATE STATUS
-    |--------------------------------------------------------------------------
-    */
-
     public function updateStatus($id)
 {
     $order = OrderHistory::findOrFail($id);
 
-    /*
-    |--------------------------------------------------------------------------
-    | DIRECT COMPLETE
-    |--------------------------------------------------------------------------
-    */
-
     $order->status = 'Complete';
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | PAYMENT STATUS
-    |--------------------------------------------------------------------------
-    */
 
     if (
         Schema::hasColumn('order_histories', 'payment_status')
@@ -206,8 +137,6 @@ class OrderHistoryController extends Controller
 
 
     $order->save();
-
-
 
     return redirect()
         ->back()

@@ -65,7 +65,11 @@
                         <h3 class="font-black text-lg">
                             {{ $item->product->pro_name }}
                         </h3>
-
+                        @if($item->sugar_level < 100)
+                            <p class="text-blue-600 font-bold text-xs mb-1">
+                                * {{ $item->sugar_level == 50 ? 'Less Sugar (50%)' : 'No Sugar (0%)' }}
+                            </p>
+                        @endif
                         <p class="text-gray-400 text-sm">
                             Qty : {{ $item->quantity }}
                         </p>
@@ -194,5 +198,8 @@
 }
 
 </style>
-
+<script>
+    // Hapus data keranjang di browser setelah transaksi sukses
+    localStorage.removeItem('pos_cart');
+</script>
 @endsection

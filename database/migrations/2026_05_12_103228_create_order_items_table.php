@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('quantity');
             $table->decimal('price_at_purchase', 15, 2); // Harga saat dibeli
             $table->timestamps();
+            $table->integer('sugar_level')->default(100); // Tambahan kolom untuk tingkat gula
         });
     }
 

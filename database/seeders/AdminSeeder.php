@@ -16,15 +16,15 @@ class AdminSeeder extends Seeder
         // Akun Super Admin
         Admin::create([
             'name' => 'Super Admin Broole',
-            'email' => 'super@broole.com',
-            'password' => Hash::make('password123'), // Ganti dengan password yang aman
+            'email' => 'super@frombroole.com',
+            'password' => Hash::make('password123'), 
             'role' => 'super_admin',
         ]);
 
         // Akun Admin Biasa (Staff)
         Admin::create([
             'name' => 'Staff Kasir 01',
-            'email' => 'kasir@broole.com',
+            'email' => 'kasir@frombroole.com',
             'password' => Hash::make('kasir123'),
             'role' => 'admin',
         ]);

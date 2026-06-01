@@ -1,0 +1,1010 @@
+
+
+<?php $__env->startSection('content'); ?>
+
+<div class="fb">
+
+
+<section class="fb-hero" id="fb-hero">
+    <div class="fb-grain"></div>
+
+    
+    <div class="fb-hero__vert">
+        <span class="fb-hero__vert-line"></span>
+        <span>Since 2022</span>
+        <span class="fb-hero__vert-line"></span>
+        <span>Surabaya</span>
+        <span class="fb-hero__vert-line"></span>
+    </div>
+
+    
+    <div class="fb-hero__title-area">
+        <div class="fb-title">
+            
+            <span class="fb-title__main">Crafted</span>
+            
+            <div class="fb-title__mid-row">
+                <span class="fb-title__ghost">WI</span>
+                <span class="fb-title__ghost fb-title__ghost--r">TH</span>
+            </div>
+            
+            <span class="fb-title__main">Burnt Sugar.</span>
+        </div>
+    </div>
+
+    
+    <div class="fb-hero__broole" id="fb-broole">
+        <img src="<?php echo e(asset('home/fb_broole.png')); ?>" alt="Signature Crème Brûlée">
+    </div>
+
+    
+    <div class="fb-badge fb-badge--tl">
+        <span class="fb-badge__dot"></span>Halal Certified
+    </div>
+    <div class="fb-badge fb-badge--br">
+        <span>★</span> 5.0 Rating
+    </div>
+
+    
+    <div class="fb-hero__bottom">
+        <div class="fb-hero__bottom-left">
+            <p class="fb-hero__eyebrow">
+                <span class="fb-hero__eyebrow-dash"></span>About From Broole
+                <span class="fb-hero__eyebrow-dash"></span>
+            </p>
+            <p class="fb-hero__desc">
+                We transform the humble crème brûlée into a modern artisan
+                experience — one caramelized crust at a time.
+            </p>
+        </div>
+        <div class="fb-hero__actions">
+            <a href="#story" class="fb-btn fb-btn--dark">Our Story</a>
+            <a href="#menu" class="fb-btn fb-btn--outline">See Menu</a>
+        </div>
+    </div>
+
+    <div class="fb-scroll-cue">
+        <div class="fb-scroll-cue__mouse"><div class="fb-scroll-cue__wheel"></div></div>
+        <span>Scroll</span>
+    </div>
+</section>
+
+
+<div class="fb-ticker">
+    <div class="fb-ticker__track">
+        <?php $items = ['Crème Brûlée','Artisan Cheesecake','Craft Drinks','100% Halal','Handcrafted Daily','Premium Ingredients','Burnt Sugar','Fresh Made']; ?>
+        <?php $__currentLoopData = array_merge($items,$items); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+        <span class="fb-ticker__item"><span class="fb-ticker__star">✦</span><?php echo e($item); ?></span>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+    </div>
+</div>
+
+
+<section class="fb-crack" id="story">
+    <div class="fb-crack__left" data-sr>
+        <div class="fb-crack__plus">✦</div>
+        <p class="fb-eyebrow"><span class="fb-edash"></span>Signature Experience</p>
+        <h2 class="fb-crack__big">The<br>Perfect<br><em>Crack.</em></h2>
+        <p class="fb-crack__sub">One tap. One crack.<br>The sound of handcrafted perfection.</p>
+        <a href="#" class="fb-watch-btn">
+            <div class="fb-watch-btn__circle">▶</div>
+            Watch Video
+        </a>
+    </div>
+    <div class="fb-crack__right" data-sr-d>
+
+    <video
+        class="fb-crack__video"
+        autoplay
+        muted
+        loop
+        playsinline
+    >
+        <source src="<?php echo e(asset('home/crack.mp4')); ?>" type="video/mp4">
+    </video>
+
+    <div class="fb-crack__overlay">
+        <button class="fb-crack__play" id="playBtn">
+            <span class="fb-crack__play-icon">▶</span>
+        </button>
+    </div>
+
+</div>
+</section>
+
+
+<section class="fb-process">
+    <div class="fb-process__vert">
+        <span class="fb-vert-line"></span>Our Process<span class="fb-vert-line"></span>
+    </div>
+    <div class="fb-process__inner">
+        <p class="fb-eyebrow" style="margin-bottom:2.5rem;">
+            <span class="fb-edash"></span>How We Make It<span class="fb-edash"></span>
+        </p>
+        <div class="fb-process__steps">
+            <div class="fb-pstep" data-sr>
+                <div class="fb-pstep__head">
+                    <span class="fb-pstep__num">01</span>
+                    <span class="fb-pstep__arrow">→</span>
+                </div>
+                <div class="fb-pstep__label">Premium<br>Custard</div>
+                <div class="fb-pstep__img"><img src="<?php echo e(asset('home/custard.png')); ?>" alt="Premium Custard"></div>
+            </div>
+            <div class="fb-pstep" data-sr-d>
+                <div class="fb-pstep__head">
+                    <span class="fb-pstep__num">02</span>
+                    <span class="fb-pstep__arrow">→</span>
+                </div>
+                <div class="fb-pstep__label">Torched<br>Sugar</div>
+                <div class="fb-pstep__img"><img src="<?php echo e(asset('home/tourched.png')); ?>" alt="Torched Sugar"></div>
+            </div>
+            <div class="fb-pstep" data-sr-d>
+                <div class="fb-pstep__head">
+                    <span class="fb-pstep__num">03</span>
+                    <span class="fb-pstep__arrow">→</span>
+                </div>
+                <div class="fb-pstep__label">Signature<br>Toppings</div>
+                <div class="fb-pstep__img"><img src="<?php echo e(asset('home/step3.png')); ?>" alt="Signature Toppings"></div>
+            </div>
+            <div class="fb-pstep" data-sr-d2>
+                <div class="fb-pstep__head">
+                    <span class="fb-pstep__num">04</span>
+                </div>
+                <div class="fb-pstep__label">Ready To<br>Enjoy</div>
+                <div class="fb-pstep__img"><img src="<?php echo e(asset('home/step4.png')); ?>" alt="Ready to Enjoy"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="fb-sellers" id="menu">
+    <div class="fb-sellers__left" data-sr>
+        <div class="fb-sellers__plus">✦</div>
+        <h2 class="fb-sellers__big">Best<br><em>Sellers</em></h2>
+        <p class="fb-body">We don't take shortcuts. We choose quality, we craft with passion, and we serve with heart.</p>
+        <a href="#" class="fb-viewall"><span class="fb-viewall__line"></span>View All Menu →</a>
+    </div>
+    <div class="fb-sellers__grid">
+        <div class="fb-scard" data-sr>
+            <div class="fb-scard__img-wrap">
+                <img src="<?php echo e(asset('home/fb_broole.png')); ?>" alt="Signature Broole">
+            </div>
+            <div class="fb-scard__body">
+                <p class="fb-scard__name">Signature Broole</p>
+                <p class="fb-scard__stars">★★★★★ <span class="fb-scard__ct">4.9 (231)</span></p>
+                <a href="#" class="fb-scard__order">Order Now →</a>
+            </div>
+        </div>
+        <div class="fb-scard" data-sr-d>
+            <div class="fb-scard__img-wrap">
+                <img src="<?php echo e(asset('home/fb_cake.png')); ?>" alt="Burnt Cheesecake">
+            </div>
+            <div class="fb-scard__body">
+                <p class="fb-scard__name">Burnt Cheesecake</p>
+                <p class="fb-scard__stars">★★★★★ <span class="fb-scard__ct">4.8 (300)</span></p>
+                <a href="#" class="fb-scard__order">Order Now →</a>
+            </div>
+        </div>
+        <div class="fb-scard" data-sr-d2>
+            <div class="fb-scard__img-wrap">
+                <img src="<?php echo e(asset('home/fb_drink.png')); ?>" alt="Craft Drinks">
+            </div>
+            <div class="fb-scard__body">
+                <p class="fb-scard__name">Craft Drinks</p>
+                <p class="fb-scard__stars">★★★★☆ <span class="fb-scard__ct">4.5 (71)</span></p>
+                <a href="#" class="fb-scard__order">Order Now →</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<section class="fb-why">
+
+    <!-- LEFT -->
+    <div class="fb-why__intro">
+        <h2 class="fb-why__big">
+            Why<br><em>Broole?</em>
+        </h2>
+
+        <p class="fb-body">
+            We don't take shortcuts.
+            We choose quality, we craft with passion,
+            and we serve with heart.
+        </p>
+    </div>
+
+    <!-- CENTER -->
+    <div class="fb-why__photo">
+        <img src="<?php echo e(asset('home/why.png')); ?>" alt="">
+    </div>
+
+    <!-- RIGHT -->
+    <div class="fb-why__features">
+
+        <div class="fb-wfeat">
+            <div class="fb-wfeat__title">Premium Ingredients</div>
+            <div class="fb-wfeat__sub">
+                We use only the finest quality ingredients.
+            </div>
+        </div>
+
+        <div class="fb-wfeat">
+            <div class="fb-wfeat__title">Handcrafted Daily</div>
+            <div class="fb-wfeat__sub">
+                Made in small batches with passion.
+            </div>
+        </div>
+
+        <div class="fb-wfeat">
+            <div class="fb-wfeat__title">Halal Certified</div>
+            <div class="fb-wfeat__sub">
+                100% Halal for your peace of mind.
+            </div>
+        </div>
+
+        <div class="fb-wfeat">
+            <div class="fb-wfeat__title">Signature Burnt Sugar</div>
+            <div class="fb-wfeat__sub">
+                Our classic caramelized crust.
+            </div>
+        </div>
+
+        <div class="fb-wfeat">
+            <div class="fb-wfeat__title">5.0 Customer Rating</div>
+            <div class="fb-wfeat__sub">
+                Loved by thousands of happy customers.
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<div class="fb-gallery">
+    <div class="fb-gallery__vert">
+        <span class="fb-vert-line"></span>Gallery<span class="fb-vert-line"></span>
+    </div>
+    <div class="fb-gallery__strip">
+        <div class="fb-gallery__item"><img src="<?php echo e(asset('home/fb_g1.jpg')); ?>" alt=""></div>
+        <div class="fb-gallery__item"><img src="<?php echo e(asset('home/fb_g2.jpg')); ?>" alt=""></div>
+        <div class="fb-gallery__item"><img src="<?php echo e(asset('home/fb_g3.jpg')); ?>" alt=""></div>
+        <div class="fb-gallery__item"><img src="<?php echo e(asset('home/fb_g4.jpg')); ?>" alt=""></div>
+        <div class="fb-gallery__item"><img src="<?php echo e(asset('home/fb_g5.jpg')); ?>" alt=""></div>
+    </div>
+</div>
+
+
+<section class="fb-testi">
+    <div class="fb-testi__grain"></div>
+    <div class="fb-testi__inner">
+        <div class="fb-testi__left" data-sr>
+            <div class="fb-testi__quote-mark">"</div>
+            <h2 class="fb-testi__text" id="fb-testi-text">
+                The Best Crème Brûlée<br>In <em>Surabaya.</em>
+            </h2>
+            <div class="fb-testi__stars">★★★★★</div>
+            <div class="fb-testi__author" id="fb-testi-author">— Veronica, Surabaya</div>
+            <div class="fb-testi__nav">
+                <button class="fb-testi__nav-btn" id="fb-prev">←</button>
+                <button class="fb-testi__nav-btn" id="fb-next">→</button>
+            </div>
+        </div>
+        <div class="fb-testi__right" data-sr-d>
+            <div class="fb-testi__img-wrap">
+                <img src="<?php echo e(asset('home/fb_broole.png')); ?>" alt="Crème Brûlée">
+                <div class="fb-testi__badge">
+                    <svg class="fb-testi__badge-ring" viewBox="0 0 100 100">
+                        <defs><path id="circle" d="M 50,50 m -37,0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"/></defs>
+                        <text font-size="11.5" font-family="Outfit,sans-serif" font-weight="600" fill="#1A0E08" letter-spacing="2">
+                            <textPath href="#circle">✦ HANDCRAFTED WITH PASSION ✦ </textPath>
+                        </text>
+                    </svg>
+                    <span class="fb-testi__badge-star">✦</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+</div>
+
+
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Outfit:wght@300;400;500;600;700;900&display=swap');
+
+/* ─── TOKENS ─────────────────────────────────── */
+:root {
+    --red:      #B81C1C;
+    --red-deep: #6B0F1A;
+    --red-mid:  #8C1717;
+    --cream:    #FAF3E8;
+    --cream2:   #F2E8D4;
+    --cream3:   #EDE0CC;
+    --gold:     #C9A84C;
+    --gold-lt:  #F2D6A2;
+    --text:     #1A0E08;
+    --muted:    #7A6A58;
+    --white:    #FFFCF7;
+    --serif:    'Cormorant Garamond', Georgia, serif;
+    --sans:     'Outfit', sans-serif;
+}
+.fb *, .fb *::before, .fb *::after { box-sizing: border-box; }
+.fb img { display: block; max-width: 100%; }
+.fb a   { text-decoration: none; color: inherit; }
+
+/* ─── GRAIN ──────────────────────────────────── */
+.fb-grain {
+    position: absolute; inset: 0; pointer-events: none; z-index: 1; opacity: .036;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px;
+}
+
+/* ─── TOPBAR ──────────────────────────────────── */
+.fb-topbar {
+    background: var(--red-deep);
+    display: flex; align-items: center; justify-content: center; gap: 3rem;
+    padding: .4rem 2rem;
+    font-family: var(--sans); font-size: .58rem; font-weight: 500;
+    letter-spacing: .18em; text-transform: uppercase;
+    color: rgba(255,255,255,.65);
+}
+
+/* ─── NAV ─────────────────────────────────────── */
+.fb-nav {
+    background: var(--white);
+    border-bottom: 1px solid rgba(28,18,8,.07);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: .85rem 3rem;
+    position: sticky; top: 0; z-index: 200;
+}
+.fb-nav__brand       { display: flex; flex-direction: column; line-height: 1.1; }
+.fb-nav__brand-name  { font-family: var(--serif); font-size: 1rem; font-weight: 700; color: var(--red); letter-spacing: .02em; }
+.fb-nav__brand-sub   { font-family: var(--sans); font-size: .46rem; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); }
+.fb-nav__links       { display: flex; gap: 1.5rem; align-items: center; }
+.fb-nav__link        { font-family: var(--sans); font-size: .58rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); padding: .2rem 0; border-bottom: 1.5px solid transparent; transition: .2s; }
+.fb-nav__link:hover,
+.fb-nav__link--active{ color: var(--red); border-bottom-color: var(--red); }
+.fb-nav__sep         { color: rgba(28,18,8,.14); font-size: .7rem; }
+.fb-nav__icons       { display: flex; gap: .6rem; }
+.fb-nav__icon-btn    { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid rgba(28,18,8,.13); background: transparent; color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: .2s; }
+.fb-nav__icon-btn:hover        { border-color: var(--red); color: var(--red); }
+.fb-nav__icon-btn--active      { background: var(--red-deep); border-color: var(--red-deep); color: #fff; }
+
+/* ─── HERO ─────────────────────────────────────── */
+.fb-hero {
+    position: relative;
+    background: #F7F2EA;
+    min-height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Vertical side label */
+.fb-hero__vert {
+    position: absolute; left: 1.4rem; top: 50%; transform: translateY(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: .6rem;
+    font-family: var(--sans); font-size: .48rem; font-weight: 600;
+    letter-spacing: .22em; text-transform: uppercase;
+    color: rgba(28,18,8,.28); z-index: 10; writing-mode: vertical-rl;
+}
+.fb-hero__vert-line { width: 1px; height: 40px; background: rgba(28,18,8,.14); }
+
+/* ── LAYERED TITLE ── */
+.fb-hero__title-area {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; z-index: 10;
+    padding: 4rem 4rem 10rem;
+    text-align: center;
+}
+
+.fb-title { position: relative; width: 100%; }
+
+/* "Crafted" and "Burnt Sugar." — big solid red */
+.fb-title__main {
+    display: block;
+    font-family: var(--serif);
+    font-size: clamp(72px, 12vw, 160px);
+    font-weight: 500;
+    line-height: .88;
+    letter-spacing: -.02em;
+    color: var(--red);
+}
+
+/* Middle row: relative container for WI + TH ghosts */
+.fb-title__mid-row {
+    position: relative;
+    /* height matches the ghost font size so broole sits inside */
+    height: clamp(130px, 18vw, 240px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ghost letters WI / TH */
+.fb-title__ghost {
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    font-family: var(--serif);
+    font-size: clamp(130px, 18vw, 240px);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -.02em;
+    color: rgba(184,28,28,.18);
+    user-select: none;
+}
+.fb-title__ghost:first-child { left: 8%; }
+.fb-title__ghost--r          { right: 8%; }
+
+/* ── PARALLAX BROOLE ── */
+/* Centered in the WI_TH gap; JS shifts it down on scroll */
+.fb-hero__broole {
+    position: absolute;
+    left: 50%;
+    /* vertically: 50% of hero minus ~8rem so it sits in the middle row */
+    top: 42%;
+    transform: translate(-50%, -50%);
+    width: clamp(280px, 28vw, 440px);
+    z-index: 20;
+    pointer-events: none;
+    will-change: transform;
+}
+.fb-hero__broole img {
+    width: 100%; height: auto;
+    filter: drop-shadow(0 24px 48px rgba(107,15,26,.25));
+}
+
+/* Badges */
+.fb-badge {
+    position: absolute; z-index: 30;
+    display: flex; align-items: center; gap: .4rem;
+    padding: .44rem .9rem; border-radius: 50px;
+    font-family: var(--sans); font-size: .66rem; font-weight: 600;
+    animation: fb-bp 3.5s ease-in-out infinite;
+}
+.fb-badge--tl {
+    top: 24%; left: 8%;
+    background: rgba(255,255,255,.92);
+    border: 1px solid rgba(140,23,23,.1);
+    color: var(--text);
+}
+.fb-badge--br {
+    bottom: 30%; right: 8%;
+    background: var(--gold); color: var(--text);
+    animation-delay: .7s;
+}
+.fb-badge__dot { width: 7px; height: 7px; border-radius: 50%; background: #4ADE80; flex-shrink: 0; }
+@keyframes fb-bp { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+
+/* Hero bottom strip */
+.fb-hero__bottom {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    z-index: 15;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    padding: 2.5rem 5rem;
+    background: linear-gradient(to top, rgba(247,242,234,1) 30%, rgba(247,242,234,0));
+}
+.fb-hero__eyebrow {
+    display: flex; align-items: center; gap: .6rem;
+    font-family: var(--sans); font-size: .6rem; font-weight: 700;
+    letter-spacing: .18em; text-transform: uppercase; color: var(--muted);
+    margin-bottom: .6rem;
+}
+.fb-hero__eyebrow-dash { flex: 0 0 16px; height: 1.5px; background: var(--gold); }
+.fb-hero__desc {
+    font-family: var(--sans); font-size: .84rem; font-weight: 300;
+    color: var(--muted); line-height: 1.85; max-width: 300px;
+}
+.fb-hero__actions { display: flex; gap: .8rem; align-items: center; flex-shrink: 0; }
+
+/* Scroll cue */
+.fb-scroll-cue {
+    position: absolute; bottom: 1.8rem; left: 50%; transform: translateX(-50%);
+    z-index: 20; display: flex; flex-direction: column; align-items: center; gap: .4rem;
+    font-family: var(--sans); font-size: .52rem; font-weight: 500;
+    letter-spacing: .16em; text-transform: uppercase; color: rgba(28,18,8,.3);
+}
+.fb-scroll-cue__mouse { width: 20px; height: 30px; border: 1.5px solid rgba(28,18,8,.18); border-radius: 10px; display: flex; justify-content: center; padding-top: 4px; }
+.fb-scroll-cue__wheel { width: 3px; height: 6px; border-radius: 2px; background: rgba(28,18,8,.22); animation: fb-swh 1.5s ease-in-out infinite; }
+@keyframes fb-swh { 0%{transform:translateY(0);opacity:1} 100%{transform:translateY(7px);opacity:0} }
+
+/* ─── BUTTONS ──────────────────────────────────── */
+.fb-btn {
+    display: inline-flex; align-items: center; gap: .5rem;
+    padding: .78rem 1.8rem;
+    font-family: var(--sans); font-size: .68rem; font-weight: 600;
+    letter-spacing: .14em; text-transform: uppercase;
+    transition: transform .2s; cursor: pointer; border: none;
+}
+.fb-btn:hover { transform: translateY(-2px); }
+.fb-btn--dark    { background: var(--red-deep); color: #fff; }
+.fb-btn--outline { background: transparent; border: 1.5px solid rgba(28,18,8,.22); color: var(--text); }
+.fb-btn--outline:hover { border-color: var(--red); color: var(--red); }
+
+/* ─── TICKER ───────────────────────────────────── */
+.fb-ticker { background: var(--text); overflow: hidden; padding: .65rem 0; }
+.fb-ticker__track { display: flex; white-space: nowrap; animation: fb-tick 30s linear infinite; }
+.fb-ticker__item {
+    display: inline-flex; align-items: center; gap: .9rem; padding: 0 1.8rem;
+    font-family: var(--sans); font-size: .62rem; font-weight: 500;
+    letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.36);
+}
+.fb-ticker__star { color: var(--gold); font-size: .52rem; }
+@keyframes fb-tick { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+/* ─── SHARED ───────────────────────────────────── */
+.fb-eyebrow {
+    display: flex; align-items: center; gap: .7rem;
+    font-family: var(--sans); font-size: .6rem; font-weight: 600;
+    letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-bottom: .8rem;
+}
+.fb-edash { flex: 0 0 20px; height: 1.5px; background: var(--gold); }
+.fb-body  { font-family: var(--sans); font-size: .86rem; font-weight: 300; color: var(--muted); line-height: 1.9; margin-bottom: .9rem; }
+
+/* Vertical label (gallery / process) */
+.fb-vert-line { display: inline-block; width: 1px; height: 36px; background: rgba(28,18,8,.14); vertical-align: middle; margin: 0 .5rem; }
+
+/* ─── CRACK SECTION ────────────────────────────── */
+.fb-crack { display: grid; grid-template-columns: 1fr 1fr; min-height: 55vh; }
+.fb-crack__left {
+    background: var(--white);
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 5rem 4rem; position: relative;
+}
+.fb-crack__plus { font-size: 1.2rem; color: var(--gold); margin-bottom: 1rem; }
+.fb-crack__big {
+    font-family: var(--serif); font-weight: 700;
+    font-size: clamp(3.2rem, 5.5vw, 5.5rem); line-height: .86;
+    text-transform: uppercase; color: var(--text); margin: .8rem 0 1.5rem;
+}
+.fb-crack__big em { color: var(--red); font-style: normal; }
+.fb-crack__sub { font-family: var(--sans); font-size: .8rem; font-weight: 300; color: var(--muted); line-height: 1.85; margin-bottom: 2rem; }
+.fb-watch-btn {
+    display: inline-flex; align-items: center; gap: .9rem;
+    font-family: var(--sans); font-size: .66rem; font-weight: 600;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--text); cursor: pointer;
+    text-decoration: none;
+}
+.fb-watch-btn__circle {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 1.5px solid rgba(28,18,8,.2);
+    display: flex; align-items: center; justify-content: center; font-size: .75rem;
+    transition: .2s; flex-shrink: 0;
+}
+.fb-watch-btn:hover .fb-watch-btn__circle { background: var(--red); border-color: var(--red); color: #fff; }
+
+.fb-crack__right{
+    position:relative;
+    overflow:hidden;
+    min-height:600px;
+}
+
+.fb-crack__video{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+.fb-crack__overlay{
+    position:absolute;
+    inset:0;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    pointer-events:none;
+}
+
+.fb-crack__play{
+    width:80px;
+    height:80px;
+    border-radius:50%;
+    border:2px solid rgba(255,255,255,.5);
+
+    background:rgba(255,255,255,.15);
+    backdrop-filter:blur(10px);
+
+    color:white;
+    font-size:1.5rem;
+
+    pointer-events:auto;
+    cursor:pointer;
+
+    transition:.3s;
+}
+
+.fb-crack__play:hover{
+    transform:scale(1.1);
+}
+.fb-crack__play-icon { color: #fff; font-size: 1.4rem; margin-left: 4px; }
+@keyframes fb-pp { 0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.18)} 50%{box-shadow:0 0 0 14px rgba(255,255,255,0)} }
+
+/* ─── PROCESS ──────────────────────────────────── */
+.fb-process { background: var(--cream2); position: relative; padding: 4.5rem 5rem; }
+.fb-process__vert {
+    position: absolute; left: 1.8rem; top: 50%; transform: translateY(-50%);
+    writing-mode: vertical-rl;
+    font-family: var(--sans); font-size: .5rem; font-weight: 600;
+    letter-spacing: .22em; text-transform: uppercase; color: rgba(28,18,8,.24);
+    display: flex; align-items: center; gap: 0;
+}
+.fb-process__inner { max-width: 1150px; margin: 0 auto; }
+.fb-process__steps{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:40px;
+    align-items:start;
+}
+
+.fb-pstep{
+    display:flex;
+    flex-direction:column;
+    height:100%;
+}
+
+.fb-pstep__head{
+    display:flex;
+    align-items:center;
+    gap:.6rem;
+    margin-bottom:12px;
+}
+
+.fb-pstep__label{
+    font-family:var(--sans);
+    font-size:.75rem;
+    font-weight:700;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--text);
+    line-height:1.5;
+
+    /* INI YANG BIKIN SEJAJAR */
+    min-height:70px;
+
+    margin-bottom:16px;
+}
+
+.fb-pstep__img{
+    width:100%;
+    aspect-ratio:4/3;
+    border-radius:14px;
+    overflow:hidden;
+    background:var(--cream3);
+}
+
+.fb-pstep__img img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+.fb-pstep__img img { width: 100%; height: 100%; object-fit: cover; transition: .4s; }
+.fb-pstep:hover .fb-pstep__img img { transform: scale(1.04); }
+
+/* ───────────────── BEST SELLERS ───────────────── */
+
+.fb-sellers{
+    background:#F8F3EC;
+    display:grid;
+    grid-template-columns:300px 1fr;
+    gap:30px;
+    padding:60px 50px;
+    border-top:1px solid rgba(0,0,0,.06);
+}
+
+.fb-sellers__big{
+    font-family:var(--serif);
+    font-size:95px;
+    line-height:.85;
+    font-weight:500;
+    color:#8F1717;
+    margin-bottom:20px;
+}
+
+.fb-sellers__grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+}
+
+.fb-scard{
+    background:#fff;
+    border:1px solid #ECE5DD;
+    border-radius:14px;
+    padding:20px;
+    transition:.35s;
+}
+
+.fb-scard:hover{
+    transform:translateY(-6px);
+    box-shadow:0 20px 40px rgba(0,0,0,.08);
+}
+
+.fb-scard__img-wrap{
+    height:260px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-bottom:20px;
+    overflow:hidden;
+}
+
+.fb-scard__img-wrap img{
+    object-fit:contain;
+    transition:.4s;
+}
+
+/* ukuran per produk */
+.fb-scard:nth-child(1) img{
+    width:95%;
+}
+
+.fb-scard:nth-child(2) img{
+    width:88%;
+}
+
+.fb-scard:nth-child(3) img{
+    width:75%;
+}
+
+.fb-scard:hover img{
+    transform:scale(1.05);
+}
+
+.fb-scard__name{
+    font-family:var(--sans);
+    font-size:14px;
+    font-weight:700;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:#8F1717;
+    margin-bottom:10px;
+}
+
+.fb-scard__stars{
+    color:#C9A84C;
+    font-size:12px;
+    margin-bottom:15px;
+}
+
+.fb-scard__order{
+    font-family:var(--sans);
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.15em;
+    text-transform:uppercase;
+    color:#8F1717;
+}
+
+/* ─── WHY BROOLE ───────────────────────────────── */
+.fb-why{
+    display:grid;
+    grid-template-columns: 0.9fr 1fr 1fr;
+    align-items:center;
+
+    background:#faf5ee;
+
+    border-top:1px solid rgba(0,0,0,.06);
+    border-bottom:1px solid rgba(0,0,0,.06);
+}
+.fb-why__intro{
+    padding:60px;
+}
+
+.fb-why__big{
+    font-family:var(--serif);
+    font-size:80px;
+    line-height:.9;
+    font-weight:500;
+    color:#111;
+    margin-bottom:25px;
+}
+
+.fb-why__big em{
+    color:#9e1f1f;
+    font-style:normal;
+}
+.fb-why__photo{
+    height:100%;
+}
+
+.fb-why__photo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+.fb-why__features{
+    padding:50px;
+    display:flex;
+    flex-direction:column;
+    gap:22px;
+}
+.fb-wfeat{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+}
+
+.fb-wfeat__title{
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:#8F1717;
+}
+
+.fb-wfeat__sub{
+    font-size:14px;
+    color:#7b6c5d;
+    line-height:1.6;
+}
+
+
+/* ─── GALLERY ──────────────────────────────────── */
+.fb-gallery { position: relative; overflow: hidden; background: var(--cream2); }
+.fb-gallery__vert {
+    position: absolute; left: 1.8rem; top: 50%; transform: translateY(-50%);
+    writing-mode: vertical-rl;
+    font-family: var(--sans); font-size: .5rem; font-weight: 600;
+    letter-spacing: .22em; text-transform: uppercase; color: rgba(28,18,8,.25); z-index: 2;
+    display: flex; align-items: center; gap: 0;
+}
+.fb-gallery__strip { display: flex; gap: 3px; height: 200px; }
+.fb-gallery__item  { flex: 1; overflow: hidden; min-width: 0; }
+.fb-gallery__item img { width: 100%; height: 100%; object-fit: cover; transition: .5s; }
+.fb-gallery__item:hover img { transform: scale(1.07); }
+
+/* ─── TESTIMONIAL ──────────────────────────────── */
+.fb-testi {
+    background: linear-gradient(135deg, var(--red-deep) 0%, var(--red-mid) 100%);
+    padding: 5rem; position: relative; overflow: hidden;
+}
+.fb-testi__grain {
+    position: absolute; inset: 0; pointer-events: none; z-index: 1; opacity: .04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px;
+}
+.fb-testi__inner {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr auto; gap: 4rem; align-items: center;
+    position: relative; z-index: 2;
+}
+.fb-testi__quote-mark {
+    font-family: var(--serif); font-size: 5.5rem; font-weight: 700;
+    color: rgba(255,255,255,.12); line-height: .7; margin-bottom: 1rem;
+}
+.fb-testi__text {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 300; color: #fff;
+    line-height: .96; text-transform: uppercase; margin-bottom: 1.3rem;
+    letter-spacing: -.01em;
+}
+.fb-testi__text em { font-style: italic; color: var(--gold-lt); }
+.fb-testi__stars  { color: var(--gold); font-size: .9rem; margin-bottom: .4rem; letter-spacing: .05em; }
+.fb-testi__author { font-family: var(--sans); font-size: .68rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.45); }
+.fb-testi__nav    { display: flex; gap: .7rem; margin-top: 2rem; }
+.fb-testi__nav-btn {
+    width: 38px; height: 38px; border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,.22); background: transparent; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 1rem; transition: .2s;
+}
+.fb-testi__nav-btn:hover { background: rgba(255,255,255,.12); }
+
+/* Right side: circular photo + rotating badge */
+.fb-testi__right  { position: relative; flex-shrink: 0; }
+.fb-testi__img-wrap {
+    width: 260px; height: 260px; border-radius: 50%; overflow: hidden;
+    border: 3px solid rgba(255,255,255,.12); position: relative;
+}
+.fb-testi__img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Rotating text badge */
+.fb-testi__badge {
+    position: absolute; bottom: -16px; right: -16px;
+    width: 100px; height: 100px;
+    display: flex; align-items: center; justify-content: center;
+}
+.fb-testi__badge-ring {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    animation: fb-br 12s linear infinite;
+    background: var(--gold); border-radius: 50%;
+}
+.fb-testi__badge-star {
+    position: relative; z-index: 1;
+    font-size: 1.2rem; color: var(--text);
+}
+@keyframes fb-br { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+
+/* ─── SCROLL REVEAL ──────────────────────────────── */
+[data-sr]    { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
+[data-sr-d]  { opacity: 0; transform: translateY(28px); transition: opacity .7s ease .18s, transform .7s ease .18s; }
+[data-sr-d2] { opacity: 0; transform: translateY(28px); transition: opacity .7s ease .34s, transform .7s ease .34s; }
+[data-sr].vis, [data-sr-d].vis, [data-sr-d2].vis { opacity: 1; transform: translateY(0); }
+</style>
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    /* ══════════════════════════════════════════════
+       PARALLAX BROOLE
+       — Gambar bergerak ke bawah seiring scroll hero
+       — Sesuai video: mulai center, turun pelan,
+         dan sedikit fade sebelum keluar viewport
+    ══════════════════════════════════════════════ */
+    const broole = document.getElementById('fb-broole');
+    const hero   = document.getElementById('fb-hero');
+
+    function parallax() {
+        const s  = window.scrollY;
+        const hH = hero.offsetHeight;
+        /* p = 0 at hero top, 1 at hero bottom */
+        const p  = Math.min(Math.max(s / hH, 0), 1);
+
+        /* Move DOWN: max 220px at p=1 */
+        const shiftY = p * 220;
+        /* Subtle shrink */
+        const sc     = 1 - p * 0.06;
+        /* Fade out: starts at p=0.55, gone by p=1 */
+        const op     = Math.max(1 - (p - 0.3) / 0.7, 0);
+
+        broole.style.transform = `translate(-50%, calc(-50% + ${shiftY}px)) scale(${sc})`;
+        broole.style.opacity   = op;
+    }
+
+    window.addEventListener('scroll', parallax, { passive: true });
+    parallax();
+
+    /* ══════════════════════════════════════════════
+       SCROLL REVEAL
+    ══════════════════════════════════════════════ */
+    const io = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting) { e.target.classList.add('vis'); io.unobserve(e.target); }
+        });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('[data-sr],[data-sr-d],[data-sr-d2]').forEach(el => io.observe(el));
+
+    /* ══════════════════════════════════════════════
+       TESTIMONIAL SLIDER
+    ══════════════════════════════════════════════ */
+    const slides = [
+        { text: 'The Best Crème Brûlée<br>In <em>Surabaya.</em>', author: '— Veronica, Surabaya' },
+        { text: 'Perfectly Torched,<br><em>Every Time.</em>',      author: '— Rizky, Surabaya'    },
+        { text: 'My Favorite Dessert<br><em>In The City.</em>',    author: '— Ayu, Surabaya'      },
+    ];
+    let idx = 0;
+    const tText   = document.getElementById('fb-testi-text');
+    const tAuthor = document.getElementById('fb-testi-author');
+
+    function showSlide(i) {
+        tText.style.opacity = 0;
+        tAuthor.style.opacity = 0;
+        setTimeout(() => {
+            tText.innerHTML     = slides[i].text;
+            tAuthor.textContent = slides[i].author;
+            tText.style.opacity = 1;
+            tAuthor.style.opacity = 1;
+        }, 220);
+    }
+    tText.style.transition   = 'opacity .22s';
+    tAuthor.style.transition = 'opacity .22s';
+
+    document.getElementById('fb-next').addEventListener('click', () => { idx = (idx + 1) % slides.length; showSlide(idx); });
+    document.getElementById('fb-prev').addEventListener('click', () => { idx = (idx - 1 + slides.length) % slides.length; showSlide(idx); });
+
+});
+</script>
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\user\Herd\webdev-frombroole\resources\views/customer/about.blade.php ENDPATH**/ ?>
