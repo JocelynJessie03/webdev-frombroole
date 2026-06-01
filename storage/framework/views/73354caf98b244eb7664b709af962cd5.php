@@ -186,13 +186,19 @@ class="pb-20 bg-[#F8F5F2]"
 
             <div class="flex items-center gap-4 mt-10">
 
-                <button class="bg-[#8C1717] text-white px-8 py-4 rounded-full text-sm font-black uppercase tracking-[0.15em] shadow-[0_20px_40px_rgba(140,23,23,0.25)]">
-                    Order Now
-                </button>
+                <div class="flex flex-wrap gap-5 mt-10">
 
-                <button class="bg-white/90 backdrop-blur-sm border border-[#3D3833]/10 text-[#3D3833] px-8 py-4 rounded-full text-sm font-black uppercase tracking-[0.15em] shadow-sm">
-                    Discover More
-                </button>
+    <a href="<?php echo e(route('customer.shop')); ?>"
+       class="inline-flex items-center justify-center bg-[#8C1717] text-white px-8 py-4 rounded-full text-sm font-black uppercase tracking-[0.15em] shadow-[0_20px_40px_rgba(140,23,23,0.25)] hover:bg-[#751313] transition-all duration-300">
+        Order Now
+    </a>
+
+    <a href="<?php echo e(route('customer.about')); ?>"
+       class="inline-flex items-center justify-center bg-white/90 backdrop-blur-sm border border-[#3D3833]/10 text-[#3D3833] px-8 py-4 rounded-full text-sm font-black uppercase tracking-[0.15em] shadow-sm hover:bg-white transition-all duration-300">
+        Discover More
+    </a>
+
+</div>
 
             </div>
 
@@ -419,21 +425,34 @@ class="pb-20 bg-[#F8F5F2]"
                 </p>
 
                 
-                <button
-                    class="mt-10 w-full h-16 rounded-[18px] border border-white/20 bg-white/5 backdrop-blur-sm hover:bg-white hover:text-[#2A211D] transition-all duration-500 text-[11px] uppercase tracking-[0.25em] font-black text-[#F5EBDD]"
-                >
 
-                    <?php if($index === 0): ?>
-                    Shop Artisan Cheesecakes
-                    <?php elseif($index === 1): ?>
-                    Shop Broole Classics
-                    <?php else: ?>
-                    Shop Craft Drinks
-                    <?php endif; ?>
+                   <a
+    href="<?php if($index === 0): ?>
+            <?php echo e(route('customer.shop', ['category' => 3])); ?>
 
-                    →
+          <?php elseif($index === 1): ?>
+            <?php echo e(route('customer.shop', ['category' => 1])); ?>
 
-                </button>
+          <?php else: ?>
+            <?php echo e(route('customer.shop', ['category' => 2])); ?>
+
+          <?php endif; ?>"
+    class="mt-10 w-full h-16 rounded-[18px] border border-white/20 bg-white/5 backdrop-blur-sm hover:bg-white hover:text-[#2A211D] transition-all duration-500 text-[11px] uppercase tracking-[0.25em] font-black text-[#F5EBDD] flex items-center justify-center"
+>
+
+    <?php if($index === 0): ?>
+        Shop Artisan Cheesecakes
+    <?php elseif($index === 1): ?>
+        Shop Broole Classics
+    <?php else: ?>
+        Shop Craft Drinks
+    <?php endif; ?>
+
+    →
+
+</a>
+
+            
 
             </div>
 

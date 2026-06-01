@@ -5,7 +5,7 @@
     <p class="fb-footer__pre-text">
         <strong>From Broole</strong> — Sweetness handcrafted just for you. Visit us in Surabaya or order online.
     </p>
-    <a href="//" class="fb-footer__pre-btn">Order Now →</a>
+    <a href="<?php echo e(route('customer.shop')); ?>" class="fb-footer__pre-btn">Order Now →</a>
 </div>
 
 
@@ -38,23 +38,22 @@
         <div class="fb-footer__col">
             <div class="fb-footer__col-title">Explore</div>
             <nav class="fb-footer__links">
-                <a href="//" class="fb-footer__link">Home</a>
-                <a href="//" class="fb-footer__link">About Us</a>
-                <a href="//" class="fb-footer__link">Our Menu</a>
-                <a href="//" class="fb-footer__link">Transaction History</a>
-                <a href="//" class="fb-footer__link">Contact</a>
+                <a href="<?php echo e(route('customer.home')); ?>" class="fb-footer__link">Home</a>
+                <a href="<?php echo e(route('customer.about')); ?>" class="fb-footer__link">About Us</a>
+                <a href="<?php echo e(route('customer.shop')); ?>" class="fb-footer__link">Our Menu</a>
+                <a href="<?php echo e(route('customer.transactions_history')); ?>" class="fb-footer__link">Transaction History</a>
+                <a href="<?php echo e(route('customer.contact')); ?>" class="fb-footer__link">Contact</a>
             </nav>
         </div>
+        
 
         
         <div class="fb-footer__col">
             <div class="fb-footer__col-title">Our Menu</div>
             <nav class="fb-footer__links">
-                <a href="//" class="fb-footer__link">Signature Broole</a>
-                <a href="//" class="fb-footer__link">Burnt Cheesecake</a>
-                <a href="//" class="fb-footer__link">Craft Drinks</a>
-                <a href="//" class="fb-footer__link">Seasonal Specials</a>
-                <a href="//" class="fb-footer__link">Gift Boxes</a>
+                <a href="<?php echo e(route('customer.shop', ['category' => 1])); ?>" class="fb-footer__link">Signature Broole</a>
+                <a href="<?php echo e(route('customer.shop', ['category' => 3])); ?>" class="fb-footer__link">Burnt Cheesecake</a>
+                <a href="<?php echo e(route('customer.shop', ['category' => 2])); ?>" class="fb-footer__link">Craft Drinks</a>
             </nav>
         </div>
 

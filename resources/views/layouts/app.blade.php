@@ -11,6 +11,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet"href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 
     <title>From Broole</title>
 </head>
@@ -76,9 +78,9 @@
     <div class="h-3.5 w-px bg-[#8C1717]/15"></div>
 
     <a
-        href="/"
+        href="{{ route('customer.shop') }}"
         class="relative rounded-md px-4 py-2 font-['Montserrat'] text-[10px] font-semibold uppercase tracking-[0.25em]
-        {{ Route::is('pos') ? 'text-[#8C1717]' : 'text-[#7A6E68] hover:text-[#8C1717]' }}"
+        {{ Route::is('customer.shop') ? 'text-[#8C1717]' : 'text-[#7A6E68] hover:text-[#8C1717]' }}"
     >
         Shop
     </a>
@@ -96,9 +98,9 @@
     <div class="h-3.5 w-px bg-[#8C1717]/15"></div>
 
     <a
-        href="/"
+        href="{{ route('customer.transactions_history') }}"
         class="relative rounded-md px-4 py-2 font-['Montserrat'] text-[10px] font-semibold uppercase tracking-[0.25em]
-        {{ Route::is('order_history') ? 'text-[#8C1717]' : 'text-[#7A6E68] hover:text-[#8C1717]' }}"
+        {{ Route::is('transactions_history') ? 'text-[#8C1717]' : 'text-[#7A6E68] hover:text-[#8C1717]' }}"
     >
         Transaction History
     </a>
@@ -119,15 +121,27 @@
                 <div class="flex flex-shrink-0 items-center gap-2.5">
 
                     {{-- Search --}}
-                    <button
-                        class="flex h-10 w-10 items-center justify-center rounded-[10px] border border-[#3D3833]/10 bg-white text-[#7A6E68] transition-all duration-200 hover:-translate-y-px hover:border-[#8C1717]/30 hover:text-[#8C1717] hover:shadow-[0_4px_12px_rgba(140,23,23,0.1)]"
-                        aria-label="Search"
-                    >
-                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                            <circle cx="11" cy="11" r="7"/>
-                            <path d="M21 21l-4.35-4.35"/>
-                        </svg>
-                    </button>
+                  <div class="relative w-[320px] hidden lg:block">
+
+    <div class="bg-white px-5 py-2.5 rounded-full border border-[#8C1717]/10">
+
+        <input
+            type="text"
+            id="global-search"
+            placeholder="Search desserts..."
+            class="w-full bg-transparent outline-none text-sm"
+        >
+
+    </div>
+
+    <div
+        id="search-dropdown"
+        class="hidden absolute top-14 left-0 w-full bg-white rounded-3xl shadow-2xl border border-[#E5E0DA] overflow-hidden z-50"
+    >
+        <div id="search-results"></div>
+    </div>
+
+</div>
 
                     {{-- Cart --}}
                     <button
@@ -185,20 +199,20 @@
             <div class="p-2">
 
                 <a
-                    href="//"
+                    href="{{ route('profile.edit') }}"
                     class="block px-4 py-3 rounded-xl hover:bg-gray-100"
                 >
                     Profile
                 </a>
 
                 <a
-                    href="//"
+                    href="{{ route('customer.transactions_history') }}"
                     class="block px-4 py-3 rounded-xl hover:bg-gray-100"
                 >
                     Order History
                 </a>
 
-                <form method="POST" action="//">
+                <form method="POST" action="{{ route('logout') }}">
                     @csrf
 
                     <button
@@ -295,5 +309,138 @@
 
 </div>
 
+<script>
+const searchInput = document.getElementById('global-search');
+
+if (searchInput) {
+
+    const dropdown = document.getElementById('search-dropdown');
+    const results = document.getElementById('search-results');
+
+    searchInput.addEventListener('keyup', async function () {
+
+        const query = this.value;
+
+        if (query.length < 1) {
+            dropdown.classList.add('hidden');
+            return;
+        }
+
+        try {
+
+            const response = await fetch(`/customer-search?query=${query}`);
+            const data = await response.json();
+
+            let html = '';
+
+            if (data.products.length > 0) {
+
+                html += `
+                    <div class="p-3 bg-gray-50 font-bold text-[#8C1717]">
+                        Products
+                    </div>
+                `;
+
+                data.products.forEach(product => {
+
+                    html += `
+                        <a href="/shop"
+                           class="block px-5 py-4 border-b hover:bg-gray-50">
+
+                            <div class="font-semibold">
+                                ${product.pro_name}
+                            </div>
+
+                        </a>
+                    `;
+                });
+
+            } else {
+
+                html = `
+                    <div class="p-6 text-center text-gray-400">
+                        No products found
+                    </div>
+                `;
+            }
+
+            results.innerHTML = html;
+            dropdown.classList.remove('hidden');
+
+        } catch(error) {
+            console.error(error);
+        }
+
+    });
+
+    document.addEventListener('click', function(e) {
+
+        if (
+            !searchInput.contains(e.target) &&
+            !dropdown.contains(e.target)
+        ) {
+            dropdown.classList.add('hidden');
+        }
+
+    });
+    if (data.products.length > 0) {
+
+    html += `
+        <div class="p-3 bg-gray-50 font-bold text-[#8C1717]">
+            Products
+        </div>
+    `;
+
+    data.products.forEach(product => {
+
+        html += `
+            <a href="/shop"
+               class="block px-5 py-4 border-b hover:bg-gray-50">
+
+                <div class="font-semibold">
+                    ${product.pro_name}
+                </div>
+
+            </a>
+        `;
+    });
+
+}
+
+/* ORDER HISTORY */
+
+if (data.orders && data.orders.length > 0) {
+
+    html += `
+        <div class="p-3 bg-gray-50 font-bold text-[#8C1717]">
+            Order History
+        </div>
+    `;
+
+    data.orders.forEach(order => {
+
+        html += `
+            <a href="/transactions_history"
+               class="block px-5 py-4 border-b hover:bg-gray-50">
+
+                <div class="font-semibold">
+                    Order #${order.order_id}
+                </div>
+
+                <div class="text-xs text-gray-500">
+                    Status: ${order.status}
+                </div>
+
+            </a>
+        `;
+    });
+
+}
+
+    
+
+}
+
+</script>
 </body>
 </html>

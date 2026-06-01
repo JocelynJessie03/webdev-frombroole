@@ -15,6 +15,11 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AiController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\EditMemberController; // <-- TAMBAHAN UNTUK EDIT PROFILE
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\ContactController;
+
+
+
 
 // ==========================================
 // 1. GUEST ROUTES (Hanya bisa diakses jika BELUM login)
@@ -111,6 +116,21 @@ Route::middleware(['auth', 'customer'])->group(function () {
     Route::view('/home', 'customer.home')->name('customer.home');
     Route::view('/about', 'customer.about')->name('customer.about');
     Route::view('/contact', 'customer.contact')->name('customer.contact');
+    Route::view('/transactions_history', 'customer.transactions_history')
+    ->name('customer.transactions_history');
+    Route::view('/shop', 'customer.shop')->name('customer.shop');
+
+    Route::view(
+    '/contact/success',
+    'customer.contact-success'
+)->name('contact.success');
+
+Route::post('/contact', [ContactController::class, 'store'])
+    ->name('contact.store');
+
+    
+Route::get('/customer-search', [SearchController::class, 'search'])
+    ->name('customer.search');
     
 Route::get('/checkout/{id}', [PosController::class, 'checkoutView'])
     ->name('checkout.view');

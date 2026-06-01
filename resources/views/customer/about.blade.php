@@ -59,11 +59,11 @@
         </div>
        <div class="fb-hero__actions">
 
-    <a href="#story" class="fb-btn fb-btn--dark">
+    <a href="{{ route('customer.about') }}" class="fb-btn fb-btn--dark">
         Our Story
     </a>
 
-    <a href="#menu" class="fb-btn fb-btn--outline">
+    <a href="{{ route('customer.shop') }}" class="fb-btn fb-btn--outline">
         See Menu
     </a>
 
@@ -88,10 +88,7 @@
         <p class="fb-eyebrow"><span class="fb-edash"></span>Signature Experience</p>
         <h2 class="fb-crack__big">The<br>Perfect<br><em>Crack.</em></h2>
         <p class="fb-crack__sub">One tap. One crack.<br>The sound of handcrafted perfection.</p>
-        <a href="#" class="fb-watch-btn">
-            <div class="fb-watch-btn__circle">▶</div>
-            Watch Video
-        </a>
+        
     </div>
     <div class="fb-crack__right" data-sr-d>
 
@@ -161,7 +158,7 @@
         <div class="fb-sellers__plus">✦</div>
         <h2 class="fb-sellers__big">Best<br><em>Sellers</em></h2>
         <p class="fb-body">We don't take shortcuts. We choose quality, we craft with passion, and we serve with heart.</p>
-        <a href="#" class="fb-viewall"><span class="fb-viewall__line"></span>View All Menu →</a>
+        <a href="{{ route('customer.shop') }}" class="fb-viewall"><span class="fb-viewall__line"></span>View All Menu →</a>
     </div>
     <div class="fb-sellers__grid">
         <div class="fb-scard" data-sr>
@@ -171,7 +168,7 @@
             <div class="fb-scard__body">
                 <p class="fb-scard__name">Signature Broole</p>
                 <p class="fb-scard__stars">★★★★★ <span class="fb-scard__ct">4.9 (231)</span></p>
-                <a href="#" class="fb-scard__order">Order Now →</a>
+                <a href="{{ route('customer.shop', ['category' => 1]) }}" class="fb-scard__order">Order Now →</a>
             </div>
         </div>
         <div class="fb-scard" data-sr-d>
@@ -181,7 +178,7 @@
             <div class="fb-scard__body">
                 <p class="fb-scard__name">Burnt Cheesecake</p>
                 <p class="fb-scard__stars">★★★★★ <span class="fb-scard__ct">4.8 (300)</span></p>
-                <a href="#" class="fb-scard__order">Order Now →</a>
+                <a href="{{ route('customer.shop', ['category' => 3]) }}" class="fb-scard__order">Order Now →</a>
             </div>
         </div>
         <div class="fb-scard" data-sr-d2>
@@ -191,7 +188,7 @@
             <div class="fb-scard__body">
                 <p class="fb-scard__name">Craft Drinks</p>
                 <p class="fb-scard__stars">★★★★☆ <span class="fb-scard__ct">4.5 (71)</span></p>
-                <a href="#" class="fb-scard__order">Order Now →</a>
+                <a href="{{ route('customer.shop', ['category' => 2]) }}" class="fb-scard__order">Order Now →</a>
             </div>
         </div>
     </div>

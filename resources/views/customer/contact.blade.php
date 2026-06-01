@@ -95,7 +95,7 @@
             </div>
         @endif
 
-        <form method="POST" action="//">
+        <form method="POST" action="{{ route('contact.store') }}">
             @csrf
 
             <div class="ct-row2">
@@ -199,16 +199,50 @@
         <p class="ct-faq__sub">Quick answers to things we get asked the most.</p>
     </div>
 
-    <div class="ct-faq__grid">
-        @php
-        $faqs = [
-            ['q'=>'Do you accept custom / bulk orders?',   'a'=>'Yes! We love doing bulk orders for events, weddings, and corporate gifting. Contact us at least 3 days in advance.'],
-            ['q'=>'Is your kitchen 100% halal certified?', 'a'=>'Absolutely. We are certified halal and take this seriously — from ingredients to the preparation process.'],
-            ['q'=>'Do you deliver outside Surabaya?',      'a'=>'Currently we serve Surabaya and surrounding areas. For long-distance shipping, contact us to discuss options.'],
-            ['q'=>'How long does it stay fresh?',          'a'=>'Best enjoyed within 24 hours. Store in the fridge and torch just before serving for the perfect crack.'],
-            ['q'=>'Can I visit the store directly?',       'a'=>"Yes! Walk-ins are welcome during our opening hours. We're open Mon–Sun, 10:00–22:00 WIB."],
-            ['q'=>'What payment methods do you accept?',   'a'=>'We accept cash, bank transfer, GoPay, OVO, Dana, and QRIS. No card payments at this time.'],
-        ];
+    @php
+$faqs = [
+
+[
+'q' => 'How do I place an order?',
+'a' => 'You can place your order directly through our website. Simply browse our desserts, add your favorites to the cart, and complete the checkout process.'
+],
+
+[
+'q' => 'Do you have a physical store?',
+'a' => 'Currently, From Broole operates exclusively online. This allows us to focus on crafting fresh desserts made to order and delivering them directly to our customers.'
+],
+
+[
+'q' => 'Do you offer custom or bulk orders?',
+'a' => 'Absolutely! We accept custom and bulk orders for birthdays, corporate events, weddings, and special occasions. We recommend contacting us at least 3 days in advance.'
+],
+
+[
+'q' => 'How long does crème brûlée stay fresh?',
+'a' => 'Our desserts are best enjoyed within 24–48 hours when stored in the refrigerator. For the best experience, consume them as soon as possible after delivery.'
+],
+
+[
+'q' => 'What payment methods do you accept?',
+'a' => 'We accept Bank Transfer, QRIS, GoPay, OVO, DANA, and other popular digital payment methods available during checkout.'
+],
+
+[
+'q' => 'How long does delivery take?',
+'a' => 'Delivery times depend on your location and order volume. Most orders within Surabaya are delivered on the same day or according to your selected schedule.'
+],
+
+[
+'q' => 'Are your products halal?',
+'a' => 'Yes. We carefully select halal ingredients and maintain strict preparation standards to ensure every dessert is suitable for our customers.'
+],
+
+[
+'q' => 'How can I contact From Broole?',
+'a' => 'You can reach us through the Contact Us page, WhatsApp, or our social media channels. We typically respond within a few hours during business hours.'
+],
+
+];
         @endphp
         @foreach($faqs as $faq)
         <div class="ct-faq-item" data-faq>

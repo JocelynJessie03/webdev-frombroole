@@ -233,7 +233,6 @@
 
            $title = match(Request::segment(1)) {
 
-<<<<<<< HEAD
     'dashboard' => 'Dashboard',
 
     'pos' => 'Point of Sale',
@@ -255,23 +254,6 @@
     default => 'Dashboard',
 
 };
-=======
-                'dashboard' => 'Dashboard',
-                'checkout-preview' => '',
-                'checkout' => 'Point of Sale',
-                'payment-success' => 'Receipt',
-                'receipt' => '',
-                'pos'=>'Point Of Sale',
-                'product-inventory' => 'Product Inventory',
-                'ingredient-inventory' => 'Ingredient Inventory',
-                'customers' => 'Members',
-                'reports' => 'Reports & Analytics',
-                'order_history' => 'Order History',
-                
-
-                default => '',
-            };
->>>>>>> 5452588dc742a95560dbcd02ad75307a53c7778d
 
         @endphp
 
