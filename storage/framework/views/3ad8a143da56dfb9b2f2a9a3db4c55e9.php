@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>From Broolé</title>
+    <title>Create Account | From Broolé</title>
 
     <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 
@@ -37,7 +37,7 @@
 
 <div class="w-full max-w-4xl bg-white rounded-[2.5rem] shadow-[0_40px_80px_-20px_rgba(107,13,13,0.15)] overflow-hidden flex flex-col md:flex-row min-h-[700px] md:h-[750px]">
 
-    <!-- LEFT SIDE -->
+ <!-- LEFT SIDE -->
     <div class="w-full md:w-[45%] bg-[#7a0d0d] relative overflow-hidden flex flex-col items-center justify-center p-12 text-white">
 
         <!-- Gradient -->
@@ -127,27 +127,28 @@
     </div>
 
     <!-- RIGHT SIDE -->
-    <div class="flex-1 bg-[#fffdfd] p-8 md:p-16 flex flex-col justify-center">
+    <div class="flex-1 bg-[#fffdfd] p-5 md:p-8 flex flex-col justify-center">
 
         <div class="max-w-md mx-auto w-full">
 
-            <!-- Heading -->
+            <!-- HEADER -->
             <div class="mb-8">
+
                 <h1 class="text-4xl md:text-5xl font-black text-[#2a1111] tracking-tighter mb-2 leading-tight">
-                    Welcome Back
+                    Create Account
                 </h1>
 
                 <p class="text-base text-gray-500 font-medium">
-                    Continue your sweet journey
+                    Start your sweet journey with us
                 </p>
             </div>
 
-            <!-- Google Login -->
+            <!-- GOOGLE REGISTER -->
             <div class="mb-8">
 
                 <a
                     href="/auth/google"
-                    class="w-full py-4 px-6 bg-white border border-[#f0eaea] rounded-2xl flex items-center justify-center gap-3 font-bold text-lg text-[#2a1111] hover:bg-[#faf7f7] transition-all hover:shadow-md"
+                    class="w-full py-3 px-6 bg-white border border-[#f0eaea] rounded-2xl flex items-center justify-center gap-3 font-bold text-lg text-[#2a1111] hover:bg-[#faf7f7] transition-all hover:shadow-md"
                 >
 
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 48 48">
@@ -161,7 +162,7 @@
                 </a>
             </div>
 
-            <!-- Divider -->
+            <!-- DIVIDER -->
             <div class="relative mb-8">
 
                 <div class="absolute inset-0 flex items-center">
@@ -170,40 +171,73 @@
 
                 <div class="relative flex justify-center text-[10px] uppercase font-black tracking-[0.2em] text-gray-300">
                     <span class="bg-[#fffdfd] px-6">
-                        Or Manual sign in
+                        Or Manual Sign up
                     </span>
                 </div>
             </div>
 
             <!-- FORM -->
-            <form method="POST" action="/login" class="space-y-6">
+            <form method="POST" action="/register/send-otp" class="space-y-5">
                 <?php echo csrf_field(); ?>
 
-                <!-- Email -->
-                <div class="space-y-3">
+                <!-- NAME -->
+                <div class="space-y-2">
 
-                    <label class="text-xs font-black uppercase tracking-widest text-gray-500 ml-2 block">
-                        Email
+                    <label class="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2 block">
+                        Full Name
                     </label>
 
                     <input
                         type="text"
-                        name="email"
-                        value="<?php echo e(old('email')); ?>"
-                        placeholder="name@email.com"
-                        class="w-full px-6 py-4 bg-[#f5f3f3] rounded-2xl focus:bg-white focus:ring-4 focus:ring-[#7a0d0d]/5 outline-none transition-all text-base font-medium"
+                        name="name"
+                        value="<?php echo e(old('name')); ?>"
+                        placeholder="Your Full Name"
+                        class="w-full px-6 py-3 bg-[#f5f3f3] rounded-2xl focus:bg-white focus:ring-4 focus:ring-[#7a0d0d]/5 outline-none transition-all text-base font-medium"
                     >
                 </div>
 
-                <!-- Password -->
-                <div class="space-y-3">
+               <div class="grid grid-cols-2 gap-4">
 
-                    <div class="flex justify-between items-center px-2">
+                    <!-- EMAIL -->
+                    <div class="space-y-2">
 
-                        <label class="text-xs font-black uppercase tracking-widest text-gray-500">
-                            Password
+                        <label class="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2 block">
+                            Email Address
                         </label>
+
+                        <input
+                            type="email"
+                            name="email"
+                            value="<?php echo e(old('email')); ?>"
+                            placeholder="name@email.com"
+                            class="w-full px-5 py-3 bg-[#f5f3f3] rounded-2xl focus:bg-white focus:ring-4 focus:ring-[#7a0d0d]/5 outline-none transition-all text-sm font-medium"
+                        >
                     </div>
+
+                    <!-- PHONE -->
+                    <div class="space-y-2">
+
+                        <label class="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2 block">
+                            Phone Number
+                        </label>
+
+                        <input
+                            type="text"
+                            name="phone"
+                            value="<?php echo e(old('phone')); ?>"
+                            placeholder="08........"
+                            class="w-full px-5 py-3 bg-[#f5f3f3] rounded-2xl focus:bg-white focus:ring-4 focus:ring-[#7a0d0d]/5 outline-none transition-all text-sm font-medium"
+                        >
+                    </div>
+
+                </div>
+
+                <!-- PASSWORD -->
+                <div class="space-y-2">
+
+                    <label class="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2 block">
+                        Password
+                    </label>
 
                     <div class="relative">
 
@@ -246,29 +280,18 @@
 
 </button>
 
-                </div>
-
-                </div>
-                    <div class="flex justify-end">
-
-                        <a
-                        href="/forgot-password"
-                        class="text-sm font-bold text-gray-400 hover:text-[#8d1010] transition-all"
-                        >
-                        Forgot Password?
-                        </a>
-
                     </div>
-
                 </div>
 
-                <!-- Button -->
+                
+
+                <!-- BUTTON -->
                 <button
                     type="submit"
                     class="w-full py-5 bg-[#8d1010] text-white rounded-2xl font-black text-lg shadow-2xl shadow-[#8d1010]/20 flex items-center justify-center gap-3 hover:bg-[#781010] transition-all mt-4"
                 >
                     <span>
-                        Sign In
+                        Send Verification Code
                     </span>
 
                     <span class="text-xl">
@@ -277,15 +300,15 @@
                 </button>
             </form>
 
-            <!-- Footer -->
-            <p class="text-center mt-10 text-gray-500 text-sm font-medium">
-                Are You new here?
+            <!-- FOOTER -->
+            <p class="text-center mt-8 text-gray-500 text-sm font-medium">
+                Already have an account?
 
                 <a
-                    href="/register"
+                    href="/login"
                     class="text-[#8d1010] font-black hover:underline underline-offset-4 decoration-2"
                 >
-                    Create an account
+                    Sign in
                 </a>
             </p>
         </div>
@@ -319,7 +342,7 @@ function togglePassword() {
 }
 
 </script>
-
+</body>
 
 <?php if($errors->any()): ?>
 
@@ -331,11 +354,15 @@ function togglePassword() {
     <div class="bg-white w-[90%] max-w-md rounded-[2rem] p-8 shadow-2xl text-center">
 
         <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-5">
-            <span class="text-4xl">⚠️</span>
+
+            <span class="text-4xl">
+                ⚠️
+            </span>
+
         </div>
 
         <h2 class="text-3xl font-black text-[#2a1111] mb-3">
-            Login Failed
+            Oops!
         </h2>
 
         <p class="text-gray-500 font-medium mb-6 leading-relaxed">
@@ -355,4 +382,4 @@ function togglePassword() {
 </div>
 
 <?php endif; ?>
-<?php /**PATH D:\Herd\webdev-frombroole\resources\views/login.blade.php ENDPATH**/ ?>
+</html><?php /**PATH C:\Users\user\Herd\webdev-frombroole\resources\views/register.blade.php ENDPATH**/ ?>

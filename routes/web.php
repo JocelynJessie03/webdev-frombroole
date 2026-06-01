@@ -110,8 +110,8 @@ Route::middleware(['auth', 'customer'])->group(function () {
     // Halaman Customer
     Route::view('/home', 'customer.home')->name('customer.home');
     Route::view('/about', 'customer.about')->name('customer.about');
+    Route::view('/contact', 'customer.contact')->name('customer.contact');
     
-<<<<<<< HEAD
 Route::get('/checkout/{id}', [PosController::class, 'checkoutView'])
     ->name('checkout.view');
 
@@ -137,26 +137,6 @@ Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name(
 // Tambahkan baris rute restore ini di routes/web.php kamu
 Route::post('/categories/{id}/restore', [CategoryController::class, 'restore'])->name('categories.restore');
 
-Route::get('/home', function () {
-
-    return view('customer.home');
-
-});
-
-
-Route::get('/', function () {
-    return view('customer.home');
-})->name('customer.home');
-
-Route::get('/about', function () {
-    return view('customer.about');
-})->name('customer.about');
-
-Route::get('/contact', function () {
-    return view('customer.contact');
-})->name('customer.contact');
-
-
 Route::post(
     '/notifications/{id}/read',
     [NotificationController::class, 'markAsRead']
@@ -166,7 +146,6 @@ Route::post(
     '/notifications/read-all',
     [NotificationController::class, 'markAllAsRead']
 );
-=======
     // Shop
     Route::get('/shop', [ShopController::class, 'index'])->name('customer.shop');
     Route::get('/cart',  [ShopController::class, 'cart'])->name('customer.cart');
@@ -181,4 +160,3 @@ Route::post(
     // AI Chat
     Route::post('/ai-chat', [AiController::class, 'chat']);
 });
->>>>>>> 5452588dc742a95560dbcd02ad75307a53c7778d

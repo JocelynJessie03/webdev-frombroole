@@ -222,4 +222,4 @@
 </div>
 
 </body>
-</html><?php /**PATH D:\Herd\webdev-frombroole\resources\views/verify-otp.blade.php ENDPATH**/ ?>
+</html><?php /**PATH C:\Users\user\Herd\webdev-frombroole\resources\views/verify-otp.blade.php ENDPATH**/ ?>
