@@ -237,7 +237,7 @@ unset($__errorArgs, $__bag); ?>
         <div class="ct-icard">
             <div class="ct-icard__icon"><i class="ti ti-brand-whatsapp"></i></div>
             <h3 class="ct-icard__title">WhatsApp</h3>
-            <p class="ct-icard__val">+62 812-3456-7890</p>
+            <p class="ct-icard__val">+62 899-930-0200</p>
             <p class="ct-icard__sub">Usually replies in under 1 hour</p>
         </div>
         <div class="ct-icard">
@@ -327,10 +327,7 @@ $faqs = [
         <a href="https://instagram.com/frombroole" target="_blank" class="ct-social-btn">
             <i class="ti ti-brand-instagram"></i> Instagram
         </a>
-        <a href="https://tiktok.com/@frombroole" target="_blank" class="ct-social-btn">
-            <i class="ti ti-brand-tiktok"></i> TikTok
-        </a>
-        <a href="https://wa.me/6281234567890" target="_blank" class="ct-social-btn">
+        <a href="https://wa.me/628999300200" target="_blank" class="ct-social-btn">
             <i class="ti ti-brand-whatsapp"></i> WhatsApp
         </a>
     </div>
