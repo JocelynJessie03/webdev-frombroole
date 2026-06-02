@@ -6,7 +6,7 @@
 
     <title>Create Account | From Broolé</title>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
 
@@ -106,42 +106,42 @@
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
 
             <img
-                src="{{ asset('images/oreo_broole.png') }}"
+                src="<?php echo e(asset('images/oreo_broole.png')); ?>"
                 class="absolute opacity-40 blur-[1px] w-[96px] top-[15%] left-[10%] floating"
             >
 
             <img
-                src="{{ asset('images/strawberry_broole.png') }}"
+                src="<?php echo e(asset('images/strawberry_broole.png')); ?>"
                 class="absolute opacity-40 blur-[1px] w-[80px] top-[10%] left-[85%] floating"
                 style="animation-delay: 1s;"
             >
 
             <img
-                src="{{ asset('images/matcha_broole.png') }}"
+                src="<?php echo e(asset('images/matcha_broole.png')); ?>"
                 class="absolute opacity-40 blur-[1px] w-[90px] top-[80%] left-[75%] floating"
                 style="animation-delay: 2s;"
             >
 
             <img
-                src="{{ asset('images/toa.png') }}"
+                src="<?php echo e(asset('images/toa.png')); ?>"
                 class="absolute opacity-40 blur-[1px] w-[50px] top-[75%] left-[20%] floating"
                 style="animation-delay: 1.5s;"
             >
 
             <img
-                src="{{ asset('images/choco_broole.png') }}"
+                src="<?php echo e(asset('images/choco_broole.png')); ?>"
                 class="absolute opacity-40 blur-[1px] w-[70px] top-[60%] left-[5%] floating"
                 style="animation-delay: 0.5s;"
             >
 
             <img
-                src="{{ asset('images/letter.png') }}"
+                src="<?php echo e(asset('images/letter.png')); ?>"
                 class="absolute opacity-40 blur-[1px] w-[80px] top-[50%] left-[90%] floating"
                 style="animation-delay: 3s;"
             >
 
             <img
-                src="{{ asset('images/bow.png') }}"
+                src="<?php echo e(asset('images/bow.png')); ?>"
                 class="absolute opacity-40 blur-[1px] w-[70px] top-[40%] left-[5%] floating"
                 style="animation-delay: 2.5s;"
             >
@@ -154,7 +154,7 @@
             <div class="w-40 h-40 bg-white rounded-full flex items-center justify-center mx-auto mb-10 shadow-2xl ring-[12px] ring-white/10">
 
                 <img
-                    src="{{ asset('home/logo.png') }}"
+                    src="<?php echo e(asset('home/logo.png')); ?>"
                     class="w-full h-full object-contain p-3"
                 >
             </div>
@@ -174,7 +174,7 @@
 
             <div class="w-8 h-8 bg-white/20 rounded flex items-center justify-center p-1.5 backdrop-blur-sm">
                 <img
-                    src="{{ asset('images/spork.png') }}"
+                    src="<?php echo e(asset('images/spork.png')); ?>"
                     class="w-full h-full object-contain brightness-0 invert"
                 >
             </div>
@@ -237,7 +237,7 @@
 
             <!-- FORM -->
             <form method="POST" action="/register/send-otp" class="space-y-5">
-                @csrf
+                <?php echo csrf_field(); ?>
 
                 <!-- NAME -->
                 <div class="space-y-2">
@@ -249,7 +249,7 @@
                     <input
                         type="text"
                         name="name"
-                        value="{{ old('name') }}"
+                        value="<?php echo e(old('name')); ?>"
                         placeholder="Your Full Name"
                         class="w-full px-6 py-3 bg-[#f5f3f3] rounded-2xl focus:bg-white focus:ring-4 focus:ring-[#7a0d0d]/5 outline-none transition-all text-base font-medium"
                     >
@@ -267,7 +267,7 @@
                         <input
                             type="email"
                             name="email"
-                            value="{{ old('email') }}"
+                            value="<?php echo e(old('email')); ?>"
                             placeholder="name@email.com"
                             class="w-full px-5 py-3 bg-[#f5f3f3] rounded-2xl focus:bg-white focus:ring-4 focus:ring-[#7a0d0d]/5 outline-none transition-all text-sm font-medium"
                         >
@@ -283,7 +283,7 @@
                         <input
                             type="text"
                             name="phone"
-                            value="{{ old('phone') }}"
+                            value="<?php echo e(old('phone')); ?>"
                             placeholder="08........"
                             class="w-full px-5 py-3 bg-[#f5f3f3] rounded-2xl focus:bg-white focus:ring-4 focus:ring-[#7a0d0d]/5 outline-none transition-all text-sm font-medium"
                         >
@@ -342,20 +342,7 @@
                     </div>
                 </div>
 
-                {{-- <!-- CONFIRM PASSWORD -->
-                <div class="space-y-2">
-
-                    <label class="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2 block">
-                        Confirm Password
-                    </label>
-
-                    <input
-                        type="password"
-                        name="password_confirmation"
-                        placeholder="••••••••"
-                        class="w-full px-6 py-3 bg-[#f5f3f3] rounded-2xl focus:bg-white focus:ring-4 focus:ring-[#7a0d0d]/5 outline-none transition-all text-base font-medium"
-                    >
-                </div> --}}
+                
 
                 <!-- BUTTON -->
                 <button
@@ -416,7 +403,7 @@ function togglePassword() {
 </script>
 </body>
 
-@if ($errors->any())
+<?php if($errors->any()): ?>
 
 <div
     id="errorModal"
@@ -438,7 +425,8 @@ function togglePassword() {
         </h2>
 
         <p class="text-gray-500 font-medium mb-6 leading-relaxed">
-            {{ $errors->first() }}
+            <?php echo e($errors->first()); ?>
+
         </p>
 
         <button
@@ -452,5 +440,5 @@ function togglePassword() {
 
 </div>
 
-@endif
-</html>
+<?php endif; ?>
+</html><?php /**PATH C:\Users\user\Herd\webdev-frombroole\resources\views/register.blade.php ENDPATH**/ ?>
