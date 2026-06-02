@@ -28,10 +28,7 @@
                 <a href="https://instagram.com/frombroole" target="_blank" class="fb-footer__social" aria-label="Instagram">
                     <i class="ti ti-brand-instagram" aria-hidden="true"></i>
                 </a>
-                <a href="https://tiktok.com/@frombroole" target="_blank" class="fb-footer__social" aria-label="TikTok">
-                    <i class="ti ti-brand-tiktok" aria-hidden="true"></i>
-                </a>
-                <a href="https://wa.me/6281234567890" target="_blank" class="fb-footer__social" aria-label="WhatsApp">
+                <a href="https://wa.me/628999300200" target="_blank" class="fb-footer__social" aria-label="WhatsApp">
                     <i class="ti ti-brand-whatsapp" aria-hidden="true"></i>
                 </a>
                 
@@ -45,6 +42,7 @@
                 <a href="{{ route('customer.home') }}" class="fb-footer__link">Home</a>
                 <a href="{{ route('customer.about') }}" class="fb-footer__link">About Us</a>
                 <a href="{{ route('customer.shop') }}" class="fb-footer__link">Our Menu</a>
+                <a href="{{ route('customer.tasks.index') }}" class="fb-footer__link">Claim Coupons</a>
                 <a href="{{ route('customer.transactions_history') }}" class="fb-footer__link">Transaction History</a>
                 <a href="{{ route('customer.contact') }}" class="fb-footer__link">Contact</a>
             </nav>

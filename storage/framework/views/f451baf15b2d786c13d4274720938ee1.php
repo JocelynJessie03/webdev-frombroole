@@ -63,7 +63,6 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
 
                 
                 <nav class="hidden flex-1 items-center justify-center gap-1 lg:flex">
-<nav class="hidden flex-1 items-center justify-center gap-1 lg:flex">
 
     <a
         href="<?php echo e(route('customer.home')); ?>"
@@ -71,16 +70,6 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
         <?php echo e(Route::is('customer.home') ? 'text-[#8C1717]' : 'text-[#7A6E68] hover:text-[#8C1717]'); ?>"
     >
         Home
-    </a>
-
-    <div class="h-3.5 w-px bg-[#8C1717]/15"></div>
-
-    <a
-        href="<?php echo e(route('customer.shop')); ?>"
-        class="relative rounded-md px-4 py-2 font-['Montserrat'] text-[10px] font-semibold uppercase tracking-[0.25em]
-        <?php echo e(Route::is('customer.shop') ? 'text-[#8C1717]' : 'text-[#7A6E68] hover:text-[#8C1717]'); ?>"
-    >
-        Shop
     </a>
 
     <div class="h-3.5 w-px bg-[#8C1717]/15"></div>
@@ -96,12 +85,34 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
     <div class="h-3.5 w-px bg-[#8C1717]/15"></div>
 
     <a
+        href="<?php echo e(route('customer.shop')); ?>"
+        class="relative rounded-md px-4 py-2 font-['Montserrat'] text-[10px] font-semibold uppercase tracking-[0.25em]
+        <?php echo e(Route::is('customer.shop') ? 'text-[#8C1717]' : 'text-[#7A6E68] hover:text-[#8C1717]'); ?>"
+    >
+        Shop
+    </a>
+
+    
+    <div class="h-3.5 w-px bg-[#8C1717]/15"></div>
+
+    <a
+        href="<?php echo e(route('customer.tasks.index')); ?>"
+        class="relative rounded-md px-4 py-2 font-['Montserrat'] text-[10px] font-semibold uppercase tracking-[0.25em]
+        <?php echo e(Route::is('customer.tasks.index') ? 'text-[#8C1717]' : 'text-[#7A6E68] hover:text-[#8C1717]'); ?>"
+    >
+        Coupons
+    </a>
+
+    <div class="h-3.5 w-px bg-[#8C1717]/15"></div>
+
+    <a
         href="<?php echo e(route('customer.transactions_history')); ?>"
         class="relative rounded-md px-4 py-2 font-['Montserrat'] text-[10px] font-semibold uppercase tracking-[0.25em]
         <?php echo e(Route::is('transactions_history') ? 'text-[#8C1717]' : 'text-[#7A6E68] hover:text-[#8C1717]'); ?>"
     >
         Transaction History
     </a>
+
 
     <div class="h-3.5 w-px bg-[#8C1717]/15"></div>
 
@@ -118,50 +129,157 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                 
                 <div class="flex flex-shrink-0 items-center gap-2.5">
 
-                    
-                  <div class="relative w-[320px] hidden lg:block">
 
-    <div class="bg-white px-5 py-2.5 rounded-full border border-[#8C1717]/10">
 
-        <input
-            type="text"
-            id="global-search"
-            placeholder="Search desserts..."
-            class="w-full bg-transparent outline-none text-sm"
+<div
+    class="relative"
+    x-data="{
+        openWidget:false,
+        widgetTasks:[],
+        fetchTasks(){
+            fetch('<?php echo e(route('customer.tasks.widget')); ?>')
+                .then(res => res.json())
+                .then(data => this.widgetTasks = data)
+        }
+    }"
+    @mouseenter="openWidget=true;fetchTasks()"
+    @mouseleave="openWidget=false"
+>
+
+    <button
+    class="
+    relative
+    flex h-11 w-11
+    items-center justify-center
+    rounded-xl
+    border border-[#8C1717]/10
+    bg-white
+    text-[#7A6E68]
+    shadow-sm
+    transition-all duration-300
+    hover:-translate-y-1
+    hover:shadow-lg
+    hover:border-[#8C1717]/30
+    hover:text-[#8C1717]
+    "
+>
+
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="w-5 h-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="1.8"
+    >
+        <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+        />
+    </svg>
+
+    <?php if(auth()->guard()->check()): ?>
+
+        <span
+            class="
+            absolute
+            -top-1
+            -right-1
+            flex
+            h-5
+            w-5
+            items-center
+            justify-center
+            rounded-full
+            bg-[#8C1717]
+            text-white
+            text-[10px]
+            font-bold
+            ring-2
+            ring-white
+            "
         >
+            !
+        </span>
 
-    </div>
+    <?php endif; ?>
+
+</button>
 
     <div
-        id="search-dropdown"
-        class="hidden absolute top-14 left-0 w-full bg-white rounded-3xl shadow-2xl border border-[#E5E0DA] overflow-hidden z-50"
+        x-show="openWidget"
+        x-transition
+        class="absolute right-0 top-12 w-72 bg-white rounded-2xl shadow-xl border p-4 z-50"
     >
-        <div id="search-results"></div>
+
+        <h4 class="text-xs font-bold uppercase tracking-wider text-[#8C1717] mb-3">
+            Available Tier Tasks
+        </h4>
+
+        <div class="space-y-2 max-h-60 overflow-y-auto">
+
+            <template x-for="item in widgetTasks" :key="item.id">
+
+                <div
+                    class="p-2 border rounded-xl flex justify-between items-center text-xs"
+                    :class="item.unlocked ? 'bg-white' : 'bg-gray-50 opacity-60'"
+                >
+
+                    <div>
+                        <p class="font-semibold" x-text="item.title"></p>
+
+                        <span
+                            class="px-2 py-1 rounded text-[9px] uppercase font-bold"
+                            x-text="item.required_tier"
+                        ></span>
+                    </div>
+
+                    <div>
+                        <span x-show="item.claimed" class="text-green-600 font-bold">
+                            ✓ Claimed
+                        </span>
+
+                        <span x-show="!item.claimed && item.unlocked" class="text-[#8C1717] font-bold">
+                            Available
+                        </span>
+
+                        <span x-show="!item.unlocked" class="text-gray-400">
+                            🔒 Locked
+                        </span>
+                    </div>
+
+                </div>
+
+            </template>
+
+        </div>
+
+        <a
+            href="<?php echo e(route('customer.tasks.index')); ?>"
+            class="block mt-3 text-center text-[10px] uppercase tracking-wider font-bold text-[#8C1717]"
+        >
+            View All Tasks
+        </a>
+
     </div>
 
 </div>
 
+
                     
-                    <button
-                        class="relative flex h-10 w-10 items-center justify-center rounded-[10px] border border-[#3D3833]/10 bg-white text-[#7A6E68] transition-all duration-200 hover:-translate-y-px hover:border-[#8C1717]/30 hover:text-[#8C1717] hover:shadow-[0_4px_12px_rgba(140,23,23,0.1)]"
-                        aria-label="Cart"
-                    >
-                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"/>
-                        </svg>
-                        
-                        <?php if(isset($cartCount)): ?>
-                            <?php if($cartCount > 0): ?>
-                                <span class="absolute -right-1.5 -top-1.5 flex h-[17px] w-[17px] items-center justify-center rounded-full border-2 border-[#FDFAF7] bg-[#8C1717] font-['Montserrat'] text-[9px] font-bold text-white">
-                                    <?php echo e($cartCount > 9 ? '9+' : $cartCount); ?>
+<button
+    class="relative flex h-10 w-10 items-center justify-center rounded-[10px] border border-[#3D3833]/10 bg-white text-[#7A6E68] transition-all duration-200 hover:-translate-y-px hover:border-[#8C1717]/30 hover:text-[#8C1717]"
+    aria-label="Cart"
+>
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"/>
+    </svg>
+</button>
 
-                                </span>
-                            <?php endif; ?>
-                        <?php endif; ?>
-                    </button>
 
-        
 
+    
 
 <div x-data="{ open:false }" class="relative">
 
@@ -183,17 +301,62 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
 
         <?php if(auth()->guard()->check()): ?>
 
-            <div class="p-5">
-                <h3 class="font-bold text-[#2C2623]">
-                    <?php echo e(auth()->user()->name); ?>
+            <div class="p-5 flex items-center gap-4">
 
-                </h3>
+    
+    <div
+        class="
+        w-14 h-14
+        rounded-full
+        bg-gradient-to-br
+        from-[#8C1717]
+        to-[#B12828]
+        text-white
+        flex items-center justify-center
+        text-lg font-bold
+        shadow-md
+        "
+    >
+       <img
+    src="<?php echo e(asset('Avatar/' . auth()->user()->avatar)); ?>"
+    class="w-14 h-14 rounded-full object-cover"
+>
+    </div>
 
-                <p class="text-sm text-gray-500 mt-1">
-                    <?php echo e(auth()->user()->email); ?>
+    
+    <div>
 
-                </p>
-            </div>
+        <h3 class="font-bold text-lg text-[#2C2623]">
+            <?php echo e(auth()->user()->name); ?>
+
+        </h3>
+
+        <div class="flex items-center gap-2 mt-1">
+
+            <span
+                class="
+                px-2 py-0.5
+                rounded-full
+                bg-yellow-100
+                text-yellow-700
+                text-[10px]
+                uppercase
+                font-bold
+                "
+            >
+                Member
+            </span>
+
+        </div>
+
+        <p class="text-xs text-gray-500 mt-2">
+            <?php echo e(auth()->user()->email); ?>
+
+        </p>
+
+    </div>
+
+</div>
 
             <div class="border-t"></div>
 
@@ -206,13 +369,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                     Profile
                 </a>
 
-                <a
-                    href="<?php echo e(route('customer.transactions_history')); ?>"
-                    class="block px-4 py-3 rounded-xl hover:bg-gray-100"
-                >
-                    Order History
-                </a>
-
+        
                 <form method="POST" action="<?php echo e(route('logout')); ?>">
                     <?php echo csrf_field(); ?>
 
@@ -281,22 +438,54 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
             </div>
 
             
-            <div
-                x-show="mobileOpen"
-                x-transition:enter="transition duration-200 ease-out"
-                x-transition:enter-start="-translate-y-2 opacity-0"
-                x-transition:enter-end="translate-y-0 opacity-100"
-                x-transition:leave="transition duration-150 ease-in"
-                x-transition:leave-start="translate-y-0 opacity-100"
-                x-transition:leave-end="-translate-y-2 opacity-0"
-                class="border-t border-[#8C1717]/10 bg-[#FDFAF7] px-6 pb-4 pt-2 lg:hidden"
-            >
-                
+            <d
+<div
+    x-show="mobileOpen"
+    x-transition:enter="transition duration-200 ease-out"
+    x-transition:enter-start="-translate-y-2 opacity-0"
+    x-transition:enter-end="translate-y-0 opacity-100"
+    x-transition:leave="transition duration-150 ease-in"
+    x-transition:leave-start="translate-y-0 opacity-100"
+    x-transition:leave-end="-translate-y-2 opacity-0"
+    class="border-t border-[#8C1717]/10 bg-[#FDFAF7] px-6 py-5 lg:hidden"
+>
 
-                
-            </div>
+    <div
+    x-show="mobileOpen"
+    x-transition
+    class="absolute left-0 top-full w-full bg-[#FDFAF7] shadow-xl z-[999] lg:hidden"
+>
 
-        </div>
+    <div class="flex flex-col p-6 gap-5">
+
+        <a href="<?php echo e(route('customer.home')); ?>" class="font-semibold text-[#7A6E68]">
+            Home
+        </a>
+
+        <a href="<?php echo e(route('customer.about')); ?>" class="font-semibold text-[#7A6E68]">
+            About
+        </a>
+
+        <a href="<?php echo e(route('customer.shop')); ?>" class="font-semibold text-[#7A6E68]">
+            Shop
+        </a>
+
+        <a href="<?php echo e(route('customer.tasks.index')); ?>" class="font-semibold text-[#7A6E68]">
+            Coupons
+        </a>
+
+        <a href="<?php echo e(route('customer.transactions_history')); ?>" class="font-semibold text-[#7A6E68]">
+            Transaction History
+        </a>
+
+        <a href="<?php echo e(route('customer.contact')); ?>" class="font-semibold text-[#7A6E68]">
+            Contact
+        </a>
+
+    </div>
+
+</div>
+                
     </header>
 
     
@@ -307,138 +496,8 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
     </main>
 
 </div>
-
+ <?php echo $__env->make('customer.partials.ai-chat', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 <script>
-const searchInput = document.getElementById('global-search');
-
-if (searchInput) {
-
-    const dropdown = document.getElementById('search-dropdown');
-    const results = document.getElementById('search-results');
-
-    searchInput.addEventListener('keyup', async function () {
-
-        const query = this.value;
-
-        if (query.length < 1) {
-            dropdown.classList.add('hidden');
-            return;
-        }
-
-        try {
-
-            const response = await fetch(`/customer-search?query=${query}`);
-            const data = await response.json();
-
-            let html = '';
-
-            if (data.products.length > 0) {
-
-                html += `
-                    <div class="p-3 bg-gray-50 font-bold text-[#8C1717]">
-                        Products
-                    </div>
-                `;
-
-                data.products.forEach(product => {
-
-                    html += `
-                        <a href="/shop"
-                           class="block px-5 py-4 border-b hover:bg-gray-50">
-
-                            <div class="font-semibold">
-                                ${product.pro_name}
-                            </div>
-
-                        </a>
-                    `;
-                });
-
-            } else {
-
-                html = `
-                    <div class="p-6 text-center text-gray-400">
-                        No products found
-                    </div>
-                `;
-            }
-
-            results.innerHTML = html;
-            dropdown.classList.remove('hidden');
-
-        } catch(error) {
-            console.error(error);
-        }
-
-    });
-
-    document.addEventListener('click', function(e) {
-
-        if (
-            !searchInput.contains(e.target) &&
-            !dropdown.contains(e.target)
-        ) {
-            dropdown.classList.add('hidden');
-        }
-
-    });
-    if (data.products.length > 0) {
-
-    html += `
-        <div class="p-3 bg-gray-50 font-bold text-[#8C1717]">
-            Products
-        </div>
-    `;
-
-    data.products.forEach(product => {
-
-        html += `
-            <a href="/shop"
-               class="block px-5 py-4 border-b hover:bg-gray-50">
-
-                <div class="font-semibold">
-                    ${product.pro_name}
-                </div>
-
-            </a>
-        `;
-    });
-
-}
-
-/* ORDER HISTORY */
-
-if (data.orders && data.orders.length > 0) {
-
-    html += `
-        <div class="p-3 bg-gray-50 font-bold text-[#8C1717]">
-            Order History
-        </div>
-    `;
-
-    data.orders.forEach(order => {
-
-        html += `
-            <a href="/transactions_history"
-               class="block px-5 py-4 border-b hover:bg-gray-50">
-
-                <div class="font-semibold">
-                    Order #${order.order_id}
-                </div>
-
-                <div class="text-xs text-gray-500">
-                    Status: ${order.status}
-                </div>
-
-            </a>
-        `;
-    });
-
-}
-
-    
-
-}
 
 </script>
 </body>

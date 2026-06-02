@@ -1,25 +1,22 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\Auth\GoogleController;
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\IngredientController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\PosController;
-use App\Http\Controllers\OrderHistoryController;
-use App\Http\Controllers\ReportController;
-use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AiController;
-use App\Http\Controllers\ShopController;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\CategoryController;
+
+use App\Http\Controllers\Customer\MemberTaskController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EditMemberController; // <-- TAMBAHAN UNTUK EDIT PROFILE
-use App\Http\Controllers\SearchController;
-use App\Http\Controllers\ContactController;
-
-
-
+use App\Http\Controllers\IngredientController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\OrderHistoryController;
+use App\Http\Controllers\PosController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ShopController;
+use Illuminate\Support\Facades\Route;
 
 // ==========================================
 // 1. GUEST ROUTES (Hanya bisa diakses jika BELUM login)
@@ -106,6 +103,9 @@ Route::middleware(['auth:admin', 'admin'])->group(function () {
     // Notifications
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
+
+    Route::post('/admin/tasks', [App\Http\Controllers\AdminTaskController::class, 'store'])->name('admin.tasks.store');
+    Route::delete('/admin/tasks/{task}', [App\Http\Controllers\AdminTaskController::class, 'destroy'])->name('admin.tasks.destroy');
 });
 
 // ==========================================
@@ -123,53 +123,17 @@ Route::middleware(['auth', 'customer'])->group(function () {
     Route::view(
     '/contact/success',
     'customer.contact-success'
-)->name('contact.success');
+    )->name('contact.success');
 
-Route::post('/contact', [ContactController::class, 'store'])
+    Route::post('/contact', [ContactController::class, 'store'])
     ->name('contact.store');
 
     
-Route::get('/customer-search', [SearchController::class, 'search'])
-    ->name('customer.search');
-    
-Route::get('/checkout/{id}', [PosController::class, 'checkoutView'])
-    ->name('checkout.view');
-
-Route::post('/checkout-preview', [PosController::class, 'checkoutPreview'])
-    ->name('checkout.preview');
-
-Route::post('/payment-process', [PosController::class, 'processPayment'])
-    ->name('payment.process');
-
-Route::get('/payment-success/{id}', [PosController::class, 'paymentSuccess'])
-    ->name('payment.success');
-
-Route::get('/receipt/{id}', [PosController::class, 'receipt'])
-    ->name('receipt');
-
-Route::get('/api/search', [DashboardController::class, 'apiSearch']);
-Route::post('/check-member', [App\Http\Controllers\PosController::class, 'checkMember'])->name('check.member');
-
-
-//CATEGORY
-Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
-Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
-// Tambahkan baris rute restore ini di routes/web.php kamu
-Route::post('/categories/{id}/restore', [CategoryController::class, 'restore'])->name('categories.restore');
-
-Route::post(
-    '/notifications/{id}/read',
-    [NotificationController::class, 'markAsRead']
-);
-
-Route::post(
-    '/notifications/read-all',
-    [NotificationController::class, 'markAllAsRead']
-);
-    // Shop
+    // Shop 
     Route::get('/shop', [ShopController::class, 'index'])->name('customer.shop');
     Route::get('/cart',  [ShopController::class, 'cart'])->name('customer.cart');
     Route::post('/checkout', [ShopController::class, 'checkout'])->name('customer.checkout');
+    Route::post('/validate-coupon', [ShopController::class, 'validateCoupon'])->name('customer.validate-coupon');
     
     Route::view('/transaction-history', 'customer.transactions_history')->name('customer.history');
     
@@ -177,6 +141,9 @@ Route::post(
     Route::get('/profile/edit', [EditMemberController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/update', [EditMemberController::class, 'update'])->name('profile.update');
     
+    Route::get('/tasks', [MemberTaskController::class, 'index'])->name('customer.tasks.index');
+    Route::post('/tasks/{task}/claim', [MemberTaskController::class, 'claim'])->name('customer.tasks.claim');
+    Route::get('/api/tasks/widget', [MemberTaskController::class, 'widget'])->name('customer.tasks.widget');
     // AI Chat
     Route::post('/ai-chat', [AiController::class, 'chat']);
 });

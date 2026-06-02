@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
         ProductSeeder::class,
         OrderHistorySeeder::class,
         OrderItemSeeder::class,
+        TaskSeeder::class,
         // Anda bisa menambahkan seeder lain di sini nanti
     ]);
     }

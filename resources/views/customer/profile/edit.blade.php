@@ -561,6 +561,32 @@
     color: var(--muted-light);
 }
 
+
+.avatar-option{
+    cursor:pointer;
+}
+
+.avatar-img{
+    width:80px;
+    height:80px;
+    object-fit:cover;
+    border-radius:999px;
+    border:3px solid transparent;
+    transition:all .3s ease;
+}
+
+.avatar-img:hover{
+    transform:scale(1.08);
+    border-color:#8C1717;
+    box-shadow:0 10px 25px rgba(140,23,23,.15);
+}
+
+.avatar-option input:checked + .avatar-img{
+    border-color:#8C1717;
+    box-shadow:0 10px 30px rgba(140,23,23,.25);
+    transform:scale(1.05);
+}
+
 /* ── Submit Button ── */
 .btn-submit {
     display: flex;
@@ -809,6 +835,85 @@
                                 </div>
                                 <span class="field-hint">Contact support if you need to change your email address.</span>
                             </div>
+
+                            {{-- AVATAR SELECTION --}}
+<div class="field-group">
+
+    <div class="field-label-row">
+        <label class="field-label">
+            Choose Your Avatar
+        </label>
+    </div>
+
+    <div class="grid grid-cols-4 gap-4 mt-2">
+
+    
+        <label class="avatar-option">
+            <input
+    type="radio"
+    name="avatar"
+    value="avatar3.png"
+    {{ $user->avatar == 'avatar3.png' ? 'checked' : '' }}
+    hidden
+>
+
+            <img
+                src="{{ asset('Avatar/avatar3.png') }}"
+                class="avatar-img"
+            >
+        </label>
+
+        <label class="avatar-option">
+            <input
+    type="radio"
+    name="avatar"
+    value="avatar4.png"
+    {{ $user->avatar == 'avatar4.png' ? 'checked' : '' }}
+    hidden
+>
+
+            <img
+                src="{{ asset('Avatar/avatar4.png') }}"
+                class="avatar-img"
+            >
+        </label>
+
+        
+        <label class="avatar-option">
+            <input
+    type="radio"
+    name="avatar"
+    value="avatar6.png"
+    {{ $user->avatar == 'avatar6.png' ? 'checked' : '' }}
+    hidden
+>
+
+            <img
+                src="{{ asset('Avatar/avatar6.png') }}"
+                class="avatar-img"
+            >
+        </label>
+        
+        <label class="avatar-option">
+            <input
+    type="radio"
+    name="avatar"
+    value="avatar8.png"
+    {{ $user->avatar == 'avatar8.png' ? 'checked' : '' }}
+    hidden
+>
+
+            <img
+                src="{{ asset('Avatar/avatar8.png') }}"
+                class="avatar-img"
+            >
+        </label>
+
+ 
+        
+    </div>
+
+</div>
 
                             {{-- Save Button --}}
                             <button type="submit" class="btn-submit">

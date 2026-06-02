@@ -461,7 +461,6 @@ class="pb-20 bg-[#F8F5F2]"
 
 <section class="max-w-7xl mx-auto px-8 mt-32">
 
-```
 <div
 class="
 relative

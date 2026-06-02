@@ -1075,6 +1075,192 @@
 }
 .fb-testi__img-wrap img { width: 100%; height: 100%; object-fit: cover; }
 
+/* ==========================================
+   MOBILE RESPONSIVE
+========================================== */
+@media (max-width: 768px){
+
+    /* HERO */
+    .fb-hero{
+        height:auto;
+        min-height:100vh;
+        padding:80px 20px 40px;
+    }
+
+    .fb-hero__vert{
+        display:none;
+    }
+
+    .fb-hero__title-area{
+        padding-bottom:0;
+        align-items:flex-start;
+    }
+
+    .fb-title__main{
+        font-size:60px;
+        line-height:.9;
+    }
+
+    .fb-title__mid-row{
+        height:140px;
+    }
+
+    .fb-title__ghost{
+        font-size:90px;
+    }
+
+    .fb-title__ghost:first-child{
+        left:0;
+    }
+
+    .fb-title__ghost--r{
+        right:0;
+    }
+
+    .fb-hero__broole{
+        width:260px;
+        top:45%;
+    }
+
+    .fb-badge--tl{
+        top:90px;
+        left:15px;
+        font-size:11px;
+        padding:10px 16px;
+    }
+
+    .fb-badge--br{
+        right:15px;
+        bottom:180px;
+        font-size:11px;
+        padding:10px 16px;
+    }
+
+    .fb-hero__bottom{
+        position:relative;
+        bottom:auto;
+        padding:0;
+        margin-top:80px;
+
+        flex-direction:column;
+        gap:25px;
+        align-items:flex-start;
+    }
+
+    .fb-hero__bottom-left{
+        width:100%;
+    }
+
+    .fb-hero__desc{
+        font-size:15px;
+    }
+
+    .fb-hero__actions{
+        width:100%;
+        flex-direction:column;
+    }
+
+    .fb-btn{
+        width:100%;
+    }
+
+    /* CRACK */
+    .fb-crack{
+        grid-template-columns:1fr;
+    }
+
+    .fb-crack__left{
+        padding:50px 25px;
+    }
+
+    .fb-crack__right{
+        min-height:300px;
+    }
+
+    /* PROCESS */
+    .fb-process{
+        padding:60px 20px;
+    }
+
+    .fb-process__vert{
+        display:none;
+    }
+
+    .fb-process__steps{
+        grid-template-columns:1fr;
+        gap:25px;
+    }
+
+    /* BEST SELLER */
+    .fb-sellers{
+        grid-template-columns:1fr;
+        padding:50px 20px;
+    }
+
+    .fb-sellers__big{
+        font-size:55px;
+    }
+
+    .fb-sellers__grid{
+        grid-template-columns:1fr;
+    }
+
+    /* WHY BROOLE */
+    .fb-why{
+        grid-template-columns:1fr;
+    }
+
+    .fb-why__intro{
+        padding:40px 25px;
+    }
+
+    .fb-why__big{
+        font-size:55px;
+    }
+
+    .fb-why__photo{
+        height:350px;
+    }
+
+    .fb-why__features{
+        padding:40px 25px;
+    }
+
+    /* GALLERY */
+    .fb-gallery__vert{
+        display:none;
+    }
+
+    .fb-gallery__strip{
+        overflow-x:auto;
+        height:180px;
+    }
+
+    .fb-gallery__item{
+        min-width:220px;
+    }
+
+    /* TESTIMONIAL */
+    .fb-testi{
+        padding:60px 20px;
+    }
+
+    .fb-testi__inner{
+        grid-template-columns:1fr;
+        text-align:center;
+    }
+
+    .fb-testi__nav{
+        justify-content:center;
+    }
+
+    .fb-testi__img-wrap{
+        width:220px;
+        height:220px;
+        margin:auto;
+    }
+}
+
 /* Rotating text badge */
 .fb-testi__badge {
     position: absolute; bottom: -16px; right: -16px;

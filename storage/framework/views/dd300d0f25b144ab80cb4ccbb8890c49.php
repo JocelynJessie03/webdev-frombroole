@@ -1,6 +1,4 @@
-@extends('customer.layout')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -737,12 +735,12 @@
 </div>
 <div class="cart-page">
 
-    {{-- HEADER --}}
+    
     <section class="cart-header">
         <div class="header-inner">
             <span class="header-eyebrow">Your Selection</span>
             <h1 class="header-title">Your <em>Cart</em></h1>
-            <a href="{{ route('customer.shop') }}" class="back-link">
+            <a href="<?php echo e(route('customer.shop')); ?>" class="back-link">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
                 </svg>
@@ -751,10 +749,10 @@
         </div>
     </section>
 
-    {{-- LAYOUT --}}
+    
     <div class="cart-layout" id="cart-layout">
 
-        {{-- ── LEFT: CART ITEMS ── --}}
+        
         <div>
             <div class="section-label">
                 <div class="section-label-line"></div>
@@ -763,10 +761,10 @@
             </div>
 
             <div class="cart-items-col" id="cart-items-container">
-                {{-- Rendered by JS --}}
+                
             </div>
 
-            {{-- NOTES --}}
+            
             <div class="notes-section" id="notes-section" style="display:none">
                 <label class="notes-label" for="order-notes">Special Instructions</label>
                 <textarea
@@ -778,7 +776,7 @@
             </div>
         </div>
 
-        {{-- ── RIGHT: ORDER SUMMARY ── --}}
+        
         <div class="order-summary" id="order-summary">
             <div class="summary-header">
                 <div class="summary-title">Order Summary</div>
@@ -786,12 +784,12 @@
             </div>
 
             <div class="summary-body">
-                {{-- Line items list --}}
+                
                 <div class="summary-lines" id="summary-lines"></div>
 
                 <div class="summary-divider"></div>
 
-                {{-- Cost rows --}}
+                
                 <div class="summary-row">
                     <span class="summary-row-label">Subtotal</span>
                     <span class="summary-row-value" id="subtotal-val">Rp 0</span>
@@ -805,20 +803,20 @@
                     <span class="summary-row-value" id="tax-val">Rp 0</span>
                 </div>
 
-                {{-- Total --}}
+                
                 <div class="summary-total">
                     <span class="summary-total-label">Total</span>
                     <span class="summary-total-value" id="total-val">Rp 0</span>
                 </div>
 
-                {{-- Promo Code --}}
+                
                 <div class="promo-row">
                     <input type="text" id="promo-input" class="promo-input" placeholder="Promo code" maxlength="20">
                     <button class="promo-apply-btn" onclick="applyPromo()">Apply</button>
                 </div>
                 <div class="promo-feedback" id="promo-feedback"></div>
 
-                {{-- Checkout --}}
+                
                 <button class="btn-checkout" id="btn-checkout" onclick="proceedCheckout()" disabled>
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
@@ -834,7 +832,7 @@
                 </button>
             </div>
 
-            {{-- Trust Badges --}}
+            
             <div class="trust-badges">
                 <div class="trust-badge">
                     <div class="trust-badge-icon">
@@ -895,7 +893,7 @@
                     <span class="empty-cart-icon">🛒</span>
                     <div class="empty-cart-title">Your cart is empty</div>
                     <p class="empty-cart-sub">Looks like you haven't added anything yet.</p>
-                    <a href="{{ route('customer.shop') }}" class="btn-shop-now">
+                    <a href="<?php echo e(route('customer.shop')); ?>" class="btn-shop-now">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
                         Browse Collection
                     </a>
@@ -1073,7 +1071,7 @@
 
         // Check database coupons via AJAX
         const csrf = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
-        fetch('{{ route("customer.validate-coupon") }}', {
+        fetch('<?php echo e(route("customer.validate-coupon")); ?>', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -1128,7 +1126,7 @@
         try {
             const csrf = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
 
-            const res  = await fetch('{{ route("customer.checkout") }}', {
+            const res  = await fetch('<?php echo e(route("customer.checkout")); ?>', {
                 method:  'POST',
                 headers: {
                     'Content-Type':  'application/json',
@@ -1145,7 +1143,7 @@
                 localStorage.removeItem('checkout_payload');
                 showToast('Order placed! Redirecting…');
                 setTimeout(() => {
-                    window.location.href = data.redirect_url ?? '{{ route("customer.shop") }}';
+                    window.location.href = data.redirect_url ?? '<?php echo e(route("customer.shop")); ?>';
                 }, 1200);
             } else {
                 const messages = data.errors ?? ['Something went wrong. Please try again.'];
@@ -1220,4 +1218,5 @@
 
 }());
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('customer.layout', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\user\Herd\webdev-frombroole\resources\views/customer/cart.blade.php ENDPATH**/ ?>

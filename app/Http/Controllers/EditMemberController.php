@@ -28,14 +28,16 @@ class EditMemberController extends Controller
 
         // Validasi input
         $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
-        ]);
+    'name' => 'required|string|max:255',
+    'phone' => 'required|string|max:20',
+    'avatar' => 'nullable|string'
+]);
 
         // 1. Update data di tabel users
-        $user->name = $request->name;
-        $user->phone = $request->phone;
-        $user->save();
+       $user->name = $request->name;
+$user->phone = $request->phone;
+$user->avatar = $request->avatar;
+$user->save();
 
         // 2. Update data di tabel customers agar tetap sinkron (nama dan nomor telepon)
         DB::table('customers')->where('email', $user->email)->update([

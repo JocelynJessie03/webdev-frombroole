@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Task;
 
 class Customer extends Model
 {
@@ -14,4 +15,7 @@ class Customer extends Model
     {
         return $this->hasMany(OrderHistory::class);
     }
+ public function tasks() {
+    return $this->belongsToMany(Task::class, 'customer_task')->withPivot(['status', 'coupon_code', 'claimed_at', 'used_at'])->withTimestamps();
+}
 }
