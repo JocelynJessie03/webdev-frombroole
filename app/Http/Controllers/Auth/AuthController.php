@@ -50,6 +50,10 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
+        // Clear localStorage data untuk menghindari cache data dari user yang berbeda
+        // Ini akan di-handle oleh JavaScript di halaman login
+        // Namun di backend kita bisa set response header untuk notify client
+
         return redirect('/login');
     }
 

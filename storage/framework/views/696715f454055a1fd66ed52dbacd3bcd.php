@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,11 +15,11 @@
 href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 
     <!-- Midtrans Snap Payment Gateway -->
-    @if(config('midtrans.is_production'))
-        <script src="https://app.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
-    @else
-        <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
-    @endif
+    <?php if(config('midtrans.is_production')): ?>
+        <script src="https://app.midtrans.com/snap/snap.js" data-client-key="<?php echo e(config('midtrans.client_key')); ?>"></script>
+    <?php else: ?>
+        <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="<?php echo e(config('midtrans.client_key')); ?>"></script>
+    <?php endif; ?>
 
     <title>From Broole</title>
 </head>
@@ -31,12 +31,10 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
     class="min-h-screen"
 >
 
-    {{-- ═══════════════════════════════════════
-         HEADER
-    ═══════════════════════════════════════ --}}
+    
     <header class="sticky top-0 z-50">
 
-        {{-- TOP BAR --}}
+        
         <div class="relative overflow-hidden bg-[#8C1717] py-2.5 text-center">
             <div
                 class="pointer-events-none absolute inset-0"
@@ -47,15 +45,15 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
             </p>
         </div>
 
-        {{-- MAIN NAVBAR --}}
+        
         <div class="border-b border-[#8C1717]/10 bg-[#FDFAF7]">
             <div class="flex h-20 items-center justify-between px-4 lg:px-6">
 
-                {{-- ── BRAND ── --}}
+                
                 <a href="/" class="flex flex-shrink-0 items-center gap-3.5 no-underline">
                     <div class="flex h-[46px] w-[46px] flex-shrink-0 items-center justify-center rounded-full bg-[#8C1717]">
                         <img
-    src="{{ asset('home/logo.png') }}"
+    src="<?php echo e(asset('home/logo.png')); ?>"
     alt="From Broole logo"
     class="h-12 w-auto object-contain"
 />
@@ -70,13 +68,13 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                     </div>
                 </a>
 
-                {{-- ── DESKTOP NAV ── --}}
+                
                 <nav class="hidden flex-1 items-center justify-center gap-1 lg:flex">
 
     <a
-        href="{{ route('customer.home') }}"
+        href="<?php echo e(route('customer.home')); ?>"
         class="relative rounded-md px-4 py-2 font-['Montserrat'] text-[10px] font-semibold uppercase tracking-[0.25em]
-        {{ Route::is('customer.home') ? 'text-[#8C1717]' : 'text-[#7A6E68] hover:text-[#8C1717]' }}"
+        <?php echo e(Route::is('customer.home') ? 'text-[#8C1717]' : 'text-[#7A6E68] hover:text-[#8C1717]'); ?>"
     >
         Home
     </a>
@@ -84,9 +82,9 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
     <div class="h-3.5 w-px bg-[#8C1717]/15"></div>
 
     <a
-        href="{{ route('customer.about') }}"
+        href="<?php echo e(route('customer.about')); ?>"
         class="relative rounded-md px-4 py-2 font-['Montserrat'] text-[10px] font-semibold uppercase tracking-[0.25em]
-        {{ Route::is('customer.about') ? 'text-[#8C1717]' : 'text-[#7A6E68] hover:text-[#8C1717]' }}"
+        <?php echo e(Route::is('customer.about') ? 'text-[#8C1717]' : 'text-[#7A6E68] hover:text-[#8C1717]'); ?>"
     >
         About
     </a>
@@ -94,9 +92,9 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
     <div class="h-3.5 w-px bg-[#8C1717]/15"></div>
 
     <a
-        href="{{ route('customer.shop') }}"
+        href="<?php echo e(route('customer.shop')); ?>"
         class="relative rounded-md px-4 py-2 font-['Montserrat'] text-[10px] font-semibold uppercase tracking-[0.25em]
-        {{ Route::is('customer.shop') ? 'text-[#8C1717]' : 'text-[#7A6E68] hover:text-[#8C1717]' }}"
+        <?php echo e(Route::is('customer.shop') ? 'text-[#8C1717]' : 'text-[#7A6E68] hover:text-[#8C1717]'); ?>"
     >
         Shop
     </a>
@@ -105,9 +103,9 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
     <div class="h-3.5 w-px bg-[#8C1717]/15"></div>
 
     <a
-        href="{{ route('customer.tasks.index') }}"
+        href="<?php echo e(route('customer.tasks.index')); ?>"
         class="relative rounded-md px-4 py-2 font-['Montserrat'] text-[10px] font-semibold uppercase tracking-[0.25em]
-        {{ Route::is('customer.tasks.index') ? 'text-[#8C1717]' : 'text-[#7A6E68] hover:text-[#8C1717]' }}"
+        <?php echo e(Route::is('customer.tasks.index') ? 'text-[#8C1717]' : 'text-[#7A6E68] hover:text-[#8C1717]'); ?>"
     >
         Coupons
     </a>
@@ -115,9 +113,9 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
     <div class="h-3.5 w-px bg-[#8C1717]/15"></div>
 
     <a
-        href="{{ route('customer.history') }}"
+        href="<?php echo e(route('customer.history')); ?>"
         class="relative rounded-md px-4 py-2 font-['Montserrat'] text-[10px] font-semibold uppercase tracking-[0.25em]
-        {{ Route::is('customer.history') ? 'text-[#8C1717]' : 'text-[#7A6E68] hover:text-[#8C1717]' }}"
+        <?php echo e(Route::is('customer.history') ? 'text-[#8C1717]' : 'text-[#7A6E68] hover:text-[#8C1717]'); ?>"
     >
         Transaction History
     </a>
@@ -126,27 +124,27 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
     <div class="h-3.5 w-px bg-[#8C1717]/15"></div>
 
     <a
-       href="{{ route('customer.contact') }}"
+       href="<?php echo e(route('customer.contact')); ?>"
         class="relative rounded-md px-4 py-2 font-['Montserrat'] text-[10px] font-semibold uppercase tracking-[0.25em]
-        {{ Route::is('customer.contact') ? 'text-[#8C1717]' : 'text-[#7A6E68] hover:text-[#8C1717]' }}"
+        <?php echo e(Route::is('customer.contact') ? 'text-[#8C1717]' : 'text-[#7A6E68] hover:text-[#8C1717]'); ?>"
     >
         Contact
     </a>
 
 </nav>
 
-                {{-- ── RIGHT ACTIONS ── --}}
+                
                 <div class="flex flex-shrink-0 items-center gap-2.5">
 
 
-{{-- TASK WIDGET --}}
+
 <div
     class="relative"
     x-data="{
         openWidget:false,
         widgetTasks:[],
         fetchTasks(){
-            fetch('{{ route('customer.tasks.widget') }}')
+            fetch('<?php echo e(route('customer.tasks.widget')); ?>')
                 .then(res => res.json())
                 .then(data => this.widgetTasks = data)
         }
@@ -188,7 +186,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
         />
     </svg>
 
-    @auth
+    <?php if(auth()->guard()->check()): ?>
 
         <span
             class="
@@ -212,7 +210,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
             !
         </span>
 
-    @endauth
+    <?php endif; ?>
 
 </button>
 
@@ -265,7 +263,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
         </div>
 
         <a
-            href="{{ route('customer.tasks.index') }}"
+            href="<?php echo e(route('customer.tasks.index')); ?>"
             class="block mt-3 text-center text-[10px] uppercase tracking-wider font-bold text-[#8C1717]"
         >
             View All Tasks
@@ -276,7 +274,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
 </div>
 
 
-                    {{-- Cart --}}
+                    
 <button
     class="relative flex h-10 w-10 items-center justify-center rounded-[10px] border border-[#3D3833]/10 bg-white text-[#7A6E68] transition-all duration-200 hover:-translate-y-px hover:border-[#8C1717]/30 hover:text-[#8C1717]"
     aria-label="Cart"
@@ -289,7 +287,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
 
 
     
-{{-- ACCOUNT DROPDOWN --}}
+
 <div x-data="{ open:false }" class="relative">
 
     <button
@@ -308,11 +306,11 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
         class="absolute right-0 mt-3 w-64 overflow-hidden rounded-2xl border border-[#E5E0DA] bg-white shadow-xl z-50"
     >
 
-        @auth
+        <?php if(auth()->guard()->check()): ?>
 
             <div class="p-5 flex items-center gap-4">
 
-    {{-- AVATAR --}}
+    
     <div
         class="
         w-14 h-14
@@ -327,16 +325,17 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
         "
     >
        <img
-    src="{{ asset('Avatar/' . auth()->user()->avatar) }}"
+    src="<?php echo e(asset('Avatar/' . auth()->user()->avatar)); ?>"
     class="w-14 h-14 rounded-full object-cover"
 >
     </div>
 
-    {{-- USER INFO --}}
+    
     <div>
 
         <h3 class="font-bold text-lg text-[#2C2623]">
-            {{ auth()->user()->name }}
+            <?php echo e(auth()->user()->name); ?>
+
         </h3>
 
         <div class="flex items-center gap-2 mt-1">
@@ -358,7 +357,8 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
         </div>
 
         <p class="text-xs text-gray-500 mt-2">
-            {{ auth()->user()->email }}
+            <?php echo e(auth()->user()->email); ?>
+
         </p>
 
     </div>
@@ -370,15 +370,15 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
             <div class="p-2">
 
                 <a
-                    href="{{ route('profile.edit') }}"
+                    href="<?php echo e(route('profile.edit')); ?>"
                     class="block px-4 py-3 rounded-xl hover:bg-gray-100"
                 >
                     Profile
                 </a>
 
         
-                <form method="POST" action="{{ route('logout') }}" onsubmit="clearCustomerLocalStorage()">
-                    @csrf
+                <form method="POST" action="<?php echo e(route('logout')); ?>" onsubmit="clearCustomerLocalStorage()">
+                    <?php echo csrf_field(); ?>
 
                     <button
                         type="submit"
@@ -390,7 +390,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
 
             </div>
 
-        @else
+        <?php else: ?>
 
             <div class="p-5">
                 <h3 class="font-bold text-lg">
@@ -420,14 +420,14 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                 </div>
             </div>
 
-        @endauth
+        <?php endif; ?>
 
     </div>
 
 </div>
                 
 
-                    {{-- Hamburger (mobile) --}}
+                    
                     <button
                         @click="mobileOpen = !mobileOpen"
                         class="flex h-10 w-10 items-center justify-center rounded-[10px] border border-[#3D3833]/10 bg-white text-[#7A6E68] transition-all duration-200 hover:border-[#8C1717]/30 hover:text-[#8C1717] lg:hidden"
@@ -444,8 +444,8 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                 </div>
             </div>
 
-            {{-- ── MOBILE MENU ── --}}
-            <d{{-- ── MOBILE MENU ── --}}
+            
+            <d
 <div
     x-show="mobileOpen"
     x-transition:enter="transition duration-200 ease-out"
@@ -465,27 +465,27 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
 
     <div class="flex flex-col p-6 gap-5">
 
-        <a href="{{ route('customer.home') }}" class="font-semibold text-[#7A6E68]">
+        <a href="<?php echo e(route('customer.home')); ?>" class="font-semibold text-[#7A6E68]">
             Home
         </a>
 
-        <a href="{{ route('customer.about') }}" class="font-semibold text-[#7A6E68]">
+        <a href="<?php echo e(route('customer.about')); ?>" class="font-semibold text-[#7A6E68]">
             About
         </a>
 
-        <a href="{{ route('customer.shop') }}" class="font-semibold text-[#7A6E68]">
+        <a href="<?php echo e(route('customer.shop')); ?>" class="font-semibold text-[#7A6E68]">
             Shop
         </a>
 
-        <a href="{{ route('customer.tasks.index') }}" class="font-semibold text-[#7A6E68]">
+        <a href="<?php echo e(route('customer.tasks.index')); ?>" class="font-semibold text-[#7A6E68]">
             Coupons
         </a>
 
-        <a href="{{ route('customer.history') }}" class="font-semibold text-[#7A6E68]">
+        <a href="<?php echo e(route('customer.history')); ?>" class="font-semibold text-[#7A6E68]">
             Transaction History
         </a>
 
-        <a href="{{ route('customer.contact') }}" class="font-semibold text-[#7A6E68]">
+        <a href="<?php echo e(route('customer.contact')); ?>" class="font-semibold text-[#7A6E68]">
             Contact
         </a>
 
@@ -495,17 +495,15 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                 
     </header>
 
-    {{-- ═══════════════════════════════════════
-         PAGE CONTENT
-    ═══════════════════════════════════════ --}}
+    
     <main>
 
-        @yield('content')
+        <?php echo $__env->yieldContent('content'); ?>
 
     </main>
 
 </div>
- @include('customer.partials.ai-chat')
+ <?php echo $__env->make('customer.partials.ai-chat', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 <script>
 /**
  * Clear customer-specific localStorage data saat logout
@@ -533,4 +531,4 @@ function clearCustomerLocalStorage() {
 }
 </script>
 </body>
-</html>
+</html><?php /**PATH /Users/venny/Herd/webdev-frombroole/resources/views/layouts/app.blade.php ENDPATH**/ ?>

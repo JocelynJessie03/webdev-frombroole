@@ -1,22 +1,18 @@
-{{-- ============================================================
-     From Broole — Footer
-     Usage: @include('components.footer')
-     atau taruh langsung di layouts/app.blade.php sebelum </body>
-================================================================ --}}
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
-{{-- ── PRE-FOOTER STRIP ── --}}
+
 <div class="fb-footer__pre">
     <p class="fb-footer__pre-text">
         <strong>From Broole</strong> — Sweetness handcrafted just for you. Visit us in Surabaya or order online.
     </p>
-    <a href="{{ route('customer.shop') }}" class="fb-footer__pre-btn">Order Now →</a>
+    <a href="<?php echo e(route('customer.shop')); ?>" class="fb-footer__pre-btn">Order Now →</a>
 </div>
 
-{{-- ── MAIN FOOTER ── --}}
+
 <footer class="fb-footer">
     <div class="fb-footer__main">
 
-        {{-- BRAND --}}
+        
         <div class="fb-footer__brand">
             <div class="fb-footer__brand-name">From Broole</div>
             <div class="fb-footer__brand-sub">Artisan Desserts</div>
@@ -35,31 +31,31 @@
             </div>
         </div>
 
-        {{-- EXPLORE --}}
+        
         <div class="fb-footer__col">
             <div class="fb-footer__col-title">Explore</div>
             <nav class="fb-footer__links">
-                <a href="{{ route('customer.home') }}" class="fb-footer__link">Home</a>
-                <a href="{{ route('customer.about') }}" class="fb-footer__link">About Us</a>
-                <a href="{{ route('customer.shop') }}" class="fb-footer__link">Our Menu</a>
-                <a href="{{ route('customer.tasks.index') }}" class="fb-footer__link">Claim Coupons</a>
-                <a href="{{ route('customer.history') }}" class="fb-footer__link">Transaction History</a>
-                <a href="{{ route('customer.contact') }}" class="fb-footer__link">Contact</a>
+                <a href="<?php echo e(route('customer.home')); ?>" class="fb-footer__link">Home</a>
+                <a href="<?php echo e(route('customer.about')); ?>" class="fb-footer__link">About Us</a>
+                <a href="<?php echo e(route('customer.shop')); ?>" class="fb-footer__link">Our Menu</a>
+                <a href="<?php echo e(route('customer.tasks.index')); ?>" class="fb-footer__link">Claim Coupons</a>
+                <a href="<?php echo e(route('customer.history')); ?>" class="fb-footer__link">Transaction History</a>
+                <a href="<?php echo e(route('customer.contact')); ?>" class="fb-footer__link">Contact</a>
             </nav>
         </div>
         
 
-        {{-- MENU --}}
+        
         <div class="fb-footer__col">
             <div class="fb-footer__col-title">Our Menu</div>
             <nav class="fb-footer__links">
-                <a href="{{ route('customer.shop', ['category' => 1]) }}" class="fb-footer__link">Signature Broole</a>
-                <a href="{{ route('customer.shop', ['category' => 3]) }}" class="fb-footer__link">Burnt Cheesecake</a>
-                <a href="{{ route('customer.shop', ['category' => 2]) }}" class="fb-footer__link">Craft Drinks</a>
+                <a href="<?php echo e(route('customer.shop', ['category' => 1])); ?>" class="fb-footer__link">Signature Broole</a>
+                <a href="<?php echo e(route('customer.shop', ['category' => 3])); ?>" class="fb-footer__link">Burnt Cheesecake</a>
+                <a href="<?php echo e(route('customer.shop', ['category' => 2])); ?>" class="fb-footer__link">Craft Drinks</a>
             </nav>
         </div>
 
-        {{-- FIND US --}}
+        
         <div class="fb-footer__col">
             <div class="fb-footer__col-title">Find Us</div>
             <div class="fb-footer__contact-item">
@@ -83,12 +79,12 @@
         
        
 
-    </div>{{-- /.fb-footer__main --}}
+    </div>
 
-    {{-- BOTTOM BAR --}}
+    
     <div class="fb-footer__bottom">
         <p class="fb-footer__copy">
-            &copy; {{ date('Y') }} From Broole. Made with 🔥 in Surabaya.
+            &copy; <?php echo e(date('Y')); ?> From Broole. Made with 🔥 in Surabaya.
         </p>
         <div class="fb-footer__bottom-links">
             <a href="#" class="fb-footer__bottom-link">Privacy Policy</a>
@@ -104,7 +100,7 @@
 </footer>
 
 
-{{-- ============================================================ STYLES ── --}}
+
 <style>
 /* ─── TOKENS (skip jika sudah ada di about.blade.php / app layout) ─── */
 :root {
@@ -269,7 +265,7 @@
 </style>
 
 
-{{-- ============================================================ SCRIPTS ── --}}
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const btn   = document.getElementById('footer-subscribe-btn');
@@ -291,4 +287,4 @@ document.addEventListener('DOMContentLoaded', () => {
         // TODO: kirim ke backend — fetch('/newsletter/subscribe', { method: 'POST', body: JSON.stringify({ email }), headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content } })
     });
 });
-</script>
+</script><?php /**PATH /Users/venny/Herd/webdev-frombroole/resources/views/layouts/footer.blade.php ENDPATH**/ ?>

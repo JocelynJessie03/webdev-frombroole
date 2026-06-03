@@ -14,69 +14,53 @@ class ShopController extends Controller
     // =========================================================================
 
     public function index(Request $request)
-    {
-        // 1. Fetch active categories for the filter pill-tabs
-        $categories = DB::table('categories')
-            ->where('category_name', '!=', 'Uncategorized')
-            ->where('category_delete', false)
-            ->get();
+{
+    // 1. Fetch active categories
+    $categories = DB::table('categories')
+        ->where('category_name', '!=', 'Uncategorized')
+        ->where('category_delete', false)
+        ->get();
 
-        // 2. Fetch products with their category & ingredient relations
-        //    (ingredients are needed to compute calculated_stock via the Accessor)
-        $query = Product::with([
-            'category',
-            'ingredients' => function ($q) {
-                $q->withPivot('amount_needed');
-            },
-        ])->where('pro_delete', false);
+    // 2. Base Query
+    $query = Product::with([
+        'category',
+        'ingredients' => function ($q) {
+            $q->withPivot('amount_needed');
+        },
+    ])->where('pro_delete', false);
 
-        // 3. Filter by category tab if one is selected
-        if ($request->filled('category')) {
-            $query->where('category_id', $request->category);
-        }
-
-        // 4. Execute query
-        $products = $query->latest()->get();
-
-        // 5. Sort: in-stock items first, sold-out last
-        $products = $products->sortByDesc(function ($product) {
-            return $product->calculated_stock > 0 ? 1 : 0;
-        })->values();
-
-        return view('customer.shop', compact('products', 'categories'));
+    // 3. Live Search Filter
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->where(function ($q) use ($search) {
+            $q->where('pro_name', 'LIKE', "%{$search}%")
+              ->orWhere('pro_description', 'LIKE', "%{$search}%");
+        });
     }
 
-    // =========================================================================
-    //  CART — Renders the cart view
-    //
-    //  The actual cart data (items, qty, sugar level, etc.) lives entirely in
-    //  the browser's localStorage under the key "customer_cart".  This method
-    //  only needs to render the Blade shell; JavaScript does the rest.
-    //
-    //  If in the future you want server-side cart persistence (e.g. for
-    //  logged-in users), you can pass extra data from here — the view is
-    //  already wired to accept it via window.serverCart below.
-    // =========================================================================
+    // 4. Category Filter
+    if ($request->filled('category')) {
+        $query->where('category_id', $request->category);
+    }
+
+    // 5. Get data & Sort stock
+    $products = $query->latest()->get();
+    $products = $products->sortByDesc(function ($product) {
+        return $product->calculated_stock > 0 ? 1 : 0;
+    })->values();
+
+    // [BARU] Jika di-request via JavaScript (Real-time), kirimkan html bagian grid saja
+    if ($request->ajax()) {
+        return view('customer.shop', compact('products', 'categories'))->renderSections()['content'] ?? view('customer.shop', compact('products', 'categories'));
+    }
+
+    return view('customer.shop', compact('products', 'categories'));
+    }
 
     public function cart()
     {
         return view('customer.cart');
     }
-
-    // =========================================================================
-    //  CHECKOUT — Receives the order payload posted from the cart page
-    //
-    //  The cart page POSTs a JSON body with:
-    //    {
-    //      items:    [ { id, name, price, qty, sugarLevel, isDrink, ... } ],
-    //      notes:    "Special instructions string",
-    //      promo:    "PROMO_CODE" | null,
-    //      discount: 0–100   (percentage)
-    //    }
-    //
-    //  Validate stock server-side here before creating an order — never trust
-    //  the client's calculated_stock alone.
-    // =========================================================================
 
     public function checkout(Request $request)
     {
@@ -116,11 +100,6 @@ class ShopController extends Controller
             ], 422);
         }
 
-        // 3. TODO: Create order record, deduct stock, send confirmation, etc.
-        //    Example:
-        //    $order = Order::create([...]);
-        //    foreach ($validated['items'] as $lineItem) { ... }
-
         // 4. Return success — the cart page will clear localStorage and redirect
         return response()->json([
             'success'      => true,
@@ -128,6 +107,11 @@ class ShopController extends Controller
             // 'order_id'  => $order->id,   // uncomment when Order model exists
             'redirect_url' => route('customer.shop'), // change to order-confirmation route
         ]);
+    }
+
+    public function viewCart()
+    {
+        return view('customer.cart');
     }
 
     // =========================================================================

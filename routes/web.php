@@ -4,11 +4,11 @@ use App\Http\Controllers\AiController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\CategoryController;
-
+use App\Http\Controllers\Customer\CartController; // <-- TAMBAHAN UNTUK CART & CHECKOUT
 use App\Http\Controllers\Customer\MemberTaskController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\EditMemberController; // <-- TAMBAHAN UNTUK EDIT PROFILE
+use App\Http\Controllers\EditMemberController;
 use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderHistoryController;
@@ -116,34 +116,35 @@ Route::middleware(['auth', 'customer'])->group(function () {
     Route::view('/home', 'customer.home')->name('customer.home');
     Route::view('/about', 'customer.about')->name('customer.about');
     Route::view('/contact', 'customer.contact')->name('customer.contact');
-    Route::view('/transactions_history', 'customer.transactions_history')
-    ->name('customer.transactions_history');
-    Route::view('/shop', 'customer.shop')->name('customer.shop');
-
-    Route::view(
-    '/contact/success',
-    'customer.contact-success'
-    )->name('contact.success');
-
-    Route::post('/contact', [ContactController::class, 'store'])
-    ->name('contact.store');
-
+    Route::view('/contact/success', 'customer.contact-success')->name('contact.success');
+    Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
     
-    // Shop 
+    // Shop
     Route::get('/shop', [ShopController::class, 'index'])->name('customer.shop');
-    Route::get('/cart',  [ShopController::class, 'cart'])->name('customer.cart');
-    Route::post('/checkout', [ShopController::class, 'checkout'])->name('customer.checkout');
-    Route::post('/validate-coupon', [ShopController::class, 'validateCoupon'])->name('customer.validate-coupon');
     
+    // --> DIUBAH: Cart & Checkout sekarang menggunakan CartController <--
+    Route::get('/cart', [CartController::class, 'index'])->name('customer.cart');
+    Route::get('/cart/member-points', [CartController::class, 'getMemberPoints'])->name('customer.cart.member-points');
+    Route::post('/checkout', [CartController::class, 'checkout'])->name('customer.checkout');
+    Route::post('/validate-coupon', [CartController::class, 'validateCoupon'])->name('customer.validate-coupon');
+    
+    // [BARU] Rute untuk menangani pembukuan stok & poin setelah sukses bayar Midtrans
+    Route::get('/payment-success/{id}', [CartController::class, 'paymentSuccess'])->name('customer.payment.success');
+    
+    // History
     Route::view('/transaction-history', 'customer.transactions_history')->name('customer.history');
     
-    // --> DIUBAH: Menggunakan EditMemberController <--
+    // Edit Profile
     Route::get('/profile/edit', [EditMemberController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/update', [EditMemberController::class, 'update'])->name('profile.update');
     
+    // Tasks
     Route::get('/tasks', [MemberTaskController::class, 'index'])->name('customer.tasks.index');
     Route::post('/tasks/{task}/claim', [MemberTaskController::class, 'claim'])->name('customer.tasks.claim');
     Route::get('/api/tasks/widget', [MemberTaskController::class, 'widget'])->name('customer.tasks.widget');
+    
     // AI Chat
     Route::post('/ai-chat', [AiController::class, 'chat']);
+
+    
 });

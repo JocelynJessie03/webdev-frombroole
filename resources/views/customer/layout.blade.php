@@ -122,7 +122,7 @@
                             </svg>
                         </a>
                         {{-- LOGOUT BUTTON (ICON ONLY) --}}
-                        <form method="POST" action="{{ route('logout') }}" class="m-0">
+                        <form method="POST" action="{{ route('logout') }}" class="m-0" onsubmit="clearCustomerLocalStorage()">
                             @csrf
                             <button type="submit" class="w-10 h-10 rounded-full bg-[#FFF1F1] border border-[#8C1717]/10 flex items-center justify-center text-[#8C1717] hover:bg-[#8C1717] hover:text-white hover:scale-105 transition shadow-sm" title="Sign Out">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
@@ -150,6 +150,30 @@
     </main>
 
 </div>
+
+<script>
+/**
+ * Clear customer-specific localStorage data saat logout
+ * Ini mencegah data dari user sebelumnya (seperti points) tampil di user baru
+ */
+function clearCustomerLocalStorage() {
+    // Clear customer-specific localStorage keys
+    const keysToRemove = [
+        'customer_cart',
+        'checkout_payload',
+        'available_points',
+        'user_member_points',
+        'last_customer_id'
+    ];
+    
+    keysToRemove.forEach(key => {
+        localStorage.removeItem(key);
+    });
+    
+    console.log('Customer localStorage cleared on logout');
+    return true;
+}
+</script>
 
 </body>
 </html>
