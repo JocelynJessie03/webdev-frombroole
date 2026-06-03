@@ -1,6 +1,4 @@
-@extends('layouts.app')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <section class="max-w-5xl mx-auto px-8 py-24">
 
     <h2 class="text-5xl font-black">
@@ -9,7 +7,7 @@
 
     <div class="space-y-5 mt-14">
 
-        @for ($i = 0; $i < 4; $i++)
+        <?php for($i = 0; $i < 4; $i++): ?>
 
             <div class="bg-white rounded-3xl p-6 flex items-center justify-between">
 
@@ -35,10 +33,11 @@
 
             </div>
 
-        @endfor
+        <?php endfor; ?>
 
     </div>
 
 </section>
-@include('layouts.footer')
-@endsection
+<?php echo $__env->make('layouts.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Jessiee\Herd\frombroole\resources\views/customer/transactions_history.blade.php ENDPATH**/ ?>

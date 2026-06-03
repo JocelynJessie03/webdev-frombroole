@@ -35,9 +35,9 @@ class EditMemberController extends Controller
 
         // 1. Update data di tabel users
        $user->name = $request->name;
-$user->phone = $request->phone;
-$user->avatar = $request->avatar;
-$user->save();
+        $user->phone = $request->phone;
+        $user->avatar = $request->avatar;
+        $user->save();
 
         // 2. Update data di tabel customers agar tetap sinkron (nama dan nomor telepon)
         DB::table('customers')->where('email', $user->email)->update([

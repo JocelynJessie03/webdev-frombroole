@@ -17,7 +17,12 @@ class SearchController extends Controller
             ->limit(5)
             ->get();
 
-        $categories = Category::where('category_name', 'like', "%{$query}%")
+        // $categories = Category::where('category_name', 'like', "%{$query}%")
+        //     ->limit(5)
+        //     ->get();
+
+        $categories = Category::query()
+            ->where('category_name', 'like', "%{$query}%")
             ->limit(5)
             ->get();
 

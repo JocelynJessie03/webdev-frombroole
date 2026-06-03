@@ -4,9 +4,11 @@ use App\Http\Controllers\AiController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Customer\CartController; // <-- TAMBAHAN UNTUK CART & CHECKOUT
 use App\Http\Controllers\Customer\MemberTaskController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\CustomerTransactionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EditMemberController;
 use App\Http\Controllers\IngredientController;
@@ -132,7 +134,10 @@ Route::middleware(['auth', 'customer'])->group(function () {
     Route::get('/payment-success/{id}', [CartController::class, 'paymentSuccess'])->name('customer.payment.success');
     
     // History
-    Route::view('/transaction-history', 'customer.transactions_history')->name('customer.history');
+    Route::get(
+    '/transaction-history',
+    [CustomerTransactionController::class, 'index']
+    )->name('customer.history');
     
     // Edit Profile
     Route::get('/profile/edit', [EditMemberController::class, 'edit'])->name('profile.edit');
@@ -145,6 +150,5 @@ Route::middleware(['auth', 'customer'])->group(function () {
     
     // AI Chat
     Route::post('/ai-chat', [AiController::class, 'chat']);
-
     
 });
