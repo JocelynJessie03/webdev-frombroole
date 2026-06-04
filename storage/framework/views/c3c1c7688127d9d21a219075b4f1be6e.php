@@ -63,7 +63,7 @@
             >
 
                 <img
-                    src="{{ $message->embed(public_path('images/logo_from_broole.png')) }}"
+                    src="<?php echo e($message->embed(public_path('images/logo_from_broole.png'))); ?>"
                     alt="From Broolé"
                     width="110"
                     style="
@@ -143,7 +143,8 @@
                         letter-spacing:14px;
                     "
                 >
-                    {{ $otp }}
+                    <?php echo e($otp); ?>
+
                 </span>
 
             </div>
@@ -192,7 +193,7 @@
                 color:#9ca3af;
                 font-size:15px;
             ">
-                © {{ date('Y') }} From Broolé. All rights reserved.
+                © <?php echo e(date('Y')); ?> From Broolé. All rights reserved.
             </p>
 
         </td>
@@ -205,4 +206,4 @@
 </table>
 
 </body>
-</html>
+</html><?php /**PATH C:\Users\Jessiee\Herd\frombroole\resources\views/emails/otp.blade.php ENDPATH**/ ?>
