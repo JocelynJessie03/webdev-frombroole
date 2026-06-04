@@ -185,7 +185,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                 style="background:repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(255,255,255,0.04) 60px,rgba(255,255,255,0.04) 61px)"
             ></div>
             <p class="relative z-10 font-['Montserrat'] text-[9px] font-semibold uppercase tracking-[0.4em] text-white/90">
-                ✦ &nbsp; Sweetness Redefined &nbsp;·&nbsp; Earn 10 pts on every Signature Dessert Cup &nbsp; ✦
+                ✦ &nbsp; Hi Broolers! &nbsp;·&nbsp; Earn Points with Every Purchase &nbsp;·&nbsp; Redeem Exclusive Rewards &nbsp;✦
             </p>
         </div>
 
