@@ -1018,8 +1018,6 @@ items-center
 
 }
 
-
-
 /* HERO PRODUCT */
 .hero-product {
 
@@ -1660,13 +1658,7 @@ items-center
 }
 
 </style>
-
-
-
-
-
 <script>
-
 document.addEventListener('DOMContentLoaded', () => {
 
     const heroProduct =
@@ -1703,12 +1695,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3000);
 
 });
-
-
-
-
 </script>
-
 @include('layouts.footer')
-
 @endsection

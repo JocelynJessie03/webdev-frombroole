@@ -59,9 +59,7 @@
         </div>
        <div class="fb-hero__actions">
 
-    <a href="{{ route('customer.about') }}" class="fb-btn fb-btn--dark">
-        Our Story
-    </a>
+   
 
     <a href="{{ route('customer.shop') }}" class="fb-btn fb-btn--outline">
         See Menu
@@ -160,37 +158,30 @@
         <p class="fb-body">We don't take shortcuts. We choose quality, we craft with passion, and we serve with heart.</p>
         <a href="{{ route('customer.shop') }}" class="fb-viewall"><span class="fb-viewall__line"></span>View All Menu →</a>
     </div>
+    
     <div class="fb-sellers__grid">
-        <div class="fb-scard" data-sr>
+        @foreach($bestSellers as $index => $item)
+        <div class="fb-scard" 
+            @if($index === 0) data-sr 
+            @elseif($index === 1) data-sr-d 
+            @else data-sr-d2 
+            @endif
+        >
             <div class="fb-scard__img-wrap">
-                <img src="{{ asset('home/fb_broole.png') }}" alt="Signature Broole">
+                <img src="{{ asset('products/' . $item->pro_image) }}" alt="{{ $item->pro_name }}">
             </div>
             <div class="fb-scard__body">
-                <p class="fb-scard__name">Signature Broole</p>
-                <p class="fb-scard__stars">★★★★★ <span class="fb-scard__ct">4.9 (231)</span></p>
-                <a href="{{ route('customer.shop', ['category' => 1]) }}" class="fb-scard__order">Order Now →</a>
+                <p class="fb-scard__name">{{ $item->pro_name }}</p>
+                
+                {{-- TOTAL SOLD Menggantikan Bintang --}}
+                <p class="fb-scard__stars">
+                    🔥 <span class="fb-scard__ct" style="color: #E6C07B; font-weight: 600;">{{ number_format($item->total_sold, 0, ',', '.') }} Sold</span>
+                </p>
+                
+                <a href="{{ route('customer.shop', ['category' => $item->category_id]) }}" class="fb-scard__order">Order Now →</a>
             </div>
         </div>
-        <div class="fb-scard" data-sr-d>
-            <div class="fb-scard__img-wrap">
-                <img src="{{ asset('home/fb_cake.png') }}" alt="Burnt Cheesecake">
-            </div>
-            <div class="fb-scard__body">
-                <p class="fb-scard__name">Burnt Cheesecake</p>
-                <p class="fb-scard__stars">★★★★★ <span class="fb-scard__ct">4.8 (300)</span></p>
-                <a href="{{ route('customer.shop', ['category' => 3]) }}" class="fb-scard__order">Order Now →</a>
-            </div>
-        </div>
-        <div class="fb-scard" data-sr-d2>
-            <div class="fb-scard__img-wrap">
-                <img src="{{ asset('home/fb_drink.png') }}" alt="Craft Drinks">
-            </div>
-            <div class="fb-scard__body">
-                <p class="fb-scard__name">Craft Drinks</p>
-                <p class="fb-scard__stars">★★★★☆ <span class="fb-scard__ct">4.5 (71)</span></p>
-                <a href="{{ route('customer.shop', ['category' => 2]) }}" class="fb-scard__order">Order Now →</a>
-            </div>
-        </div>
+        @endforeach
     </div>
 </section>
 

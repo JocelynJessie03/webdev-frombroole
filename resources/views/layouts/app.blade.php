@@ -86,34 +86,13 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
     <div class="h-3.5 w-px bg-[#8C1717]/15"></div>
 
     <a
-        href="{{ route('customer.about') }}"
-        class="relative rounded-md px-4 py-2 font-['Montserrat'] text-[10px] font-semibold uppercase tracking-[0.25em]
-        {{ Route::is('customer.about') ? 'text-[#8C1717]' : 'text-[#7A6E68] hover:text-[#8C1717]' }}"
-    >
-        About
-    </a>
-
-    <div class="h-3.5 w-px bg-[#8C1717]/15"></div>
-
-    <a
         href="{{ route('customer.shop') }}"
         class="relative rounded-md px-4 py-2 font-['Montserrat'] text-[10px] font-semibold uppercase tracking-[0.25em]
         {{ Route::is('customer.shop') ? 'text-[#8C1717]' : 'text-[#7A6E68] hover:text-[#8C1717]' }}"
     >
         Shop
     </a>
-
     
-    <div class="h-3.5 w-px bg-[#8C1717]/15"></div>
-
-    <a
-        href="{{ route('customer.tasks.index') }}"
-        class="relative rounded-md px-4 py-2 font-['Montserrat'] text-[10px] font-semibold uppercase tracking-[0.25em]
-        {{ Route::is('customer.tasks.index') ? 'text-[#8C1717]' : 'text-[#7A6E68] hover:text-[#8C1717]' }}"
-    >
-        Coupons
-    </a>
-
     <div class="h-3.5 w-px bg-[#8C1717]/15"></div>
 
     <a
@@ -133,6 +112,16 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
         {{ Route::is('customer.contact') ? 'text-[#8C1717]' : 'text-[#7A6E68] hover:text-[#8C1717]' }}"
     >
         Contact
+    </a>
+
+    <div class="h-3.5 w-px bg-[#8C1717]/15"></div>
+
+    <a
+        href="{{ route('customer.about') }}"
+        class="relative rounded-md px-4 py-2 font-['Montserrat'] text-[10px] font-semibold uppercase tracking-[0.25em]
+        {{ Route::is('customer.about') ? 'text-[#8C1717]' : 'text-[#7A6E68] hover:text-[#8C1717]' }}"
+    >
+        About
     </a>
 
 </nav>
@@ -278,17 +267,6 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
 </div>
 
 
-                    {{-- Cart --}}
-<button
-    class="relative flex h-10 w-10 items-center justify-center rounded-[10px] border border-[#3D3833]/10 bg-white text-[#7A6E68] transition-all duration-200 hover:-translate-y-px hover:border-[#8C1717]/30 hover:text-[#8C1717]"
-    aria-label="Cart"
->
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"/>
-    </svg>
-</button>
-
-
 
     
 {{-- ACCOUNT DROPDOWN --}}
@@ -375,7 +353,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                     href="{{ route('profile.edit') }}"
                     class="block px-4 py-3 rounded-xl hover:bg-gray-100"
                 >
-                    Profile
+                    Edit Profile
                 </a>
 
         

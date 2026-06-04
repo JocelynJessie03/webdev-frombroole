@@ -43,19 +43,26 @@ class AuthController extends Controller
         ])->onlyInput('email');
     }
     public function logout(Request $request)
-    {
-        Auth::guard('web')->logout();
+{
+    // 1. Cek dan logout jika dia login sebagai Admin
+    if (Auth::guard('admin')->check()) {
         Auth::guard('admin')->logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        // Clear localStorage data untuk menghindari cache data dari user yang berbeda
-        // Ini akan di-handle oleh JavaScript di halaman login
-        // Namun di backend kita bisa set response header untuk notify client
-
-        return redirect('/login');
     }
+
+    // 2. Cek dan logout jika dia login sebagai Customer/User biasa
+    if (Auth::guard('web')->check()) {
+        Auth::guard('web')->logout();
+    }
+
+    // 3. Hancurkan seluruh session di browser agar bersih total
+    $request->session()->invalidate();
+
+    // 4. Bikin token CSRF baru demi keamanan
+    $request->session()->regenerateToken();
+
+    // 5. Tendang kembali ke halaman login resmi
+    return redirect('/login');
+}
 
 public function sendForgotOtp(Request $request)
 {

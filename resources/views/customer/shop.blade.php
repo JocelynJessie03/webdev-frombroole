@@ -808,19 +808,12 @@
                     $isSoldOut = $product->calculated_stock <= 0;
                 @endphp
 
-                <div class="product-card {{ $isSoldOut ? 'is-soldout' : '' }}">
+                <div class="product-card {{ $isSoldOut ? 'is-soldout' : '' }}" style="display: flex; flex-direction: column; height: 100%;">
 
                     {{-- Image Area --}}
                     <div class="card-image-wrap">
-
-                        {{-- Sold Out Badge --}}
                         @if($isSoldOut)
                             <div class="badge-soldout">Sold Out</div>
-                        @else
-                            {{-- Show "New" badge for products with stock > 10 (example logic) --}}
-                            {{-- @if($product->created_at->diffInDays(now()) < 14)
-                                <div class="badge-new">New</div>
-                            @endif --}}
                         @endif
 
                         @if($product->pro_image)
@@ -835,31 +828,39 @@
                     </div>
 
                     {{-- Card Body --}}
-                    <div class="card-body">
+                    {{-- Ditambahkan flexbox agar elemen di dalamnya bisa diatur posisinya --}}
+                    <div class="card-body" style="display: flex; flex-direction: column; flex-grow: 1;">
+                        
+                        {{-- Bagian 1: Kategori & Nama --}}
                         <span class="card-category">
                             {{ $product->category->category_name ?? 'Uncategorized' }}
                         </span>
 
                         <h3 class="card-name">{{ $product->pro_name }}</h3>
 
-                        <p class="card-desc">
+                        {{-- Bagian 2: Description --}}
+                        {{-- Diberi flex-grow: 1 agar area ini otomatis memanjang menyerap ruang kosong --}}
+                        <p class="card-desc" style="flex-grow: 1;">
                             {{ $product->pro_description ?? 'No description available for this item.' }}
                         </p>
 
-                        {{-- Sugar Level for drinks --}}
-                        @if($isDrink && !$isSoldOut)
-                            <div class="sugar-wrap">
-                                <select
-                                    id="sugar-{{ $product->id }}"
-                                    class="sugar-select"
-                                    aria-label="Sugar level for {{ $product->pro_name }}"
-                                >
-                                    <option value="100">Normal Sugar (100%)</option>
-                                    <option value="50">Less Sugar (50%)</option>
-                                    <option value="0">No Sugar (0%)</option>
-                                </select>
-                            </div>
-                        @endif
+                        {{-- Bagian 3: Sugar Level (Mentok Bawah) --}}
+                        {{-- Diberi margin-top: auto agar terdorong ke paling bawah, dan min-height agar produk makanan ruangnya tetap terjaga sejajar --}}
+                        <div class="sugar-container-layout" style="margin-top: auto; min-height: 45px; display: flex; align-items: center;">
+                            @if($isDrink && !$isSoldOut)
+                                <div class="sugar-wrap" style="width: 100%;">
+                                    <select
+                                        id="sugar-{{ $product->id }}"
+                                        class="sugar-select"
+                                        aria-label="Sugar level for {{ $product->pro_name }}"
+                                    >
+                                        <option value="100">Normal Sugar (100%)</option>
+                                        <option value="50">Less Sugar (50%)</option>
+                                        <option value="0">No Sugar (0%)</option>
+                                    </select>
+                                </div>
+                            @endif
+                        </div>
 
                         {{-- Footer: Price + Add Button --}}
                         <div class="card-footer">

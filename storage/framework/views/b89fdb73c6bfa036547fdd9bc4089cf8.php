@@ -1,11 +1,11 @@
 <div
     x-data="chatWidget()"
-    class="fixed bottom-6 right-6 z-[9999]"
+    class="fixed bottom-8 md:bottom-10 left-4 md:left-8 z-[9999]" 
 >
 
     
     <button
-        x-show="!open"
+        :class="open ? 'scale-0 opacity-0' : 'scale-100 opacity-100'"
         @click="open = true"
         class="
         w-16 h-16
@@ -28,25 +28,28 @@
     x-show="open"
     x-cloak
 
-    x-transition:enter="transition ease-out duration-300"
-    x-transition:enter-start="opacity-0 translate-y-4 scale-95"
+    x-transition:enter="transition ease-out duration-500"
+    x-transition:enter-start="opacity-0 translate-y-8 scale-90"
     x-transition:enter-end="opacity-100 translate-y-0 scale-100"
 
     x-transition:leave="transition ease-in duration-200"
     x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-    x-transition:leave-end="opacity-0 translate-y-4 scale-95"
+    x-transition:leave-end="opacity-0 translate-y-8 scale-90"
 
     @click.outside="open = false"
 
     class="
     absolute
     bottom-20
-    right-0
-    w-[370px]
-    h-[540px]
+    left-0 
+    w-[calc(100vw-24px)]
+    max-w-[390px]
+
+    h-[75vh]
+    max-h-[720px]
     bg-white
     rounded-[28px]
-    shadow-[0_30px_60px_rgba(0,0,0,0.18)]
+    shadow-[0_25px_80px_rgba(123,0,0,0.18)]
     overflow-hidden
     flex
     flex-col
@@ -58,7 +61,9 @@
             class="
             bg-gradient-to-r
             from-[#7A0E15]
-            to-[#A8121D]
+            via-[#94141E]
+            to-[#B41520]
+            backdrop-blur-xl
             text-white
             px-5
             py-4
@@ -139,14 +144,14 @@
 
                         I am your personal
                         <span class="italic">
-                            Blade Dessert Concierge.
+                            From Broole AI Sweet Guide.
                         </span>
 
                         How may I sweeten your day?
 
                         Ask me for custom pairings,
                         flavor details,
-                        or today's top treats!
+                        or our TOP treats!
 
                     </p>
 
@@ -194,7 +199,7 @@
 
                     <button
                         @click="
-                        input='Tell me about Matcha Blade';
+                        input='Tell me about Matcha Broole';
                         sendMessage();
                         "
                         class="
@@ -209,7 +214,7 @@
                         transition
                         "
                     >
-                        🍵 Tell me about Matcha Blade
+                        🍵 Tell me about Matcha Broole
                     </button>
 
                     <button
@@ -417,6 +422,4 @@
 
     </div>
 
-</div>
-
-<?php /**PATH /Users/venny/Herd/webdev-frombroole/resources/views/customer/partials/ai-chat.blade.php ENDPATH**/ ?>
+</div><?php /**PATH /Users/venny/Herd/webdev-frombroole/resources/views/customer/partials/ai-chat.blade.php ENDPATH**/ ?>

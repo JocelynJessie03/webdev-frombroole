@@ -50,48 +50,40 @@ class CartController extends Controller
      */
     public function checkout(Request $request)
     {
-        // Ambil data user yang sedang login saat ini
         $user = auth()->user();
         if (!$user) {
             return response()->json(['success' => false, 'errors' => ['Please log in to continue.']], 401);
         }
 
-        // FIX: Cari customer berdasarkan EMAIL, bukan ID (karena users.id ≠ customers.id)
         $customer = DB::table('customers')->where('email', $user->email)->first();
         if (!$customer) {
             return response()->json(['success' => false, 'errors' => ['Customer profile not found.']], 404);
         }
 
-        // 1. Validasi awal data payload dari JS
         $validated = $request->validate([
             'items'              => ['required', 'array', 'min:1'],
             'items.*.id'         => ['required', 'integer', 'exists:products,id'],
             'items.*.qty'        => ['required', 'integer', 'min:1'],
             'items.*.price'      => ['required', 'numeric', 'min:0'],
-            'items.*.sugarLevel' => ['nullable', 'in:0,50,100'],
+            'items.*.sugarLevel' => ['nullable', 'string'], // Diubah ke string agar fleksibel
             'notes'              => ['nullable', 'string', 'max:500'],
             'promo'              => ['nullable', 'string', 'max:30'],
-            'discount'           => ['nullable', 'integer', 'min:0', 'max:100'],
-            'points_used'        => ['nullable', 'integer', 'min:0'],
+            'discount'           => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'points_used'        => ['nullable', 'numeric', 'min:0'],
         ]);
 
         $pointsUsed = intval($validated['points_used'] ?? 0);
 
-        // Validasi poin di database menggunakan data customer yang valid
         if ($pointsUsed > 0 && $pointsUsed > ($customer->member_points ?? 0)) {
             return response()->json(['success' => false, 'errors' => ['Insufficient member points balance.']], 422);
         }
 
-        // 2. Verifikasi ulang stok bahan resep di server
         $errors = [];
         $subtotal = 0;
         $totalItems = 0;
-        $item_details = [];
 
         foreach ($validated['items'] as $lineItem) {
-            $product = Product::with(['ingredients' => function ($q) {
-                $q->withPivot('amount_needed');
-            }])->find($lineItem['id']);
+            $product = Product::find($lineItem['id']);
 
             if (!$product || $product->pro_delete) {
                 $errors[] = ($product->pro_name ?? 'A product') . ' is no longer available.';
@@ -105,60 +97,40 @@ class CartController extends Controller
 
             $subtotal += $product->pro_price * $lineItem['qty'];
             $totalItems += $lineItem['qty'];
-
-            $item_details[] = [
-                'id'       => $product->id, // Tetap gunakan integer asli murni
-                'price'    => (int) $product->pro_price,
-                'quantity' => $lineItem['qty'],
-                'name'     => substr($product->pro_name, 0, 50),
-            ];
         }
 
         if (!empty($errors)) {
             return response()->json(['success' => false, 'errors' => $errors], 422);
         }
 
-        // 3. Hitung Diskon Kupon, Pajak, dan Grand Total
+        // Hitung Kupon Diskon
         $discountAmount = 0;
+        $couponApplied = null;
         if (!empty($validated['promo'])) {
             $coupon = DiscountCoupon::where('code', strtoupper($validated['promo']))->first();
             if ($coupon && $coupon->isAvailable()) {
-                $discountAmount = round($subtotal * (intval($validated['discount']) / 100));
-                
-                $item_details[] = [
-                    'id'       => 'COUPON-' . $coupon->code,
-                    'price'    => (int) -$discountAmount, // Wajib minus untuk pengurang harga Midtrans
-                    'quantity' => 1,
-                    'name'     => 'Promo Coupon Discount',
-                ];
+                $discountAmount = round($subtotal * (floatval($validated['discount']) / 100));
+                $couponApplied = $coupon->code;
             }
         }
 
         $tax = round(($subtotal - $discountAmount) * 0.10);
         $total = $subtotal + $tax - $discountAmount;
 
-        if ($tax > 0) {
-            $item_details[] = [
-                'id'       => 'TAX-10',
-                'price'    => (int) $tax,
-                'quantity' => 1,
-                'name'     => 'Tax (10%)',
-            ];
+        // Kurangi dengan poin (jika ada)
+        if ($pointsUsed > 0) {
+            $total -= $pointsUsed;
         }
 
-        // Pengurangan poin (Disisakan Rp 1 jika poin melunasi seluruh isi cart agar Midtrans tidak menolak nominal 0)
-        if ($pointsUsed > 0) {
-            if ($pointsUsed >= $total) { 
-                $pointsUsed = $total - 1; 
+        // 🚨 PENGAMAN WAJIB MIDTRANS: Total tagihan TIDAK BOLEH 0
+        // Midtrans butuh minimal Rp 100 untuk bisa memunculkan popup
+        if ($total < 100) {
+            // Hitung ulang poin yang benar-benar terpakai agar tidak memotong kelebihan
+            $pointsUsed = $pointsUsed - (100 - $total); 
+            if ($pointsUsed < 0) {
+                $pointsUsed = 0;
             }
-            $total -= $pointsUsed;
-
-            $item_details[] = [
-                'id'       => 'DISC-POIN',
-                'price'    => (int) -$pointsUsed, // FIX: Wajib di-set minus (-) agar disetujui server Midtrans
-                'quantity' => 1,
-                'name'     => 'Diskon Poin Member',
-            ];
+            $total = 100; // Paksa bayar minimal Rp 100
         }
 
         DB::beginTransaction();
@@ -166,7 +138,6 @@ class CartController extends Controller
             $countOrder = DB::table('order_histories')->count();
             $invoiceId = 'INV-WEB-' . now()->format('YmdHis') . '-' . str_pad($countOrder + 1, 3, '0', STR_PAD_LEFT);
 
-            // 4. Buat order baru dengan status 'Pending'
             $order = OrderHistory::create([
                 'order_id'       => $invoiceId,
                 'customer_id'    => $customer->id,
@@ -183,17 +154,41 @@ class CartController extends Controller
                     'order_id'          => $order->id,
                     'product_id'        => $product->id,
                     'quantity'          => $lineItem['qty'],
-                    'price_at_purchase' => $product->pro_price
+                    'price_at_purchase' => $product->pro_price,
+                    'sugar_level'       => $lineItem['sugarLevel'] ?? null,
                 ]);
             }
 
             session(['web_points_used_' . $order->id => $pointsUsed]);
+            if ($couponApplied) {
+                session(['web_promo_used_' . $order->id => $couponApplied]);
+            }
 
-            // Kredensial Midtrans
+            $item_details = [[
+                'id'       => $invoiceId,
+                'price'    => (int) $total,
+                'quantity' => 1,
+                'name'     => 'From Broole Artisan Order Summary',
+            ]];
+
             MidtransConfig::$serverKey    = config('midtrans.server_key');
             MidtransConfig::$isProduction = config('midtrans.is_production');
             MidtransConfig::$isSanitized  = true;
-            MidtransConfig::$is3ds         = true;
+            MidtransConfig::$is3ds        = true;
+
+            // ==========================================
+            // LOGIKA SAKTI: DINAMISASI PAYMENT METHOD
+            // ==========================================
+            $enabled_payments = [
+                'qris',
+                'gopay',
+                'shopeepay'
+            ];
+
+            // Bank Transfer HANYA ditampilkan jika total belanja setelah diskon masih >= Rp 10.000
+            if ($total >= 10000) {
+                $enabled_payments[] = 'bank_transfer';
+            }
 
             $transaction = [
                 'transaction_details' => [
@@ -201,24 +196,14 @@ class CartController extends Controller
                     'gross_amount' => (int) $total,
                 ],
                 'item_details' => $item_details,
-                // Mengunci tampilan popup langsung memunculkan metode QRIS & Gopay
-                'enabled_payments' => [
-                    'qris',
-                    'gopay'
-                ],
                 'customer_details' => [
                     'first_name' => $user->name ?? 'Customer Web',
                     'email'      => $user->email ?? 'customer@mail.com',
                 ], 
-                'enabled_payments' => [
-                'qris',
-                'gopay',       // Tambahan untuk memicu QRIS di beberapa tipe akun Sandbox
-                'shopeepay',   // Tambahan untuk memicu QRIS di beberapa tipe akun Sandbox
-                'bank_transfer'
-                ]
+                'enabled_payments' => $enabled_payments // <-- Array dimasukkan ke sini
             ];
-            $snapToken = Snap::getSnapToken($transaction);
 
+            $snapToken = Snap::getSnapToken($transaction);
             DB::commit();
 
             return response()->json([
@@ -230,6 +215,7 @@ class CartController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
+            // Menambahkan error message $e->getMessage() agar jika gagal lagi, kamu bisa lihat alasannya di fitur Inspect Element > Network
             return response()->json(['success' => false, 'errors' => ['Checkout failed: ' . $e->getMessage()]], 500);
         }
     }
@@ -250,6 +236,7 @@ class CartController extends Controller
             $order->status = 'Paid';
             $order->save();
 
+            // [PROSES BOM] Potong stok bahan baku resep otomatis (Kode bawaan kamu sudah benar)
             foreach ($order->items as $item) {
                 $product = Product::with(['ingredients' => function($q) {
                     $q->withPivot('amount_needed');
@@ -277,21 +264,34 @@ class CartController extends Controller
 
             $customerId = $order->customer_id;
             if ($customerId) {
+                // 1. Tarik dan hapus data poin lama yang digunakan
                 $pointsUsed = session()->pull('web_points_used_' . $order->id, 0);
-
                 if ($pointsUsed > 0) {
                     DB::table('customers')->where('id', $customerId)->decrement('member_points', $pointsUsed);
                 }
+
+                // 2. [BARU] Tarik kupon yang digunakan lalu tambahkan hits pemakaiannya (+1)
+                $promoUsed = session()->pull('web_promo_used_' . $order->id);
+                if ($promoUsed) {
+                    $coupon = DiscountCoupon::where('code', $promoUsed)->first();
+                    if ($coupon) {
+                        $coupon->increment('used_count'); // Jatah kupon otomatis berkurang!
+                    }
+                }
                 
+                // 3. Update data pengeluaran customer
                 DB::table('customers')->where('id', $customerId)->increment('total_spend', $order->total_price);
                 $customer = DB::table('customers')->where('id', $customerId)->first();
                 
                 if ($customer) {
+                    // Update tingkatan Tier member
                     $newTier = 'Bronze';
                     if ($customer->total_spend >= 700000) { $newTier = 'Gold'; } 
                     elseif ($customer->total_spend >= 300000) { $newTier = 'Silver'; }
 
                     $progressPercentage = min(($customer->total_spend / 700000) * 100, 100);
+                    
+                    // HITUNG BONUS POIN BARU (Harga Akhir dibagi 100)
                     $pointsEarned = floor($order->total_price / 100);
 
                     DB::table('customers')->where('id', $customerId)->update([
@@ -305,6 +305,7 @@ class CartController extends Controller
                 }
             }
 
+            // Kirim Notifikasi Admin (Kode bawaan kamu)
             DB::table('notifications')->insert([
                 'title'      => 'New Web Order Paid (Midtrans)',
                 'message'    => 'Order ' . $order->order_id . ' has been successfully paid with amount of Rp ' . number_format($order->total_price, 0, ',', '.'),
