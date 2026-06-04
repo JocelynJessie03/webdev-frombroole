@@ -1,6 +1,6 @@
 <div
     x-data="chatWidget()"
-    class="fixed bottom-8 md:bottom-10 right-4 md:right-8 z-[9999]"
+    class="fixed bottom-8 md:bottom-10 left-4 md:left-8 z-[9999]" 
 >
 
     
@@ -41,7 +41,7 @@
     class="
     absolute
     bottom-20
-    right-0
+    left-0 
     w-[calc(100vw-24px)]
     max-w-[390px]
 
@@ -422,6 +422,4 @@
 
     </div>
 
-</div>
-
-<?php /**PATH C:\Users\Jessiee\Herd\frombroole\resources\views/customer/partials/ai-chat.blade.php ENDPATH**/ ?>
+</div><?php /**PATH C:\Users\Jessiee\Herd\frombroole\resources\views/customer/partials/ai-chat.blade.php ENDPATH**/ ?>

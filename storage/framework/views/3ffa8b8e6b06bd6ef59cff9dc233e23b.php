@@ -806,17 +806,12 @@
                     $isSoldOut = $product->calculated_stock <= 0;
                 ?>
 
-                <div class="product-card <?php echo e($isSoldOut ? 'is-soldout' : ''); ?>">
+                <div class="product-card <?php echo e($isSoldOut ? 'is-soldout' : ''); ?>" style="display: flex; flex-direction: column; height: 100%;">
 
                     
                     <div class="card-image-wrap">
-
-                        
                         <?php if($isSoldOut): ?>
                             <div class="badge-soldout">Sold Out</div>
-                        <?php else: ?>
-                            
-                            
                         <?php endif; ?>
 
                         <?php if($product->pro_image): ?>
@@ -831,7 +826,10 @@
                     </div>
 
                     
-                    <div class="card-body">
+                    
+                    <div class="card-body" style="display: flex; flex-direction: column; flex-grow: 1;">
+                        
+                        
                         <span class="card-category">
                             <?php echo e($product->category->category_name ?? 'Uncategorized'); ?>
 
@@ -839,25 +837,30 @@
 
                         <h3 class="card-name"><?php echo e($product->pro_name); ?></h3>
 
-                        <p class="card-desc">
+                        
+                        
+                        <p class="card-desc" style="flex-grow: 1;">
                             <?php echo e($product->pro_description ?? 'No description available for this item.'); ?>
 
                         </p>
 
                         
-                        <?php if($isDrink && !$isSoldOut): ?>
-                            <div class="sugar-wrap">
-                                <select
-                                    id="sugar-<?php echo e($product->id); ?>"
-                                    class="sugar-select"
-                                    aria-label="Sugar level for <?php echo e($product->pro_name); ?>"
-                                >
-                                    <option value="100">Normal Sugar (100%)</option>
-                                    <option value="50">Less Sugar (50%)</option>
-                                    <option value="0">No Sugar (0%)</option>
-                                </select>
-                            </div>
-                        <?php endif; ?>
+                        
+                        <div class="sugar-container-layout" style="margin-top: auto; min-height: 45px; display: flex; align-items: center;">
+                            <?php if($isDrink && !$isSoldOut): ?>
+                                <div class="sugar-wrap" style="width: 100%;">
+                                    <select
+                                        id="sugar-<?php echo e($product->id); ?>"
+                                        class="sugar-select"
+                                        aria-label="Sugar level for <?php echo e($product->pro_name); ?>"
+                                    >
+                                        <option value="100">Normal Sugar (100%)</option>
+                                        <option value="50">Less Sugar (50%)</option>
+                                        <option value="0">No Sugar (0%)</option>
+                                    </select>
+                                </div>
+                            <?php endif; ?>
+                        </div>
 
                         
                         <div class="card-footer">

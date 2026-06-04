@@ -49,7 +49,7 @@ class User extends Authenticatable
     public function orders()
     {
         // Get the customer associated with this user's email
-        $customer = Customer::where('email', $this->email)->first();
+        $customer = Customer::Query()->where('email', $this->email)->first();
         
         if (!$customer) {
             // Return empty collection if no customer found
@@ -65,7 +65,7 @@ class User extends Authenticatable
     public function tasks()
     {
         // Get the customer associated with this user's email
-        $customer = Customer::where('email', $this->email)->first();
+        $customer = Customer::Query()->where('email', $this->email)->first();
         
         if (!$customer) {
             // Return empty collection if no customer found
@@ -86,7 +86,7 @@ class User extends Authenticatable
         }
 
         // If not, try to get from the associated customer
-        $customer = Customer::where('email', $this->email)->first();
+        $customer = Customer::Query()->where('email', $this->email)->first();
         if ($customer && isset($customer->$key)) {
             return $customer->$key;
         }
