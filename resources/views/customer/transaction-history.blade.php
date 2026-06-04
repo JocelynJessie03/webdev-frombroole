@@ -515,7 +515,7 @@
 
         {{-- Page header --}}
         <div class="th-header" data-aos="fade-up">
-            <p class="eyebrow">From Broole Rewards</p>
+            <p class="eyebrow">Your From Broole Journey</p>
             <div class="title-wrap">
                 <h2>Transaction <em>History</em></h2>
             </div>
