@@ -11,6 +11,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerTransactionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EditMemberController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderHistoryController;
@@ -51,13 +52,13 @@ Route::middleware('guest')->group(function () {
 
 // Logout (Harus login untuk bisa logout)
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
+Route::redirect('/', '/login');
 // ==========================================
 // 2. ADMIN ROUTES (Hanya untuk Admin)
 // ==========================================
 Route::middleware(['auth:admin', 'admin'])->group(function () {
     // Redirection
-    Route::get('/', function () { return redirect('/dashboard'); });
+    
 
     // Dashboard & Global Search
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -116,7 +117,7 @@ Route::middleware(['auth:admin', 'admin'])->group(function () {
 Route::middleware(['auth', 'customer'])->group(function () {
     // Halaman Customer
     Route::view('/home', 'customer.home')->name('customer.home');
-    Route::view('/about', 'customer.about')->name('customer.about');
+    Route::get('/about', [HomeController::class, 'index'])->name('customer.about');
     Route::view('/contact', 'customer.contact')->name('customer.contact');
     Route::view('/contact/success', 'customer.contact-success')->name('contact.success');
     Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');

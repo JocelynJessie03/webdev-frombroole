@@ -1261,6 +1261,30 @@
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;');
     }
+    // Tambahkan event listener agar mendeteksi ketikan user secara real-time
+    document.addEventListener('DOMContentLoaded', function() {
+        const pointsInput = document.getElementById('input-points');
+        
+        if (pointsInput) {
+            pointsInput.addEventListener('input', function() {
+                const availablePointsElement = document.getElementById('available-points');
+                const availablePoints = availablePointsElement ? parseInt(availablePointsElement.textContent) || 0 : 0;
+                
+                let val = parseInt(this.value) || 0;
+                
+                // Jika user ketik minus, balikan ke 0
+                if (val < 0) val = 0;
+                
+                // Jika user ketik melebihi poin yang dia punya, otomatis kunci di batas maksimal
+                if (val > availablePoints) {
+                    val = availablePoints;
+                }
+                
+                this.value = val;
+                updateSummary(); // Jalankan ulang hitungan total belanja
+            });
+        }
+    });
 }());
 </script>
 @endsection

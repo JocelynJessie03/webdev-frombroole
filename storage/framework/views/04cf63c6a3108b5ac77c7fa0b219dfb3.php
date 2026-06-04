@@ -57,9 +57,7 @@
         </div>
        <div class="fb-hero__actions">
 
-    <a href="<?php echo e(route('customer.about')); ?>" class="fb-btn fb-btn--dark">
-        Our Story
-    </a>
+   
 
     <a href="<?php echo e(route('customer.shop')); ?>" class="fb-btn fb-btn--outline">
         See Menu
@@ -158,37 +156,30 @@
         <p class="fb-body">We don't take shortcuts. We choose quality, we craft with passion, and we serve with heart.</p>
         <a href="<?php echo e(route('customer.shop')); ?>" class="fb-viewall"><span class="fb-viewall__line"></span>View All Menu →</a>
     </div>
+    
     <div class="fb-sellers__grid">
-        <div class="fb-scard" data-sr>
+        <?php $__currentLoopData = $bestSellers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+        <div class="fb-scard" 
+            <?php if($index === 0): ?> data-sr 
+            <?php elseif($index === 1): ?> data-sr-d 
+            <?php else: ?> data-sr-d2 
+            <?php endif; ?>
+        >
             <div class="fb-scard__img-wrap">
-                <img src="<?php echo e(asset('home/fb_broole.png')); ?>" alt="Signature Broole">
+                <img src="<?php echo e(asset('products/' . $item->pro_image)); ?>" alt="<?php echo e($item->pro_name); ?>">
             </div>
             <div class="fb-scard__body">
-                <p class="fb-scard__name">Signature Broole</p>
-                <p class="fb-scard__stars">★★★★★ <span class="fb-scard__ct">4.9 (231)</span></p>
-                <a href="<?php echo e(route('customer.shop', ['category' => 1])); ?>" class="fb-scard__order">Order Now →</a>
+                <p class="fb-scard__name"><?php echo e($item->pro_name); ?></p>
+                
+                
+                <p class="fb-scard__stars">
+                    🔥 <span class="fb-scard__ct" style="color: #E6C07B; font-weight: 600;"><?php echo e(number_format($item->total_sold, 0, ',', '.')); ?> Sold</span>
+                </p>
+                
+                <a href="<?php echo e(route('customer.shop', ['category' => $item->category_id])); ?>" class="fb-scard__order">Order Now →</a>
             </div>
         </div>
-        <div class="fb-scard" data-sr-d>
-            <div class="fb-scard__img-wrap">
-                <img src="<?php echo e(asset('home/fb_cake.png')); ?>" alt="Burnt Cheesecake">
-            </div>
-            <div class="fb-scard__body">
-                <p class="fb-scard__name">Burnt Cheesecake</p>
-                <p class="fb-scard__stars">★★★★★ <span class="fb-scard__ct">4.8 (300)</span></p>
-                <a href="<?php echo e(route('customer.shop', ['category' => 3])); ?>" class="fb-scard__order">Order Now →</a>
-            </div>
-        </div>
-        <div class="fb-scard" data-sr-d2>
-            <div class="fb-scard__img-wrap">
-                <img src="<?php echo e(asset('home/fb_drink.png')); ?>" alt="Craft Drinks">
-            </div>
-            <div class="fb-scard__body">
-                <p class="fb-scard__name">Craft Drinks</p>
-                <p class="fb-scard__stars">★★★★☆ <span class="fb-scard__ct">4.5 (71)</span></p>
-                <a href="<?php echo e(route('customer.shop', ['category' => 2])); ?>" class="fb-scard__order">Order Now →</a>
-            </div>
-        </div>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </div>
 </section>
 

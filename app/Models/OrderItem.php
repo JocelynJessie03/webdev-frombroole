@@ -14,7 +14,8 @@ class OrderItem extends Model
         'order_id',
         'product_id',
         'quantity',
-        'price_at_purchase'
+        'price_at_purchase',
+        'sugar_level'
     ];
 
     /**
