@@ -1658,43 +1658,6 @@ items-center
 }
 
 </style>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
 
-    const heroProduct =
-        document.getElementById('heroProduct');
-
-    const products = [
-
-        "{{ asset('products/broole1.png') }}",
-        "{{ asset('home_assets/fb_cake.png') }}",
-        "{{ asset('products/drink1.png') }}"
-
-    ];
-
-    let current = 0;
-
-    setInterval(() => {
-
-        heroProduct.style.opacity = 0;
-
-        setTimeout(() => {
-
-            current++;
-
-            if(current >= products.length){
-                current = 0;
-            }
-
-            heroProduct.src = products[current];
-
-            heroProduct.style.opacity = 1;
-
-        }, 300);
-
-    }, 3000);
-
-});
-</script>
 @include('layouts.footer')
 @endsection

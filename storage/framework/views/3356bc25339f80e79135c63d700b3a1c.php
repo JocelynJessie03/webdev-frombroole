@@ -195,7 +195,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                 <a href="/" class="flex flex-shrink-0 items-center gap-3.5 no-underline">
                     <div class="flex h-[46px] w-[46px] flex-shrink-0 items-center justify-center rounded-full bg-[#8C1717]">
                         <img
-    src="<?php echo e(asset('home/logo.png')); ?>"
+    src="<?php echo e(asset('home_assets/logo.png')); ?>"
     alt="From Broole logo"
     class="h-12 w-auto object-contain"
 />
@@ -444,8 +444,8 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
         shadow-md
         "
     >
-       <img
-    src="<?php echo e(asset('Avatar/' . auth()->user()->avatar)); ?>"
+       <img 
+    src="<?php echo e(auth()->user()->avatar ? asset('Avatar/' . auth()->user()->avatar) : asset('home_assets/logo.png')); ?>" 
     class="w-14 h-14 rounded-full object-cover"
 >
     </div>
@@ -569,7 +569,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
             </div>
 
             
-            <d
+            
 <div
     x-show="mobileOpen"
     x-transition:enter="transition duration-200 ease-out"

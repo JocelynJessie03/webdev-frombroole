@@ -7,19 +7,19 @@ $signatureDesserts = [
 [
 'name' => 'Broole',
 'price' => 'Rp 45.000',
-'image' => '/home/fb_broole.png',
+'image' => '/home_assets/fb_broole.png',
 'tagline' => 'Crunchy Sophistication',
 'desc' => 'Velvet layers of pure dark cacao fudge soil paired with fluffy white cheese creme.',
 'ingredients' => [
 
 [
-'image' => '/home/berry.png',
+'image' => '/home_assets/berry.png',
 'class' => 'left-[2%] top-[2%] lg:left-[8%] lg:top-[4%]',
 'size' => 'w-[115px] h-[115px]'
 ],
 
 [
-'image' => '/home/berry.png',
+'image' => '/home_assets/berry.png',
 'class' => 'right-[0%] top-[50%] lg:right-[3%] lg:top-[48%]',
 'size' => 'w-[120px] h-[120px]'
 ]
@@ -30,19 +30,19 @@ $signatureDesserts = [
 [
 'name' => 'Latte',
 'price' => 'Rp 52.000',
-'image' => '/home/fb_drink.png',
+'image' => '/home_assets/fb_drink.png',
 'tagline' => 'Earthy Royalty',
 'desc' => 'Ceremonial-grade Kyoto matcha powder whipped into decadent cream.',
 'ingredients' => [
 
 [
-'image' => '/home/coffee1.png',
+'image' => '/home_assets/coffee1.png',
 'class' => 'left-[2%] top-[2%] lg:left-[8%] lg:top-[4%]',
 'size' => 'w-[120px] h-[120px]'
 ],
 
 [
-'image' => '/home/coffee1.png',
+'image' => '/home_assets/coffee1.png',
 'class' => 'right-[2%] top-[65%] lg:right-[2%] lg:top-[52%]',
 'size' => 'w-[110px] h-[110px]'
 ]
@@ -53,19 +53,19 @@ $signatureDesserts = [
 [
 'name' => 'Cheesecake',
 'price' => 'Rp 46.000',
-'image' => '/home/fb_cake.png',
+'image' => '/home_assets/fb_cake.png',
 'tagline' => 'Fudge Indulgence',
 'desc' => 'Dense dark Belgian chocolate cocoa crumb with silky fudge ganache.',
 'ingredients' => [
 
 [
-'image' => '/home/oreo1.png',
+'image' => '/home_assets/oreo1.png',
 'class' => 'left-[2%] top-[2%] lg:left-[8%] lg:top-[4%]',
 'size' => 'w-[120px] h-[120px]'
 ],
 
 [
-'image' => '/home/oreo1.png',
+'image' => '/home_assets/oreo1.png',
 'class' => 'right-[2%] top-[65%] lg:right-[2%] lg:top-[52%]',
 'size' => 'w-[110px] h-[110px]'
 ]
@@ -80,7 +80,7 @@ $masterpieces = [
 [
 'name' => 'Cheesecake',
 'price' => 'Rp 49.000',
-'image' => '/home/cake.png',
+'image' => '/home_assets/cake.png',
 'category' => 'Cheesecake',
 'tagline' => 'Layered Delight',
 'desc' => 'Silky cream cheese layered with lotus crumble and luxurious artisan textures.'
@@ -89,7 +89,7 @@ $masterpieces = [
 [
 'name' => 'Broole',
 'price' => 'Rp 45.000',
-'image' => '/home/broole.png',
+'image' => '/home_assets/broole.png',
 'category' => 'Broole',
 'tagline' => 'Creamy Luxury',
 'desc' => 'Velvet layers of pure dark cacao fudge soil paired with fluffy white cheese creme.'
@@ -99,7 +99,7 @@ $masterpieces = [
 [
 'name' => 'Craft Drinks',
 'price' => 'Rp 52.000',
-'image' => '/home/craft_drink.png',
+'image' => '/home_assets/craft_drink.png',
 'category' => 'Drink',
 'tagline' => 'Flavorful Goodness',
 'desc' => 'Kyoto ceremonial matcha whipped into luxurious cream and elegant textures.'
@@ -649,7 +649,7 @@ items-center
         ></div>
 
         <img
-            src="<?php echo e(asset('home/maskot.png')); ?>"
+            src="<?php echo e(asset('home_assets/maskot.png')); ?>"
             alt="From Broole Mascot"
             class="
             relative
@@ -697,7 +697,7 @@ items-center
 <div class="group relative overflow-hidden bg-white rounded-[36px] p-10 border border-[#B88A44]/10 hover:-translate-y-3 transition duration-500 hover:shadow-[0_25px_60px_rgba(184,138,68,0.12)]">
 
     <img
-    src="<?php echo e(asset('home/hehe1.png')); ?>"
+    src="<?php echo e(asset('home_assets/hehe1.png')); ?>"
     alt="Pristine Hygiene"
     class="w-[320px] h-[280px] object-contain mx-auto"
 />
@@ -719,7 +719,7 @@ items-center
         <div class="group relative overflow-hidden bg-gradient-to-br from-[#FFF8EE] to-[#FFFDFB] rounded-[36px] p-10 border border-[#D4AF37]/20 hover:-translate-y-3 transition duration-500 hover:shadow-[0_25px_60px_rgba(212,175,55,0.15)]">
 
           <img
-    src="<?php echo e(asset('home/hehe2.png')); ?>"
+    src="<?php echo e(asset('home_assets/hehe2.png')); ?>"
     alt="Artisan Standards"
     class="w-[280px] h-[280px] object-contain mx-auto"
 />
@@ -737,7 +737,7 @@ items-center
         <div class="group relative overflow-hidden bg-white rounded-[36px] p-10 border border-[#B88A44]/10 hover:-translate-y-3 transition duration-500 hover:shadow-[0_25px_60px_rgba(184,138,68,0.12)]">
 
          <img
-    src="<?php echo e(asset('home/hehe3.png')); ?>"
+    src="<?php echo e(asset('home_assets/hehe3.png')); ?>"
     alt="Fresh Delivery"
     class="w-[280px] h-[280px] object-contain mx-auto"
 />
@@ -1665,44 +1665,7 @@ items-center
 }
 
 </style>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
 
-    const heroProduct =
-        document.getElementById('heroProduct');
-
-    const products = [
-
-        "<?php echo e(asset('products/broole1.png')); ?>",
-        "<?php echo e(asset('home/fb_cake.png')); ?>",
-        "<?php echo e(asset('products/drink1.png')); ?>"
-
-    ];
-
-    let current = 0;
-
-    setInterval(() => {
-
-        heroProduct.style.opacity = 0;
-
-        setTimeout(() => {
-
-            current++;
-
-            if(current >= products.length){
-                current = 0;
-            }
-
-            heroProduct.src = products[current];
-
-            heroProduct.style.opacity = 1;
-
-        }, 300);
-
-    }, 3000);
-
-});
-</script>
 <?php echo $__env->make('layouts.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Herd\webdev-frombroole\resources\views/customer/home.blade.php ENDPATH**/ ?>

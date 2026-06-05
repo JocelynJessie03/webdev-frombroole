@@ -158,7 +158,7 @@
         <!-- Logo + text -->
         <div class="relative z-10 text-center">
             <div class="logo-circle w-40 h-40 bg-white rounded-full flex items-center justify-center mx-auto mb-10 shadow-2xl ring-[12px] ring-white/10">
-                <img src="<?php echo e(asset('home/logo.png')); ?>" class="w-full h-full object-contain p-3">
+                <img src="<?php echo e(asset('home_assets/logo.png')); ?>" class="w-full h-full object-contain p-3">
             </div>
             <h2 class="text-4xl font-black tracking-tight mb-4">From Broolé</h2>
             <p class="text-xl text-white/80 font-medium text-balance leading-relaxed">
