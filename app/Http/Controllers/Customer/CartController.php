@@ -83,7 +83,7 @@ class CartController extends Controller
         $totalItems = 0;
 
         foreach ($validated['items'] as $lineItem) {
-            $product = Product::find($lineItem['id']);
+            $product = Product::query()->find($lineItem['id']);
 
             if (!$product || $product->pro_delete) {
                 $errors[] = ($product->pro_name ?? 'A product') . ' is no longer available.';
@@ -107,7 +107,7 @@ class CartController extends Controller
         $discountAmount = 0;
         $couponApplied = null;
         if (!empty($validated['promo'])) {
-            $coupon = DiscountCoupon::where('code', strtoupper($validated['promo']))->first();
+            $coupon = DiscountCoupon::query()->where('code', strtoupper($validated['promo']))->first();
             if ($coupon && $coupon->isAvailable()) {
                 $discountAmount = round($subtotal * (floatval($validated['discount']) / 100));
                 $couponApplied = $coupon->code;
@@ -149,7 +149,7 @@ class CartController extends Controller
             ]);
 
             foreach ($validated['items'] as $lineItem) {
-                $product = Product::find($lineItem['id']);
+                $product = Product::query()->find($lineItem['id']);
                 OrderItem::create([
                     'order_id'          => $order->id,
                     'product_id'        => $product->id,
@@ -227,13 +227,13 @@ class CartController extends Controller
     {
         $order = OrderHistory::with('items.product')->findOrFail($id);
 
-        if ($order->status === 'Paid') {
+        if ($order->status === 'Pending') {
             return redirect()->route('customer.shop')->with('success', 'Order has already been processed.');
         }
 
         DB::beginTransaction();
         try {
-            $order->status = 'Paid';
+            $order->status = 'Pending';
             $order->save();
 
             // [PROSES BOM] Potong stok bahan baku resep otomatis (Kode bawaan kamu sudah benar)
@@ -273,9 +273,9 @@ class CartController extends Controller
                 // 2. [BARU] Tarik kupon yang digunakan lalu tambahkan hits pemakaiannya (+1)
                 $promoUsed = session()->pull('web_promo_used_' . $order->id);
                 if ($promoUsed) {
-                    $coupon = DiscountCoupon::where('code', $promoUsed)->first();
+                    $coupon = DiscountCoupon::query()->where('code', $promoUsed)->first();
                     if ($coupon) {
-                        $coupon->increment('used_count'); // Jatah kupon otomatis berkurang!
+                        $coupon->query()->increment('used_count'); // Jatah kupon otomatis berkurang!
                     }
                 }
                 
@@ -334,7 +334,7 @@ class CartController extends Controller
             return response()->json(['valid' => false, 'message' => 'Coupon code is required.']);
         }
 
-        $coupon = DiscountCoupon::where('code', strtoupper($code))->where('is_active', true)->first();
+        $coupon = DiscountCoupon::query()->where('code', strtoupper($code))->where('is_active', true)->first();
         if (!$coupon) {
             return response()->json(['valid' => false, 'message' => 'Invalid coupon code.']);
         }

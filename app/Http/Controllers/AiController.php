@@ -112,6 +112,7 @@ class AiController extends Controller
         - If customer information is available, address the customer by their first name occasionally.
         - Donot mention the customer's email address.
         - Make recommendations feel personal.
+        - Answer in English.
 
         Business Information:
 
@@ -122,7 +123,7 @@ class AiController extends Controller
         UC Walk
 
         Operating Hours:
-        08.00 - 17.00 WIB
+        10.00 - 22.00 WIB
 
         Instagram:
         @frombroole
@@ -147,7 +148,6 @@ class AiController extends Controller
         ";
 
         // GEMINI
-
         $response = Http::post(
         'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' . env('GEMINI_API_KEY'),
         [
@@ -176,9 +176,7 @@ class AiController extends Controller
 
 }
 
-
     // FALLBACK GROQ
-
         $response = Http::withHeaders([
 
     'Authorization' =>
@@ -225,7 +223,7 @@ if (!$response->successful()) {
     return response()->json([
 
         'reply' =>
-        '🍰 AI Sweet Guide sedang sibuk. Silakan coba lagi beberapa saat.'
+        '🍰 AI Sweet Guide is currently busy. Try again later.'
 
     ]);
 
@@ -239,33 +237,6 @@ $reply = data_get(
 return response()->json([
     'reply' => $reply
 ]);
-
-
-
-        // $response = Http::post(
-        //     'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' . env('GEMINI_API_KEY'),
-        //     [
-        //         'contents' => [
-        //             [
-        //                 'parts' => [
-        //                     [
-        //                         'text' => $prompt
-        //                     ]
-        //                 ]
-        //             ]
-        //         ]
-        //     ]
-        // );
-
-        // $reply =
-        //     data_get(
-        //         $response->json(),
-        //         'candidates.0.content.parts.0.text'
-        //     );
-
-        // return response()->json([
-        //     'reply' => $reply ?? 'Sorry, I could not generate a response.'
-        // ]);
         
     }
 }
