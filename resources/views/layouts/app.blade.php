@@ -446,8 +446,8 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
         shadow-md
         "
     >
-       <img
-    src="{{ asset('Avatar/' . auth()->user()->avatar) }}"
+       <img 
+    src="{{ auth()->user()->avatar ? asset('Avatar/' . auth()->user()->avatar) : asset('home_assets/logo.png') }}" 
     class="w-14 h-14 rounded-full object-cover"
 >
     </div>
