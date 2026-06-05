@@ -197,7 +197,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                 <a href="/" class="flex flex-shrink-0 items-center gap-3.5 no-underline">
                     <div class="flex h-[46px] w-[46px] flex-shrink-0 items-center justify-center rounded-full bg-[#8C1717]">
                         <img
-    src="{{ asset('home/logo.png') }}"
+    src="{{ asset('home_assets/logo.png') }}"
     alt="From Broole logo"
     class="h-12 w-auto object-contain"
 />
