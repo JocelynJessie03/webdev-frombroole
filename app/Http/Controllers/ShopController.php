@@ -51,7 +51,8 @@ class ShopController extends Controller
 
     // [BARU] Jika di-request via JavaScript (Real-time), kirimkan html bagian grid saja
     if ($request->ajax()) {
-        return view('customer.shop', compact('products', 'categories'))->renderSections()['content'] ?? view('customer.shop', compact('products', 'categories'));
+        // Return full view, client-side DOMParser will extract #shop-dynamic-content
+        return view('customer.shop', compact('products', 'categories'));
     }
 
     return view('customer.shop', compact('products', 'categories'));

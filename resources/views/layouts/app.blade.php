@@ -11,7 +11,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
     <script>
-        window.isLoggedIn = @json(auth('customer')->check());
+        window.isLoggedIn = @json(auth()->check());
 
         // Global Auth Interceptor (Capture Phase)
         document.addEventListener('click', function(e) {
@@ -100,9 +100,7 @@
 
     /* --- Universal Theme Transition --- */
     html.theme-animating *, html.theme-animating *::before, html.theme-animating *::after {
-        transition-property: background-color, border-color, color, fill, stroke !important;
-        transition-duration: .4s !important;
-        transition-timing-function: ease !important;
+        transition: background-color .4s ease, border-color .4s ease, color .4s ease, fill .4s ease, stroke .4s ease !important;
     }
     [data-theme="dark"] body {
         background: var(--bg-base) !important;
@@ -1676,16 +1674,14 @@ function clearCustomerLocalStorage() {
         var html = document.documentElement;
         var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
         
-        // Add class to trigger global CSS transitions
         html.classList.add('theme-animating');
         
         html.setAttribute('data-theme', next);
         localStorage.setItem('frombroole_theme', next);
         
-        // Remove class after transition completes
-        setTimeout(() => {
+        setTimeout(function() {
             html.classList.remove('theme-animating');
-        }, 400);
+        }, 450);
     }
     </script>
 

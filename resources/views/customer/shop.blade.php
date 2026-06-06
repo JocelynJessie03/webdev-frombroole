@@ -30,6 +30,92 @@
     --transition:   all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
+/* ─── DARK MODE ─── */
+[data-theme="dark"] .shop-page {
+    --cream:       #1A1614;
+    --cream-dark:  #141210;
+    --crimson:     #D4403A;
+    --crimson-dark:#B02E28;
+    --crimson-deep:#8A1F1A;
+    --charcoal:    #E8E0D8;
+    --muted:       #9C948E;
+    --muted-light: #706860;
+    --white:       #1E1A17;
+    --border:      rgba(212, 64, 58, 0.12);
+    --border-hover:rgba(212, 64, 58, 0.25);
+    --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.2);
+    --shadow-hover: 0 24px 56px rgba(212, 64, 58, 0.1), 0 8px 20px rgba(0, 0, 0, 0.15);
+    --shadow-btn:  0 6px 20px rgba(212, 64, 58, 0.3);
+}
+[data-theme="dark"] .shop-page .card-image-wrap {
+    background: #252120;
+}
+[data-theme="dark"] .shop-page .card-image-wrap::before {
+    background-image: radial-gradient(circle, rgba(212,64,58,0.06) 1px, transparent 1px);
+}
+[data-theme="dark"] .shop-page .sugar-select {
+    background: #252120;
+    border-color: rgba(212, 64, 58, 0.12);
+    color: #9C948E;
+}
+[data-theme="dark"] .shop-page .sugar-select:focus,
+[data-theme="dark"] .shop-page .sugar-select:hover {
+    color: #E8E0D8;
+}
+[data-theme="dark"] .shop-page .badge-soldout {
+    background: rgba(30,26,23,0.92);
+    border-color: rgba(220,38,38,0.4);
+    color: #EF4444;
+}
+[data-theme="dark"] .shop-page .toast-inner {
+    background: #E8E0D8;
+    color: #1A1614;
+}
+[data-theme="dark"] .shop-page .btn-add.unavailable {
+    background: #252120;
+    color: #706860;
+}
+[data-theme="dark"] .shop-page .filter-btn.is-inactive {
+    background: #1E1A17;
+    color: #9C948E;
+    border-color: rgba(212, 64, 58, 0.12);
+}
+[data-theme="dark"] .shop-page .filter-btn.is-inactive:hover {
+    background: rgba(212,64,58,0.08);
+    color: #D4403A;
+}
+
+/* Dark mode overrides for elements with hardcoded colors */
+[data-theme="dark"] .shop-page .shop-hero::before {
+    border-color: rgba(212, 64, 58, 0.08);
+}
+[data-theme="dark"] .shop-page .shop-hero::after {
+    border-color: rgba(212, 64, 58, 0.1);
+}
+[data-theme="dark"] .shop-page .card-image-wrap::after {
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(212,64,58,0.06) 100%);
+}
+[data-theme="dark"] .shop-page .hero-divider {
+    background: rgba(212, 64, 58, 0.15);
+}
+[data-theme="dark"] .shop-page .scroll-line {
+    background: linear-gradient(to bottom, #D4403A, transparent);
+}
+[data-theme="dark"] .shop-page .section-divider .divider-line {
+    background: rgba(212, 64, 58, 0.12);
+}
+[data-theme="dark"] .shop-page input[type="text"],
+[data-theme="dark"] .shop-page input[type="search"] {
+    background: #252120 !important;
+    border-color: rgba(212, 64, 58, 0.12) !important;
+    color: #E8E0D8 !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+}
+[data-theme="dark"] .shop-page input::placeholder {
+    color: #706860 !important;
+}
+
+
 *, *::before, *::after { box-sizing: border-box; }
 .shop-page {
     background: transparent;
@@ -885,6 +971,13 @@
                         
                         if (newContent && oldContent) {
                             oldContent.innerHTML = newContent.innerHTML;
+                        }
+                        
+                        // Update Hero stats (number of items)
+                        const newHeroStats = doc.querySelector('.hero-stats');
+                        const oldHeroStats = document.querySelector('.hero-stats');
+                        if (newHeroStats && oldHeroStats) {
+                            oldHeroStats.innerHTML = newHeroStats.innerHTML;
                         }
                         
                         // Update URL
