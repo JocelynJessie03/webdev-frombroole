@@ -1254,7 +1254,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                     </a>
 
                     {{-- ACCOUNT DROPDOWN --}}
-                    <div x-data="{ open:false }" class="relative">
+                    <div x-data="{ open:false }" class="relative hidden sm:block">
 
                         <button
                             @click="open = !open"
@@ -1457,6 +1457,24 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                             </svg>
                             Cart
                         </a>
+
+                        <div class="h-px w-full bg-[#8C1717]/10 my-1 sm:hidden"></div>
+                        
+                        @auth
+                            <a href="{{ route('profile.edit') }}" class="font-semibold text-[#7A6E68] sm:hidden">
+                                Profile ({{ auth()->user()->name }})
+                            </a>
+                            <form method="POST" action="{{ route('logout') }}" onsubmit="clearCustomerLocalStorage()" class="sm:hidden">
+                                @csrf
+                                <button type="submit" class="font-semibold text-red-600 text-left w-full">
+                                    Logout
+                                </button>
+                            </form>
+                        @else
+                            <a href="/" class="font-semibold text-[#8C1717] sm:hidden">
+                                Login / Register
+                            </a>
+                        @endauth
 
                     </div>
 
