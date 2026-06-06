@@ -10,6 +10,22 @@
 
     <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     
+    <script>
+        window.isLoggedIn = <?php echo json_encode(auth('customer')->check(), 15, 512) ?>;
+
+        // Global Auth Interceptor (Capture Phase)
+        document.addEventListener('click', function(e) {
+            const link = e.target.closest('.requires-auth');
+            if (link && !window.isLoggedIn) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                const modal = document.getElementById('globalLoginModal');
+                if (modal) modal.classList.add('show');
+            }
+        }, true);
+    </script>
+    
     <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 
     <style>
@@ -166,8 +182,94 @@
     }
 
     /* --- Text colors --- */
+    [data-theme="dark"] .text-\[\#8C1717\] {
+        color: var(--crimson) !important;
+    }
     [data-theme="dark"] .text-\[\#3D3833\] {
         color: var(--text-primary) !important;
+    }
+
+    /* --- Login Modal --- */
+    .login-modal-overlay {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.5);
+        backdrop-filter: blur(4px);
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+    .login-modal-overlay.show {
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .login-modal {
+        background: var(--bg-card, #FFFFFF);
+        padding: 35px 30px;
+        border-radius: 24px;
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+        transform: translateY(20px);
+        transition: transform 0.3s ease;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+    .login-modal-overlay.show .login-modal {
+        transform: translateY(0);
+    }
+    .login-modal__icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+    }
+    .login-modal__title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--text-primary, #2C2623);
+        margin-bottom: 12px;
+    }
+    .login-modal__text {
+        font-size: 14px;
+        color: var(--text-muted, #655F5A);
+        margin-bottom: 25px;
+        line-height: 1.6;
+    }
+    .login-modal__actions {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .login-modal__btn-login {
+        background: var(--brand, #8C1717);
+        color: #fff;
+        padding: 14px;
+        border-radius: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: 0.2s;
+        font-size: 15px;
+    }
+    .login-modal__btn-login:hover {
+        background: #6A1111;
+    }
+    .login-modal__btn-shop {
+        background: transparent;
+        color: var(--text-muted, #655F5A);
+        padding: 14px;
+        border-radius: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: 0.2s;
+        border: 1px solid var(--border-color, rgba(140, 23, 23, 0.10));
+        font-size: 15px;
+    }
+    .login-modal__btn-shop:hover {
+        background: var(--bg-card-hover, #EDE8E2);
+        color: var(--text-primary, #2C2623);
     }
     [data-theme="dark"] .text-\[\#3D3833\]\/70 {
         color: var(--text-muted) !important;
@@ -336,7 +438,7 @@
 
     /* --- Cart page custom CSS overrides --- */
     [data-theme="dark"] .cart-header {
-        background: linear-gradient(135deg, #1E1A17, #221F1B) !important;
+        background: transparent !important;
     }
     [data-theme="dark"] .order-summary {
         background: var(--bg-card) !important;
@@ -500,7 +602,7 @@
             border-radius: 50%;
             transform: translate(-50%, -50%);
             pointer-events: none;
-            z-index: 9999;
+            z-index: 999999;
         }
         [data-theme="dark"] #custom-cursor-dot {
             background-color: var(--brand);
@@ -516,7 +618,7 @@
             border-radius: 50%;
             transform: translate(-50%, -50%);
             pointer-events: none;
-            z-index: 9995;
+            z-index: 999998;
             mix-blend-mode: multiply;
         }
         [data-theme="dark"] #custom-cursor-glow {
@@ -526,7 +628,7 @@
         .cursor-particle {
             position: fixed;
             pointer-events: none;
-            z-index: 9997;
+            z-index: 999997;
             opacity: 0.7;
             color: var(--brand);
             font-size: 14px;
@@ -538,7 +640,7 @@
         .heart-pop {
             position: fixed;
             pointer-events: none;
-            z-index: 9998;
+            z-index: 999999;
             color: var(--brand);
             font-size: 18px;
             animation: particleFade 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
@@ -986,6 +1088,19 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
 
 <body class="bg-[#F8F5F2] text-[#3D3833]">
 
+    <!-- Global Modal Peringatan Login -->
+    <div class="login-modal-overlay" id="globalLoginModal" onclick="if(event.target===this) closeGlobalLoginModal()">
+        <div class="login-modal">
+            <div class="login-modal__icon">🔒</div>
+            <h3 class="login-modal__title">Login Required</h3>
+            <p class="login-modal__text">Please log in to your account first to access this feature.</p>
+            <div class="login-modal__actions">
+                <a href="/login" class="login-modal__btn-login">Log In Now</a>
+                <button type="button" onclick="closeGlobalLoginModal()" class="login-modal__btn-shop w-full">Cancel</button>
+            </div>
+        </div>
+    </div>
+
 
 <div class="bg-animation-container" id="fireworks-bg"></div>
 
@@ -1058,7 +1173,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
 
                     <a
                         href="<?php echo e(route('customer.history')); ?>"
-                        class="group relative rounded-md px-4 py-2 font-['Montserrat'] text-[10px] font-semibold uppercase tracking-[0.25em] transition-colors
+                        class="group relative rounded-md px-4 py-2 font-['Montserrat'] text-[10px] font-semibold uppercase tracking-[0.25em] transition-colors requires-auth
                         <?php echo e(Route::is('customer.history') ? 'text-[#8C1717] is-active' : 'text-[#7A6E68] hover:text-[#8C1717]'); ?>"
                     >
                         Transaction History
@@ -1099,6 +1214,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                             openWidget:false,
                             widgetTasks:[],
                             fetchTasks(){
+                                if (!window.isLoggedIn) return;
                                 fetch('<?php echo e(route('customer.tasks.widget')); ?>')
                                     .then(res => res.json())
                                     .then(data => this.widgetTasks = data)
@@ -1108,9 +1224,10 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                         @mouseleave="openWidget=false"
                     >
 
-                        <button
-                        onclick="window.location.href='<?php echo e(route('customer.tasks.index')); ?>'"
+                        <a
+                        href="<?php echo e(route('customer.tasks.index')); ?>"
                         class="
+                        requires-auth
                         relative
                         flex h-11 w-11
                         items-center justify-center
@@ -1166,7 +1283,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                             </span>
                         <?php endif; ?>
 
-                    </button>
+                        </a>
 
                         <div
                             x-show="openWidget"
@@ -1180,6 +1297,10 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                             </h4>
 
                             <div class="space-y-2 max-h-60 overflow-y-auto">
+
+                                <div x-show="widgetTasks.length === 0" class="text-center text-xs text-gray-500 py-4">
+                                    There is no task available
+                                </div>
 
                                 <template x-for="item in widgetTasks" :key="item.id">
 
@@ -1219,7 +1340,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
 
                             <a
                                 href="<?php echo e(route('customer.tasks.index')); ?>"
-                                class="block mt-3 text-center text-[10px] uppercase tracking-wider font-bold text-[#8C1717]"
+                                class="block mt-3 text-center text-[10px] uppercase tracking-wider font-bold text-[#8C1717] requires-auth"
                             >
                                 View All Tasks
                             </a>
@@ -1383,14 +1504,14 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                                     <div class="mt-5 space-y-3">
 
                                         <a
-                                            href="/"
+                                            href="/login"
                                             class="block w-full text-center bg-[#8C1717] text-white py-3 rounded-xl font-semibold"
                                         >
                                             Login
                                         </a>
 
                                         <a
-                                            href="/"
+                                            href="/register"
                                             class="block w-full text-center bg-[#F3F1EC] py-3 rounded-xl font-semibold"
                                         >
                                             Register
@@ -1455,11 +1576,11 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                             Shop
                         </a>
 
-                        <a href="<?php echo e(route('customer.tasks.index')); ?>" class="font-semibold text-[#7A6E68]">
+                        <a href="<?php echo e(route('customer.tasks.index')); ?>" class="font-semibold text-[#7A6E68] requires-auth">
                             Coupons
                         </a>
 
-                        <a href="<?php echo e(route('customer.history')); ?>" class="font-semibold text-[#7A6E68]">
+                        <a href="<?php echo e(route('customer.history')); ?>" class="font-semibold text-[#7A6E68] requires-auth">
                             Transaction History
                         </a>
 
@@ -1488,7 +1609,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                                 </button>
                             </form>
                         <?php else: ?>
-                            <a href="/" class="font-semibold text-[#8C1717] show-on-mobile-only">
+                            <a href="/login" class="font-semibold text-[#8C1717] show-on-mobile-only">
                                 Login / Register
                             </a>
                         <?php endif; ?>
@@ -1676,6 +1797,12 @@ function clearCustomerLocalStorage() {
             });
         }
     });
+    
+    // Global Auth Interceptor dipindah ke <head>
+    
+    function closeGlobalLoginModal() {
+        document.getElementById('globalLoginModal').classList.remove('show');
+    }
     </script>
 </body>
 </html><?php /**PATH D:\Herd\webdev-frombroole\resources\views/layouts/app.blade.php ENDPATH**/ ?>

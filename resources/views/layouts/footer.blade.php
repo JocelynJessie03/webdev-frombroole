@@ -42,8 +42,8 @@
                 <a href="{{ route('customer.home') }}" class="fb-footer__link">Home</a>
                 <a href="{{ route('customer.about') }}" class="fb-footer__link">About Us</a>
                 <a href="{{ route('customer.shop') }}" class="fb-footer__link">Our Menu</a>
-                <a href="{{ route('customer.tasks.index') }}" class="fb-footer__link">Claim Coupons</a>
-                <a href="{{ route('customer.history') }}" class="fb-footer__link">Transaction History</a>
+                <a href="{{ route('customer.tasks.index') }}" class="fb-footer__link requires-auth">Claim Coupons</a>
+                <a href="{{ route('customer.history') }}" class="fb-footer__link requires-auth">Transaction History</a>
                 <a href="{{ route('customer.contact') }}" class="fb-footer__link">Contact</a>
             </nav>
         </div>

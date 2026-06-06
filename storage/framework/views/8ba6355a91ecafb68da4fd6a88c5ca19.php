@@ -12,7 +12,37 @@
     <style>
         body {
             font-family: 'Outfit', sans-serif;
+            background: linear-gradient(-45deg, #F8F5F2, #fae6e6, #fff0f5, #f5e8df);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
         }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .animate-fade-in-up {
+            opacity: 0;
+            animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+        
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
 
         @keyframes floating {
             0%   { transform: translateY(0px) rotate(0deg); }
@@ -27,13 +57,18 @@
         .login-card {
             width: 100%;
             max-width: 56rem;              /* max-w-4xl */
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
             border-radius: 2.5rem;
-            box-shadow: 0 40px 80px -20px rgba(107,13,13,0.15);
+            box-shadow: 0 40px 80px -20px rgba(107,13,13,0.15), inset 0 0 0 1px rgba(255,255,255,0.5);
             overflow: hidden;
             display: flex;
             flex-direction: row;           /* side-by-side on desktop */
             min-height: 750px;
+            
+            opacity: 0;
+            animation: fadeInUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
 
         /* ── LEFT PANEL ── */
@@ -54,7 +89,7 @@
         /* ── RIGHT PANEL ── */
         .login-right {
             flex: 1;
-            background: #fffdfd;
+            background: transparent;
             padding: 4rem;
             display: flex;
             flex-direction: column;
@@ -134,9 +169,13 @@
     </style>
 </head>
 
-<body class="min-h-screen bg-[#f7f2f1] flex items-center justify-center p-4 md:p-8 overflow-x-hidden">
+<body class="min-h-screen flex items-center justify-center p-4 md:p-8 overflow-x-hidden relative">
 
-<div class="login-card">
+<!-- Decorative Background Blobs -->
+<div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-red-200 rounded-full mix-blend-multiply filter blur-[100px] opacity-70 animate-fade-in-up delay-200"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-yellow-200 rounded-full mix-blend-multiply filter blur-[100px] opacity-70 animate-fade-in-up delay-500"></div>
+
+<div class="login-card z-10">
 
     
     <div class="login-left">
@@ -180,7 +219,7 @@
         <div class="max-w-md mx-auto w-full">
 
             <!-- Heading -->
-            <div class="mb-8">
+            <div class="mb-8 animate-fade-in-up delay-100">
                 <h1 class="text-4xl md:text-5xl font-black text-[#2a1111] tracking-tighter mb-2 leading-tight">
                     Welcome Back
                 </h1>
@@ -188,9 +227,9 @@
             </div>
 
             <!-- Google -->
-            <div class="mb-8">
+            <div class="mb-8 animate-fade-in-up delay-200">
                 <a href="/auth/google"
-                   class="w-full py-4 px-6 bg-white border border-[#f0eaea] rounded-2xl flex items-center justify-center gap-3 font-bold text-lg text-[#2a1111] hover:bg-[#faf7f7] transition-all hover:shadow-md">
+                   class="w-full py-4 px-6 bg-white border border-[#f0eaea] rounded-2xl flex items-center justify-center gap-3 font-bold text-lg text-[#2a1111] hover:bg-[#faf7f7] transition-all hover:shadow-md hover:-translate-y-1">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 48 48">
                         <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303C33.659 32.657 29.249 36 24 36c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.27 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
                         <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.27 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>
@@ -202,17 +241,17 @@
             </div>
 
             <!-- Divider -->
-            <div class="relative mb-8">
+            <div class="relative mb-8 animate-fade-in-up delay-300">
                 <div class="absolute inset-0 flex items-center">
                     <div class="w-full border-t border-[#ece4e4]"></div>
                 </div>
                 <div class="relative flex justify-center text-[10px] uppercase font-black tracking-[0.2em] text-gray-300">
-                    <span class="bg-[#fffdfd] px-6">Or Manual sign in</span>
+                    <span class="bg-white/80 backdrop-blur-sm px-6 rounded-full">Or Manual sign in</span>
                 </div>
             </div>
 
             <!-- Form -->
-            <form method="POST" action="/login" class="space-y-6">
+            <form method="POST" action="/login" class="space-y-6 animate-fade-in-up delay-400">
                 <?php echo csrf_field(); ?>
 
                 <!-- Email -->
@@ -257,7 +296,7 @@
             </form>
 
             <!-- Footer -->
-            <p class="text-center mt-10 text-gray-500 text-sm font-medium">
+            <p class="text-center mt-10 text-gray-500 text-sm font-medium animate-fade-in-up delay-500">
                 Are You new here?
                 <a href="/register" class="text-[#8d1010] font-black hover:underline underline-offset-4 decoration-2">
                     Create an account

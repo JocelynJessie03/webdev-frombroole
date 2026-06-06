@@ -53,7 +53,7 @@ Route::middleware('guest')->group(function () {
 Route::post('/midtrans/webhook', [MidtransWebhookController::class, 'handleNotification']);
 // Logout (Harus login untuk bisa logout)
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-Route::redirect('/', '/login');
+Route::redirect('/', '/home');
 // ==========================================
 // 2. ADMIN ROUTES (Hanya untuk Admin)
 // ==========================================
@@ -115,7 +115,9 @@ Route::middleware(['auth:admin', 'admin'])->group(function () {
 // ==========================================
 // 3. CUSTOMER ROUTES (Hanya untuk Customer)
 // ==========================================
-Route::middleware(['auth', 'customer'])->group(function () {
+
+// --- PUBLIC ROUTES (Bisa Diakses Guest & Customer) ---
+Route::middleware([])->group(function () {
     // Halaman Customer
     Route::view('/home', 'customer.home')->name('customer.home');
     Route::get('/about', [HomeController::class, 'index'])->name('customer.about');
@@ -126,11 +128,18 @@ Route::middleware(['auth', 'customer'])->group(function () {
     // Shop
     Route::get('/shop', [ShopController::class, 'index'])->name('customer.shop');
     
-    // --> DIUBAH: Cart & Checkout sekarang menggunakan CartController <--
+    // Cart
     Route::get('/cart', [CartController::class, 'index'])->name('customer.cart');
+    Route::post('/validate-coupon', [CartController::class, 'validateCoupon'])->name('customer.validate-coupon');
+    
+    // AI Chat
+    Route::post('/ai-chat', [AiController::class, 'chat']);
+});
+
+// --- PROTECTED ROUTES (Hanya Customer Login) ---
+Route::middleware(['auth', 'customer'])->group(function () {
     Route::get('/cart/member-points', [CartController::class, 'getMemberPoints'])->name('customer.cart.member-points');
     Route::post('/checkout', [CartController::class, 'checkout'])->name('customer.checkout');
-    Route::post('/validate-coupon', [CartController::class, 'validateCoupon'])->name('customer.validate-coupon');
     
     // [BARU] Rute untuk menangani pembukuan stok & poin setelah sukses bayar Midtrans
     Route::get('/payment-success/{id}', [CartController::class, 'paymentSuccess'])->name('customer.payment.success');
@@ -149,8 +158,4 @@ Route::middleware(['auth', 'customer'])->group(function () {
     Route::get('/tasks', [MemberTaskController::class, 'index'])->name('customer.tasks.index');
     Route::post('/tasks/{task}/claim', [MemberTaskController::class, 'claim'])->name('customer.tasks.claim');
     Route::get('/api/tasks/widget', [MemberTaskController::class, 'widget'])->name('customer.tasks.widget');
-    
-    // AI Chat
-    Route::post('/ai-chat', [AiController::class, 'chat']);
-    
 });

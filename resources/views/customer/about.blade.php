@@ -261,21 +261,21 @@
     <div class="fb-team__grid">
         <div class="fb-tcard" data-sr>
             <div class="fb-tcard__img-wrap">
-                <img src="https://ui-avatars.com/api/?name=Steven&background=8F1717&color=fff&size=200&bold=true" alt="Steven">
+                <img src="{{ asset('images/muka saya.jpeg') }}" alt="Steven" style="object-fit: cover;">
             </div>
             <h3 class="fb-tcard__name">Steven</h3>
             <p class="fb-tcard__role">Co-Founder</p>
         </div>
         <div class="fb-tcard" data-sr-d>
             <div class="fb-tcard__img-wrap">
-                <img src="https://ui-avatars.com/api/?name=Venny&background=8F1717&color=fff&size=200&bold=true" alt="Venny">
+                <img src="{{ asset('images/muka venny.jpeg') }}" alt="Venny" style="object-fit: cover;">
             </div>
             <h3 class="fb-tcard__name">Venny</h3>
             <p class="fb-tcard__role">Head Baker</p>
         </div>
         <div class="fb-tcard" data-sr-d2>
             <div class="fb-tcard__img-wrap">
-                <img src="https://ui-avatars.com/api/?name=Eveline&background=8F1717&color=fff&size=200&bold=true" alt="Eveline">
+                <img src="{{ asset('images/muka eveline.jpeg') }}" alt="Eveline" style="object-fit: cover;">
             </div>
             <h3 class="fb-tcard__name">Eveline</h3>
             <p class="fb-tcard__role">Pastry Chef</p>
@@ -295,7 +295,7 @@
     <div class="fb-gallery__vert">
         <span class="fb-vert-line"></span>Gallery<span class="fb-vert-line"></span>
     </div>
-    <div class="fb-gallery__strip">
+    <div class="fb-gallery__strip" data-sr>
         <div class="fb-gallery__item"><img src="{{ asset('home_assets/step4.png') }}" alt=""></div>
         <div class="fb-gallery__item"><img src="{{ asset('home_assets/maskot.png') }}" alt=""></div>
         <div class="fb-gallery__item"><img src="{{ asset('home_assets/step3.png') }}" alt=""></div>

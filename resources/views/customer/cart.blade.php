@@ -44,6 +44,7 @@
     padding-bottom: 6rem;
 }
 
+
 .cart-header {
     padding: 5.5rem 2rem 3rem;
     text-align: center;
@@ -1239,7 +1240,12 @@
                 });
 
             } else {
-                alert(data.errors ? data.errors.join('\n') : JSON.stringify(data));
+                if (res.status === 401) {
+                    document.getElementById('globalLoginModal').classList.add('show');
+                    resetCheckoutBtn();
+                    return;
+                }
+                alert(data.errors ? data.errors.join('\n') : (data.message || JSON.stringify(data)));
                 resetCheckoutBtn();
             }
         } catch (err) {

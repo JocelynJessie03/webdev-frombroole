@@ -38,8 +38,8 @@
                 <a href="<?php echo e(route('customer.home')); ?>" class="fb-footer__link">Home</a>
                 <a href="<?php echo e(route('customer.about')); ?>" class="fb-footer__link">About Us</a>
                 <a href="<?php echo e(route('customer.shop')); ?>" class="fb-footer__link">Our Menu</a>
-                <a href="<?php echo e(route('customer.tasks.index')); ?>" class="fb-footer__link">Claim Coupons</a>
-                <a href="<?php echo e(route('customer.history')); ?>" class="fb-footer__link">Transaction History</a>
+                <a href="<?php echo e(route('customer.tasks.index')); ?>" class="fb-footer__link requires-auth">Claim Coupons</a>
+                <a href="<?php echo e(route('customer.history')); ?>" class="fb-footer__link requires-auth">Transaction History</a>
                 <a href="<?php echo e(route('customer.contact')); ?>" class="fb-footer__link">Contact</a>
             </nav>
         </div>

@@ -1669,10 +1669,10 @@ items-center
 }
 
 /* ─── SCROLL REVEAL ──────────────────────────────── */
-[data-sr]    { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
-[data-sr-d]  { opacity: 0; transform: translateY(28px); transition: opacity .7s ease .18s, transform .7s ease .18s; }
-[data-sr-d2] { opacity: 0; transform: translateY(28px); transition: opacity .7s ease .34s, transform .7s ease .34s; }
-[data-sr].vis, [data-sr-d].vis, [data-sr-d2].vis { opacity: 1; transform: translateY(0); }
+[data-sr]    { opacity: 0 !important; transform: translateY(28px) !important; transition: opacity .7s ease, transform .7s ease !important; }
+[data-sr-d]  { opacity: 0 !important; transform: translateY(28px) !important; transition: opacity .7s ease .18s, transform .7s ease .18s !important; }
+[data-sr-d2] { opacity: 0 !important; transform: translateY(28px) !important; transition: opacity .7s ease .34s, transform .7s ease .34s !important; }
+[data-sr].vis, [data-sr-d].vis, [data-sr-d2].vis { opacity: 1 !important; transform: translateY(0) !important; }
 </style>
 
 <script>

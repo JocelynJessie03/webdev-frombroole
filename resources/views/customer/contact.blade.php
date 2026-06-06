@@ -156,25 +156,25 @@
 
         <div class="ct-section-label">Contact Information</div>
 
-        <div class="ct-icard">
+        <div class="ct-icard" data-sr>
             <div class="ct-icard__icon"><i class="ti ti-map-pin"></i></div>
             <h3 class="ct-icard__title">Location</h3>
             <p class="ct-icard__val">Jl. Made No. 12, Surabaya</p>
             <p class="ct-icard__sub">East Java, Indonesia 60111</p>
         </div>
-        <div class="ct-icard">
+        <div class="ct-icard" data-sr-d>
             <div class="ct-icard__icon"><i class="ti ti-mail"></i></div>
             <h3 class="ct-icard__title">Email</h3>
             <p class="ct-icard__val">hello@frombroole.com</p>
             <p class="ct-icard__sub">Replies within 24 hours</p>
         </div>
-        <div class="ct-icard">
+        <div class="ct-icard" data-sr-d2>
             <div class="ct-icard__icon"><i class="ti ti-brand-whatsapp"></i></div>
             <h3 class="ct-icard__title">WhatsApp</h3>
             <p class="ct-icard__val">+62 899-930-0200</p>
             <p class="ct-icard__sub">Usually replies in under 1 hour</p>
         </div>
-        <div class="ct-icard">
+        <div class="ct-icard" data-sr-d3>
             <div class="ct-icard__icon"><i class="ti ti-clock"></i></div>
             <h3 class="ct-icard__title">Opening Hours</h3>
             <p class="ct-icard__val">Monday – Sunday</p>
@@ -243,8 +243,8 @@ $faqs = [
 
 ];
         @endphp
-        @foreach($faqs as $faq)
-        <div class="ct-faq-item" data-faq>
+        @foreach($faqs as $index => $faq)
+        <div class="ct-faq-item" data-faq data-sr{{ $index % 3 == 1 ? '-d' : ($index % 3 == 2 ? '-d2' : '') }}>
             <div class="ct-faq-item__q">
                 {{ $faq['q'] }}
                 <i class="ti ti-circle-plus ct-faq-item__icon"></i>
@@ -453,6 +453,14 @@ $faqs = [
 .ct-form-side form { display: flex; flex-direction: column; gap: 1.2rem; }
 .ct-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .ct-field { display: flex; flex-direction: column; gap: .4rem; }
+
+/* ─── SCROLL REVEAL ─── */
+[data-sr]    { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
+[data-sr-d]  { opacity: 0; transform: translateY(28px); transition: opacity .7s ease .18s, transform .7s ease .18s; }
+[data-sr-d2] { opacity: 0; transform: translateY(28px); transition: opacity .7s ease .34s, transform .7s ease .34s; }
+[data-sr-d3] { opacity: 0; transform: translateY(28px); transition: opacity .7s ease .50s, transform .7s ease .50s; }
+[data-sr].vis, [data-sr-d].vis, [data-sr-d2].vis, [data-sr-d3].vis { opacity: 1; transform: translateY(0); }
+
 .ct-label { font-family: var(--sans); font-size: .56rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
 .ct-input {
     font-family: var(--sans); font-size: .82rem; font-weight: 300;
@@ -586,7 +594,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.isIntersecting) { e.target.classList.add('vis'); io.unobserve(e.target); }
         });
     }, { threshold: 0.1 });
-    document.querySelectorAll('[data-sr],[data-sr-d]').forEach(el => io.observe(el));
+    document.querySelectorAll('[data-sr],[data-sr-d],[data-sr-d2],[data-sr-d3]').forEach(el => io.observe(el));
 
 });
 
