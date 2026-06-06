@@ -154,7 +154,7 @@
             <div class="w-40 h-40 bg-white rounded-full flex items-center justify-center mx-auto mb-10 shadow-2xl ring-[12px] ring-white/10">
 
                 <img
-                    src="{{ asset('home/logo.png') }}"
+                    src="{{ asset('home_assets/logo.png') }}"
                     class="w-full h-full object-contain p-3"
                 >
             </div>
