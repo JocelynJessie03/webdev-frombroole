@@ -1220,6 +1220,17 @@
                 snap.pay(data.snap_token, {
                     onSuccess: function (result) {
                         localStorage.removeItem('customer_cart');
+                        
+                        Swal.fire({
+                            title: 'Verifying Payment...',
+                            html: 'Please wait a moment while we process your order.',
+                            allowOutsideClick: false,
+                            showConfirmButton: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
                         const redirectTemplate = '{{ route("customer.payment.success", ":id") }}';
                         window.location.href = redirectTemplate.replace(':id', data.order_id);
                     },
@@ -1329,4 +1340,7 @@
     });
 }());
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+@include('layouts.footer')
 @endsection

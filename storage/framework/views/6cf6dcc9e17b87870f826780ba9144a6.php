@@ -1218,6 +1218,17 @@
                 snap.pay(data.snap_token, {
                     onSuccess: function (result) {
                         localStorage.removeItem('customer_cart');
+                        
+                        Swal.fire({
+                            title: 'Verifying Payment...',
+                            html: 'Please wait a moment while we process your order.',
+                            allowOutsideClick: false,
+                            showConfirmButton: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
                         const redirectTemplate = '<?php echo e(route("customer.payment.success", ":id")); ?>';
                         window.location.href = redirectTemplate.replace(':id', data.order_id);
                     },
@@ -1327,5 +1338,8 @@
     });
 }());
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<?php echo $__env->make('layouts.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Herd\webdev-frombroole\resources\views/customer/cart.blade.php ENDPATH**/ ?>
