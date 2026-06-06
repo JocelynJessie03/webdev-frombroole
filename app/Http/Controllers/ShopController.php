@@ -64,7 +64,7 @@ class ShopController extends Controller
     }
 
     // 6. Paginate (8 per page) & keep query strings
-    $products = $query->paginate(8)->appends($request->query());
+    $products = $query->paginate(12)->appends($request->query());
 
     // [BARU] Jika di-request via JavaScript (Real-time), kirimkan html bagian grid saja
     if ($request->ajax()) {
