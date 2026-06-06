@@ -140,6 +140,19 @@ handleDragEnd(e) {
     } else if (diff < -50) {
         this.currentSlide = this.currentSlide === 0 ? this.desserts.length - 1 : this.currentSlide - 1;
     }
+},
+imgX: 0,
+imgY: 0,
+handleImgMove(e) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    this.imgX = x * 20;
+    this.imgY = y * 20;
+},
+handleImgLeave() {
+    this.imgX = 0;
+    this.imgY = 0;
 }
 }"
 class="pb-20"
@@ -248,12 +261,16 @@ class="pb-20"
                         :style="`transform: translateX(-${currentSlide * 100}%)`"
                     >
                         <template x-for="(dessert, index) in desserts" :key="index">
-                            <div class="w-full flex-shrink-0 flex justify-center items-center">
+                            <div class="w-full flex-shrink-0 flex justify-center items-center"
+                                @mousemove="handleImgMove($event)"
+                                @mouseleave="handleImgLeave()"
+                            >
                                 <img
                                     :src="dessert.image"
                                     :alt="dessert.name"
-                                    class="w-[280px] sm:w-[360px] lg:w-[600px] object-contain transition-all duration-700 drop-shadow-[0_30px_50px_rgba(0,0,0,0.15)]"
+                                    class="w-[280px] sm:w-[360px] lg:w-[600px] object-contain drop-shadow-[0_30px_50px_rgba(0,0,0,0.15)] hero-img-parallax"
                                     :class="currentSlide === index ? 'scale-100 opacity-100' : 'scale-90 opacity-40'"
+                                    :style="currentSlide === index ? `transform: translate(${imgX}px, ${imgY}px) scale(1)` : ''"
                                 >
                             </div>
                         </template>
@@ -357,8 +374,8 @@ class="pb-20"
 
         <div
         @if($index === 0) data-sr @elseif($index === 1) data-sr-d @else data-sr-d2 @endif
-        class="group relative rounded-[30px] border transition-all duration-700 hover:-translate-y-3"
-
+        class="group relative rounded-[30px] border hover:-translate-y-3"
+        style="transition: all 2.5s ease-out;"
         :class="{
         'bg-[#241915] border-[#5B4337] hover:shadow-[0_35px_90px_rgba(36,25,21,0.55)]': {{ $index }} === 0,
 
@@ -369,7 +386,7 @@ class="pb-20"
         >
 
             {{-- TOP IMAGE --}}
-            <div class="relative h-[290px] mx-5 mt-5 rounded-[24px] overflow-visible border border-white/10 bg-black/10 backdrop-blur-sm flex items-center justify-center px-8 py-8 group-hover:z-50 transition-all duration-700">
+            <div class="relative h-[290px] mx-5 mt-5 rounded-[24px] overflow-visible border border-white/10 bg-black/10 backdrop-blur-sm flex items-center justify-center px-8 py-8 group-hover:z-50" style="transition: all 2.5s ease-out;">
 
                 {{-- CORNER DECOR --}}
                 <div class="absolute left-5 top-5 text-[#EAD8D5] text-xl">
@@ -383,7 +400,7 @@ class="pb-20"
                 <div class="absolute right-8 bottom-5 w-10 h-2 rounded-full bg-[#EFD9D7] rotate-[-20deg] opacity-60"></div>
 
                 {{-- IMAGE --}}
-                <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.14),transparent_70%)]"></div>
+                <div class="absolute top-[40%] left-[55%] -translate-x-1/2 -translate-y-1/2 w-[180px] h-[180px] bg-white/70 shadow-[0_0_80px_40px_rgba(255,255,255,0.5)] blur-[30px] rounded-full z-10 pointer-events-none"></div>
 
                 <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/asfalt-light.png')]"></div>
                 <img
@@ -392,8 +409,6 @@ class="pb-20"
                     class="
                     relative z-20
                     object-contain
-                    transition-all
-                    duration-700
                     ease-out
                     group-hover:scale-110
                     group-hover:-translate-y-8
@@ -404,6 +419,7 @@ class="pb-20"
                     {{ $index === 1 ? 'w-[250px] lg:w-[310px]' : '' }}
                     {{ $index === 2 ? 'w-[240px] lg:w-[300px]' : '' }}
                     "
+                    style="transition: all 2.5s ease-out;"
                 >
 
             </div>
@@ -698,59 +714,59 @@ items-center
     <div class="grid md:grid-cols-3 gap-8">
 
         {{-- CARD 1 --}}
-<div class="group relative overflow-hidden bg-white rounded-[36px] p-10 border border-[#B88A44]/10 hover:-translate-y-3 transition duration-500 hover:shadow-[0_25px_60px_rgba(184,138,68,0.12)]" data-sr>
+        <div class="group relative overflow-hidden bg-white rounded-[36px] p-10 border border-[#B88A44]/10 custom-card-zoom" data-sr>
 
-    <img
-    src="{{ asset('home_assets/hehe1.png') }}"
-    alt="Pristine Hygiene"
-    class="w-[320px] h-[280px] object-contain mx-auto"
-/>
+            <img
+            src="{{ asset('home_assets/hehe1.png') }}"
+            alt="Pristine Hygiene"
+            class="w-[320px] h-[280px] object-contain mx-auto relative z-10 custom-img-zoom"
+        />
 
 
-    <h3 class="mt-6 text-2xl font-black text-[#2C2623] text-center">
-        Pristine Hygiene
-    </h3>
+            <h3 class="mt-6 text-2xl font-black text-[#2C2623] text-center relative z-20">
+                Pristine Hygiene
+            </h3>
 
-    <p class="mt-4 text-[#6E675F] leading-relaxed text-center">
-        Sterilized boutique kitchens following premium food safety standards.
-    </p>
+            <p class="mt-4 text-[#6E675F] leading-relaxed text-center relative z-20">
+                Sterilized boutique kitchens following premium food safety standards.
+            </p>
 
-</div>
+        </div>
 
 
 
         {{-- CARD 2 --}}
-        <div class="group relative overflow-hidden bg-gradient-to-br from-[#FFF8EE] to-[#FFFDFB] rounded-[36px] p-10 border border-[#D4AF37]/20 hover:-translate-y-3 transition duration-500 hover:shadow-[0_25px_60px_rgba(212,175,55,0.15)]" data-sr-d>
+        <div class="group relative overflow-hidden bg-gradient-to-br from-[#FFF8EE] to-[#FFFDFB] rounded-[36px] p-10 border border-[#D4AF37]/20 custom-card-zoom" data-sr-d>
 
           <img
     src="{{ asset('home_assets/hehe2.png') }}"
     alt="Artisan Standards"
-    class="w-[280px] h-[280px] object-contain mx-auto"
+    class="w-[280px] h-[280px] object-contain mx-auto relative z-10 custom-img-zoom"
 />
-            <h3 class="mt-6 text-2xl font-black text-[#2C2623] text-center">
+            <h3 class="mt-6 text-2xl font-black text-[#2C2623] text-center relative z-20">
                 Artisan Standards
             </h3>
 
-            <p class="mt-4 text-[#6E675F] leading-relaxed text-center">
+            <p class="mt-4 text-[#6E675F] leading-relaxed text-center relative z-20">
                 Crafted in small batches with carefully selected ingredients.
             </p>
 
         </div>
 
         {{-- CARD 3 --}}
-        <div class="group relative overflow-hidden bg-white rounded-[36px] p-10 border border-[#B88A44]/10 hover:-translate-y-3 transition duration-500 hover:shadow-[0_25px_60px_rgba(184,138,68,0.12)]" data-sr-d2>
+        <div class="group relative overflow-hidden bg-white rounded-[36px] p-10 border border-[#B88A44]/10 custom-card-zoom" data-sr-d2>
 
          <img
     src="{{ asset('home_assets/hehe3.png') }}"
     alt="Fresh Delivery"
-    class="w-[280px] h-[280px] object-contain mx-auto"
+    class="w-[280px] h-[280px] object-contain mx-auto relative z-10 custom-img-zoom"
 />
 
-            <h3 class="mt-6 text-2xl font-black text-[#2C2623] text-center">
+            <h3 class="mt-6 text-2xl font-black text-[#2C2623] text-center relative z-20">
                 Fresh Delivery
             </h3>
 
-            <p class="mt-4 text-[#6E675F] leading-relaxed text-center">
+            <p class="mt-4 text-[#6E675F] leading-relaxed text-center relative z-20">
                 Carefully packed and delivered to preserve freshness and texture.
             </p>
 
@@ -1686,6 +1702,30 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-sr],[data-sr-d],[data-sr-d2]').forEach(el => io.observe(el));
 });
 </script>
+
+<style>
+    /* Custom Animations that bypass Tailwind JIT compilation */
+    .custom-card-zoom {
+        transition: all 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    }
+    .custom-card-zoom:hover {
+        transform: scale(1.02) translateY(-8px) !important;
+        box-shadow: 0 0 50px rgba(255, 255, 255, 0.2), 0 35px 80px rgba(184, 138, 68, 0.2);
+    }
+    .custom-img-zoom {
+        transition: transform 3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .custom-card-zoom:hover .custom-img-zoom {
+        transform: scale(1.08);
+    }
+
+    /* Hero image parallax */
+    .hero-img-parallax {
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.7s ease, scale 0.7s ease;
+        will-change: transform;
+    }
+</style>
 
 @include('layouts.footer')
 @endsection

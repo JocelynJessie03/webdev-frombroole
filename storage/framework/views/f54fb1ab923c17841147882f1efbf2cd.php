@@ -1,6 +1,7 @@
 <?php $__env->startSection('content'); ?>
 
 
+<?php $__env->startPush('styles'); ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -48,7 +49,7 @@
 ============================================================ */
 .profile-hero {
     position: relative;
-    padding: 5.5rem 2rem 3.5rem;
+    padding: 3.5rem 2rem 2.5rem;
     text-align: center;
     overflow: hidden;
 }
@@ -649,6 +650,7 @@
     .card-points-num { font-size: 3rem; }
 }
 </style>
+<?php $__env->stopPush(); ?>
 
 
 <div class="profile-page">

@@ -123,7 +123,7 @@
 
 .shop-hero {
     position: relative;
-    padding: 6rem 2rem 4rem;
+    padding: 3.5rem 2rem 2.5rem;
     text-align: center;
     overflow: hidden;
 }
@@ -696,7 +696,7 @@
     100% { transform: scale(1); }
 }
 @media (max-width: 640px) {
-    .shop-hero { padding: 4.5rem 1.5rem 2.5rem; }
+    .shop-hero { padding: 2.5rem 1.5rem 1.5rem; }
     .hero-stats { gap: 1.5rem; }
     .hero-stat-num { font-size: 1.6rem; }
     .shop-body { padding: 0 1.25rem 4rem; }
@@ -709,6 +709,139 @@
 }
 @media (max-width: 420px) {
     .product-grid { grid-template-columns: 1fr; }
+}
+/* Sort dropdown */
+.sort-section {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.55s ease forwards;
+}
+.sort-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+.sort-wrap .sort-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 13px;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.sort-select {
+    appearance: none;
+    -webkit-appearance: none;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    padding: 10px 32px 10px 34px;
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    cursor: pointer;
+    outline: none;
+    transition: var(--transition);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23655F5A'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 10px 6px;
+    white-space: nowrap;
+}
+.sort-select:hover, .sort-select:focus {
+    border-color: var(--border-hover);
+    color: var(--charcoal);
+}
+[data-theme="dark"] .shop-page .sort-select {
+    background-color: #252120 !important;
+    border-color: rgba(212, 64, 58, 0.12) !important;
+    color: #E8E0D8 !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23E8E0D8'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 12px center !important;
+    background-size: 10px 6px !important;
+}
+[data-theme="dark"] .shop-page .sort-select:hover,
+[data-theme="dark"] .shop-page .sort-select:focus {
+    color: #E8E0D8;
+}
+
+/* Pagination */
+.pagination-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: 3rem;
+    padding: 2rem 0;
+}
+.pagination-wrap a,
+.pagination-wrap span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 42px;
+    height: 42px;
+    padding: 0 14px;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    transition: var(--transition);
+    border: 1px solid var(--border);
+}
+.pagination-wrap a {
+    background: var(--white);
+    color: var(--muted);
+}
+.pagination-wrap a:hover {
+    background: var(--crimson);
+    color: #fff;
+    border-color: var(--crimson);
+    box-shadow: var(--shadow-btn);
+    transform: translateY(-2px);
+}
+.pagination-wrap span.current-page {
+    background: var(--crimson);
+    color: #fff;
+    border-color: var(--crimson);
+    box-shadow: var(--shadow-btn);
+}
+.pagination-wrap span.dots {
+    border: none;
+    color: var(--muted-light);
+    min-width: auto;
+    padding: 0 4px;
+}
+.pagination-info {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 12px;
+    color: var(--muted-light);
+    letter-spacing: 0.05em;
+}
+[data-theme="dark"] .shop-page .pagination-wrap a {
+    background: #1E1A17;
+    color: #9C948E;
+    border-color: rgba(212, 64, 58, 0.12);
+}
+[data-theme="dark"] .shop-page .pagination-wrap a:hover {
+    background: #D4403A;
+    color: #fff;
+    border-color: #D4403A;
+}
+[data-theme="dark"] .shop-page .pagination-wrap span.current-page {
+    background: #D4403A;
+    border-color: #D4403A;
 }
 </style>
 @endpush
@@ -732,7 +865,7 @@
 
             <div class="hero-stats">
                 <div class="hero-stat">
-                    <span class="hero-stat-num">{{ $products->count() }}</span>
+                    <span class="hero-stat-num">{{ $products->total() }}</span>
                     <span class="hero-stat-label">Items</span>
                 </div>
                 <div class="hero-divider"></div>
@@ -768,9 +901,9 @@
             </div>
         </div>
 
-        {{-- SEARCH BAR --}}
-        <div class="search-section" style="max-width: 480px; margin: 0 auto 32px auto; padding: 0 16px;">
-            <form onsubmit="event.preventDefault();" style="display: flex; gap: 8px; position: relative;">
+        {{-- SEARCH BAR + SORT --}}
+        <div class="search-section" style="max-width: 640px; margin: 0 auto 32px auto; padding: 0 16px;">
+            <form onsubmit="event.preventDefault();" style="display: flex; gap: 10px; align-items: center;">
                 <div style="position: relative; flex: 1;">
                     <input
                         type="text"
@@ -786,6 +919,18 @@
                         ✕
                     </a>
                 </div>
+
+                {{-- SORT --}}
+                <div class="sort-wrap">
+                    <span class="sort-icon">⇅</span>
+                    <select class="sort-select" id="sortSelect" onchange="window.location.href=this.value">
+                        <option value="{{ route('customer.shop', array_merge(request()->except('sort', 'page'), ['sort' => 'latest'])) }}" {{ ($sort ?? 'latest') === 'latest' ? 'selected' : '' }}>Latest</option>
+                        <option value="{{ route('customer.shop', array_merge(request()->except('sort', 'page'), ['sort' => 'price_low'])) }}" {{ ($sort ?? '') === 'price_low' ? 'selected' : '' }}>Low Price</option>
+                        <option value="{{ route('customer.shop', array_merge(request()->except('sort', 'page'), ['sort' => 'price_high'])) }}" {{ ($sort ?? '') === 'price_high' ? 'selected' : '' }}>High Price</option>
+                        <option value="{{ route('customer.shop', array_merge(request()->except('sort', 'page'), ['sort' => 'name_asc'])) }}" {{ ($sort ?? '') === 'name_asc' ? 'selected' : '' }}>A — Z</option>
+                        <option value="{{ route('customer.shop', array_merge(request()->except('sort', 'page'), ['sort' => 'name_desc'])) }}" {{ ($sort ?? '') === 'name_desc' ? 'selected' : '' }}>Z — A</option>
+                    </select>
+                </div>
             </form>
         </div>
 
@@ -793,7 +938,7 @@
         <div class="section-divider">
             <div class="divider-line"></div>
             <span class="divider-label">
-                {{ $products->count() }} {{ $products->count() == 1 ? 'item' : 'items' }} available
+                {{ $products->total() }} {{ $products->total() == 1 ? 'item' : 'items' }} available · Page {{ $products->currentPage() }} of {{ $products->lastPage() }}
             </span>
             <div class="divider-line"></div>
         </div>
@@ -887,6 +1032,58 @@
                 </div>
             @endforelse
         </div>
+
+        {{-- PAGINATION --}}
+        @if($products->hasPages())
+        <nav class="pagination-wrap">
+            {{-- Previous --}}
+            @if($products->onFirstPage())
+                <span class="dots" style="opacity:0.4">← Prev</span>
+            @else
+                <a href="{{ $products->previousPageUrl() }}">← Prev</a>
+            @endif
+
+            {{-- Page Numbers --}}
+            @php
+                $current = $products->currentPage();
+                $last = $products->lastPage();
+                $start = max(1, $current - 2);
+                $end = min($last, $current + 2);
+            @endphp
+
+            @if($start > 1)
+                <a href="{{ $products->url(1) }}">1</a>
+                @if($start > 2)
+                    <span class="dots">…</span>
+                @endif
+            @endif
+
+            @for($i = $start; $i <= $end; $i++)
+                @if($i == $current)
+                    <span class="current-page">{{ $i }}</span>
+                @else
+                    <a href="{{ $products->url($i) }}">{{ $i }}</a>
+                @endif
+            @endfor
+
+            @if($end < $last)
+                @if($end < $last - 1)
+                    <span class="dots">…</span>
+                @endif
+                <a href="{{ $products->url($last) }}">{{ $last }}</a>
+            @endif
+
+            {{-- Next --}}
+            @if($products->hasMorePages())
+                <a href="{{ $products->nextPageUrl() }}">Next →</a>
+            @else
+                <span class="dots" style="opacity:0.4">Next →</span>
+            @endif
+        </nav>
+        <div class="pagination-info">
+            Showing {{ $products->firstItem() }}–{{ $products->lastItem() }} of {{ $products->total() }} products
+        </div>
+        @endif
     </div>
 </div>
 

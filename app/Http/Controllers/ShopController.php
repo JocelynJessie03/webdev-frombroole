@@ -43,19 +43,36 @@ class ShopController extends Controller
         $query->where('category_id', $request->category);
     }
 
-    // 5. Get data & Sort stock
-    $products = $query->latest()->get();
-    $products = $products->sortByDesc(function ($product) {
-        return $product->calculated_stock > 0 ? 1 : 0;
-    })->values();
+    // 5. Sorting
+    $sort = $request->input('sort', 'latest');
+    switch ($sort) {
+        case 'price_low':
+            $query->orderBy('pro_price', 'asc');
+            break;
+        case 'price_high':
+            $query->orderBy('pro_price', 'desc');
+            break;
+        case 'name_asc':
+            $query->orderBy('pro_name', 'asc');
+            break;
+        case 'name_desc':
+            $query->orderBy('pro_name', 'desc');
+            break;
+        default:
+            $query->latest();
+            break;
+    }
+
+    // 6. Paginate (8 per page) & keep query strings
+    $products = $query->paginate(8)->appends($request->query());
 
     // [BARU] Jika di-request via JavaScript (Real-time), kirimkan html bagian grid saja
     if ($request->ajax()) {
         // Return full view, client-side DOMParser will extract #shop-dynamic-content
-        return view('customer.shop', compact('products', 'categories'));
+        return view('customer.shop', compact('products', 'categories', 'sort'));
     }
 
-    return view('customer.shop', compact('products', 'categories'));
+    return view('customer.shop', compact('products', 'categories', 'sort'));
     }
 
     public function cart()

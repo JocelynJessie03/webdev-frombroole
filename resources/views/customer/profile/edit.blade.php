@@ -54,7 +54,7 @@
 ============================================================ */
 .profile-hero {
     position: relative;
-    padding: 5.5rem 2rem 3.5rem;
+    padding: 3.5rem 2rem 2.5rem;
     text-align: center;
     overflow: hidden;
 }

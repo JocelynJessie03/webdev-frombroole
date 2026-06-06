@@ -43,7 +43,7 @@
 
 
 .cart-header {
-    padding: 5.5rem 2rem 3rem;
+    padding: 3.5rem 2rem 2rem;
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -734,7 +734,7 @@
 }
 
 @media (max-width: 640px) {
-    .cart-header { padding: 4rem 1.5rem 2rem; }
+    .cart-header { padding: 2.5rem 1.5rem 1.5rem; }
     .cart-layout { padding: 0 1.25rem; gap: 18px; }
     .cart-item { 
         padding: 16px; 

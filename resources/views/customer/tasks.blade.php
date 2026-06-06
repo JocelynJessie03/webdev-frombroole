@@ -65,7 +65,7 @@
 /* ── HERO ── */
 .tasks-hero {
     position: relative;
-    padding: 6rem 2rem 4rem;
+    padding: 3.5rem 2rem 2.5rem;
     text-align: center;
     overflow: hidden;
 }
@@ -601,7 +601,7 @@
 
 /* ── RESPONSIVE ── */
 @media (max-width: 640px) {
-    .tasks-hero { padding: 4.5rem 1.5rem 2.5rem; }
+    .tasks-hero { padding: 2.5rem 1.5rem 1.5rem; }
     .tasks-body { padding: 0 1.25rem 4rem; }
     .task-grid { grid-template-columns: 1fr; gap: 14px; }
     .task-card { padding: 18px; border-radius: 20px; }

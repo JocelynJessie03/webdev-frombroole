@@ -1394,21 +1394,20 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                     </a>
 
                     {{-- ACCOUNT DROPDOWN --}}
-                    <div x-data="{ open:false }" class="relative hide-on-mobile">
+                    <div x-data="{ open:false }" @mouseenter="open=true" @mouseleave="open=false" class="relative hide-on-mobile">
 
-                        <button
-                            @click="open = !open"
+                        <a
+                            href="{{ auth()->check() ? route('profile.edit') : '/login' }}"
                             class="flex h-10 w-10 items-center justify-center rounded-[10px] border border-[#3D3833]/10 bg-white text-[#7A6E68] transition-all duration-200 hover:-translate-y-px hover:border-[#8C1717]/30 hover:text-[#8C1717] hover:shadow-[0_4px_12px_rgba(140,23,23,0.1)]"
                         >
                             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                                 <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"/>
                             </svg>
-                        </button>
+                        </a>
 
                         <div
                             x-show="open"
                             x-cloak
-                            @click.outside="open=false"
                             x-transition
                             class="absolute right-0 mt-3 w-64 overflow-hidden rounded-2xl border border-[#E5E0DA] bg-white shadow-xl z-50"
                         >
@@ -1431,7 +1430,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                                         "
                                     >
                                        <img
-                                            src="{{ auth()->user()->avatar ? asset('Avatar/' . auth()->user()->avatar) : asset('home_assets/logo.png') }}"
+                                            src="{{ auth()->user()->avatar ? asset('Avatar/' . auth()->user()->avatar) : 'https://ui-avatars.com/api/?name='.urlencode(auth()->user()->name).'&background=8C1717&color=fff' }}"
                                             class="w-14 h-14 rounded-full object-cover"
                                         >
                                     </div>
