@@ -1,7 +1,5 @@
-@extends('layouts.app')
-
-@section('content')
-<meta name="csrf-token" content="{{ csrf_token() }}">
+<?php $__env->startSection('content'); ?>
+<meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -748,12 +746,12 @@
 </div>
 <div class="cart-page">
 
-    {{-- HEADER --}}
+    
     <section class="cart-header">
         <div class="header-inner">
             <span class="header-eyebrow">Your Selection</span>
             <h1 class="header-title">Your <em>Cart</em></h1>
-            <a href="{{ route('customer.shop') }}" class="back-link">
+            <a href="<?php echo e(route('customer.shop')); ?>" class="back-link">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
                 </svg>
@@ -762,10 +760,10 @@
         </div>
     </section>
 
-    {{-- LAYOUT --}}
+    
     <div class="cart-layout" id="cart-layout">
 
-        {{-- ── LEFT: CART ITEMS ── --}}
+        
         <div>
             <div class="section-label">
                 <div class="section-label-line"></div>
@@ -774,10 +772,10 @@
             </div>
 
             <div class="cart-items-col" id="cart-items-container">
-                {{-- Rendered by JS --}}
+                
             </div>
 
-            {{-- NOTES --}}
+            
             <div class="notes-section" id="notes-section" style="display:none">
                 <label class="notes-label" for="order-notes">Special Instructions</label>
                 <textarea
@@ -789,7 +787,7 @@
             </div>
         </div>
 
-        {{-- ── RIGHT: ORDER SUMMARY (VERSI LENGKAP + POIN) ── --}}
+        
         <div class="order-summary" id="order-summary">
             <div class="summary-header">
                 <div class="summary-title">Order Summary</div>
@@ -797,12 +795,12 @@
             </div>
 
             <div class="summary-body">
-                {{-- Line items list --}}
+                
                 <div class="summary-lines" id="summary-lines"></div>
 
                 <div class="summary-divider"></div>
 
-                {{-- Cost rows --}}
+                
                 <div class="summary-row">
                     <span class="summary-row-label">Subtotal</span>
                     <span class="summary-row-value" id="subtotal-val">Rp 0</span>
@@ -816,30 +814,30 @@
                     <span class="summary-row-value" id="tax-val">Rp 0</span>
                 </div>
 
-                {{-- [BARU] Baris Potongan Poin di dalam List Harga --}}
+                
                 <div class="summary-row" id="points-row" style="display:none">
                     <span class="summary-row-label" style="color: #7b0000; font-weight: 600;">Points Used</span>
                     <span class="summary-row-value free" id="points-val">— Rp 0</span>
                 </div>
 
-                {{-- Total --}}
+                
                 <div class="summary-total">
                     <span class="summary-total-label">Total</span>
                     <span class="summary-total-value" id="total-val">Rp 0</span>
                 </div>
 
-                {{-- Promo Code --}}
+                
                 <div class="promo-row">
                     <input type="text" id="promo-input" class="promo-input" placeholder="Promo code" maxlength="20">
                     <button class="promo-apply-btn" onclick="applyPromo()">Apply</button>
                 </div>
                 <div class="promo-feedback" id="promo-feedback"></div>
 
-                {{-- [BARU] Kotak Input Poin ala POS Admin --}}
+                
                 <div class="points-management-box" style="background: #f6f3f1; border-radius: 12px; padding: 14px; margin-bottom: 16px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                         <span style="font-size: 0.75rem; font-weight: bold; color: #8b8580; text-transform: uppercase; letter-spacing: 0.05em;">Available Points</span>
-                        @php
+                        <?php
                             $userPoints = 0;
                             // Gunakan guard customer untuk pengecekan
                             if (auth('customer')->check()) {
@@ -851,16 +849,16 @@
                                 
                                 $userPoints = $customer ? (int)$customer->member_points : 0;
                             }
-                        @endphp
-                        <span style="font-weight: 900; color: #7b0000;" id="available-points">{{ $userPoints }} Pts</span>
+                        ?>
+                        <span style="font-weight: 900; color: #7b0000;" id="available-points"><?php echo e($userPoints); ?> Pts</span>
                     </div>
                     <label style="display: block; font-size: 0.75rem; font-weight: bold; color: #8b8580; margin-bottom: 6px;">Use Points (1 Pts = Rp 1)</label>
-                    <input type="number" id="input-points" min="0" max="{{ $userPoints }}" value="0" oninput="calculateTotal()"
+                    <input type="number" id="input-points" min="0" max="<?php echo e($userPoints); ?>" value="0" oninput="calculateTotal()"
                         style="width: 100%; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px 12px; outline: none; text-align: right; font-weight: bold; font-size: 1.1rem; background: #fff; color: #2d2a29;"
                         onfocus="this.style.borderColor='#7b0000'" onblur="this.style.borderColor='#e5e7eb'">
                 </div>
 
-                {{-- Tombol Proceed Checkout --}}
+                
                 <button class="btn-checkout" id="btn-checkout" onclick="proceedCheckout()" disabled>
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
@@ -868,7 +866,7 @@
                     Proceed to Checkout
                 </button>
 
-                {{-- Tombol Clear Cart --}}
+                
                 <button class="btn-clear-cart" onclick="clearCart()" id="btn-clear">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
@@ -877,7 +875,7 @@
                 </button>
             </div>
 
-            {{-- Trust Badges --}}
+            
             <div class="trust-badges">
                 <div class="trust-badge">
                     <div class="trust-badge-icon">
@@ -930,7 +928,7 @@
      * Fetch member_points terbaru dari server (real-time)
      */
     function fetchMemberPointsRealTime() {
-        const route = '{{ route("customer.cart.member-points") }}';
+        const route = '<?php echo e(route("customer.cart.member-points")); ?>';
         console.log('[DEBUG] Fetching member points from:', route);
         
         fetch(route)
@@ -971,7 +969,7 @@
                     <span class="empty-cart-icon">🛒</span>
                     <div class="empty-cart-title">Your cart is empty</div>
                     <p class="empty-cart-sub">Looks like you haven't added anything yet.</p>
-                    <a href="{{ route('customer.shop') }}" class="btn-shop-now">
+                    <a href="<?php echo e(route('customer.shop')); ?>" class="btn-shop-now">
                         Browse Collection
                     </a>
                 </div>`;
@@ -1128,8 +1126,8 @@
             return;
         }
 
-        const csrf = '{{ csrf_token() }}';
-        fetch('{{ route("customer.validate-coupon") }}', {
+        const csrf = '<?php echo e(csrf_token()); ?>';
+        fetch('<?php echo e(route("customer.validate-coupon")); ?>', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -1173,8 +1171,8 @@
         };
 
         try {
-            const csrf = '{{ csrf_token() }}';
-            const res  = await fetch('{{ route("customer.checkout") }}', {
+            const csrf = '<?php echo e(csrf_token()); ?>';
+            const res  = await fetch('<?php echo e(route("customer.checkout")); ?>', {
                 method:  'POST',
                 headers: {
                     'Content-Type':  'application/json',
@@ -1197,7 +1195,7 @@
                 snap.pay(data.snap_token, {
                     onSuccess: function (result) {
                         localStorage.removeItem('customer_cart');
-                        const redirectTemplate = '{{ route("customer.payment.success", ":id") }}';
+                        const redirectTemplate = '<?php echo e(route("customer.payment.success", ":id")); ?>';
                         window.location.href = redirectTemplate.replace(':id', data.order_id);
                     },
                     onPending: function (result) {
@@ -1287,4 +1285,5 @@
     });
 }());
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Herd\webdev-frombroole\resources\views/customer/cart.blade.php ENDPATH**/ ?>

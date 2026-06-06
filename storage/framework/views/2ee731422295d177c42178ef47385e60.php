@@ -1,25 +1,21 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Contact Us — From Broole'); ?>
 
-@section('title', 'Contact Us — From Broole')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 
 <div class="ct">
 
-{{-- ══════════════════════════════════════════
-     HERO
-══════════════════════════════════════════ --}}
+
 <section class="ct-hero">
 
-    {{-- Ghost text background --}}
+    
     <div class="ct-hero__ghost ct-hero__ghost--say">Say</div>
     <div class="ct-hero__ghost ct-hero__ghost--hello">Hello</div>
 
-    {{-- Decorative rings --}}
+    
     <div class="ct-hero__ring"></div>
     <div class="ct-hero__ring2"></div>
 
-    {{-- LEFT: copy --}}
+    
     <div class="ct-hero__left">
         <div class="ct-eyebrow">
             <span class="ct-eyebrow__dash"></span>
@@ -32,11 +28,11 @@
         </p>
     </div>
 
-    {{-- RIGHT: floating image --}}
+    
     <div class="ct-hero__right">
         <div class="ct-hero__img-wrap">
             <img class="ct-hero__img"
-                 src="{{ asset('home_assets/contact_us.png') }}"
+                 src="<?php echo e(asset('home_assets/contact_us.png')); ?>"
                  alt="From Broole — Contact">
             <div class="ct-hero__pill">
                 <span class="ct-hero__pill-dot"></span>
@@ -49,7 +45,7 @@
         </div>
     </div>
 
-    {{-- Scroll cue --}}
+    
     <div class="ct-scroll-cue">
         <div class="ct-scroll-cue__mouse">
             <div class="ct-scroll-cue__wheel"></div>
@@ -59,89 +55,156 @@
 
 </section>
 
-{{-- ══════════════════════════════════════════
-     TICKER
-══════════════════════════════════════════ --}}
+
 <div class="ct-ticker">
     <div class="ct-ticker__track">
-        @php $items = ['Contact Us','Say Hello','Custom Orders','Partnership','100% Halal','Reply in 24h','From Broole','Surabaya, ID']; @endphp
-        @foreach(array_merge($items,$items) as $item)
-            <span class="ct-ticker__item"><span class="ct-ticker__star">✦</span>{{ $item }}</span>
-        @endforeach
+        <?php $items = ['Contact Us','Say Hello','Custom Orders','Partnership','100% Halal','Reply in 24h','From Broole','Surabaya, ID']; ?>
+        <?php $__currentLoopData = array_merge($items,$items); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <span class="ct-ticker__item"><span class="ct-ticker__star">✦</span><?php echo e($item); ?></span>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </div>
 </div>
 
-{{-- ══════════════════════════════════════════
-     MAIN GRID — Form + Info
-══════════════════════════════════════════ --}}
+
 <section class="ct-main">
 
-    {{-- ── FORM SIDE ── --}}
+    
     <div class="ct-form-side" data-sr>
 
         <div class="ct-section-label">Send Us A Message</div>
 
-        @if(session('success'))
+        <?php if(session('success')): ?>
             <div class="ct-alert ct-alert--success">
                 <i class="ti ti-circle-check"></i>
-                {{ session('success') }}
-            </div>
-        @endif
+                <?php echo e(session('success')); ?>
 
-        @if($errors->any())
+            </div>
+        <?php endif; ?>
+
+        <?php if($errors->any()): ?>
             <div class="ct-alert ct-alert--error">
                 <i class="ti ti-alert-circle"></i>
                 Please fix the errors below.
             </div>
-        @endif
+        <?php endif; ?>
         <form id="contactForm">
-            @csrf
+            <?php echo csrf_field(); ?>
 
             <div class="ct-row2">
                 <div class="ct-field">
                     <label class="ct-label" for="first_name">First Name</label>
-                    <input class="ct-input @error('first_name') ct-input--err @enderror"
+                    <input class="ct-input <?php $__errorArgs = ['first_name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> ct-input--err <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                            type="text" id="first_name" name="first_name"
-                           value="{{ old('first_name') }}" placeholder="Rizky">
-                    @error('first_name')<span class="ct-ferr">{{ $message }}</span>@enderror
+                           value="<?php echo e(old('first_name')); ?>" placeholder="Rizky">
+                    <?php $__errorArgs = ['first_name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><span class="ct-ferr"><?php echo e($message); ?></span><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
                 <div class="ct-field">
                     <label class="ct-label" for="last_name">Last Name</label>
-                    <input class="ct-input @error('last_name') ct-input--err @enderror"
+                    <input class="ct-input <?php $__errorArgs = ['last_name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> ct-input--err <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                            type="text" id="last_name" name="last_name"
-                           value="{{ old('last_name') }}" placeholder="Pratama">
-                    @error('last_name')<span class="ct-ferr">{{ $message }}</span>@enderror
+                           value="<?php echo e(old('last_name')); ?>" placeholder="Pratama">
+                    <?php $__errorArgs = ['last_name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><span class="ct-ferr"><?php echo e($message); ?></span><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
             </div>
 
             <div class="ct-field">
                 <label class="ct-label" for="email">Email</label>
-                <input class="ct-input @error('email') ct-input--err @enderror"
+                <input class="ct-input <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> ct-input--err <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                        type="email" id="email" name="email"
-                       value="{{ old('email') }}" placeholder="rizky@email.com">
-                @error('email')<span class="ct-ferr">{{ $message }}</span>@enderror
+                       value="<?php echo e(old('email')); ?>" placeholder="rizky@email.com">
+                <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><span class="ct-ferr"><?php echo e($message); ?></span><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
             </div>
 
             <div class="ct-field">
                 <label class="ct-label" for="subject">Subject</label>
-                <select class="ct-input ct-select @error('subject') ct-input--err @enderror"
+                <select class="ct-input ct-select <?php $__errorArgs = ['subject'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> ct-input--err <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                         id="subject" name="subject">
-                    <option value="" disabled {{ old('subject') ? '' : 'selected' }}>Choose a topic...</option>
-                    <option value="General Inquiry"  {{ old('subject')=='General Inquiry'  ?'selected':'' }}>General Inquiry</option>
-                    <option value="Bulk Order"       {{ old('subject')=='Bulk Order'       ?'selected':'' }}>Custom / Bulk Order</option>
-                    <option value="Partnership"      {{ old('subject')=='Partnership'      ?'selected':'' }}>Partnership & Collaboration</option>
-                    <option value="Feedback"         {{ old('subject')=='Feedback'         ?'selected':'' }}>Feedback & Complaints</option>
-                    <option value="Other"            {{ old('subject')=='Other'            ?'selected':'' }}>Other</option>
+                    <option value="" disabled <?php echo e(old('subject') ? '' : 'selected'); ?>>Choose a topic...</option>
+                    <option value="General Inquiry"  <?php echo e(old('subject')=='General Inquiry'  ?'selected':''); ?>>General Inquiry</option>
+                    <option value="Bulk Order"       <?php echo e(old('subject')=='Bulk Order'       ?'selected':''); ?>>Custom / Bulk Order</option>
+                    <option value="Partnership"      <?php echo e(old('subject')=='Partnership'      ?'selected':''); ?>>Partnership & Collaboration</option>
+                    <option value="Feedback"         <?php echo e(old('subject')=='Feedback'         ?'selected':''); ?>>Feedback & Complaints</option>
+                    <option value="Other"            <?php echo e(old('subject')=='Other'            ?'selected':''); ?>>Other</option>
                 </select>
-                @error('subject')<span class="ct-ferr">{{ $message }}</span>@enderror
+                <?php $__errorArgs = ['subject'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><span class="ct-ferr"><?php echo e($message); ?></span><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
             </div>
 
             <div class="ct-field">
                 <label class="ct-label" for="message">Message</label>
-                <textarea class="ct-input ct-textarea @error('message') ct-input--err @enderror"
+                <textarea class="ct-input ct-textarea <?php $__errorArgs = ['message'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> ct-input--err <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                           id="message" name="message" rows="6"
-                          placeholder="Tell us what's on your mind…">{{ old('message') }}</textarea>
-                @error('message')<span class="ct-ferr">{{ $message }}</span>@enderror
+                          placeholder="Tell us what's on your mind…"><?php echo e(old('message')); ?></textarea>
+                <?php $__errorArgs = ['message'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?><span class="ct-ferr"><?php echo e($message); ?></span><?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
             </div>
 
             <button type="button" class="ct-submit" id="ct-submit-btn">
@@ -151,7 +214,7 @@
         </form>
     </div>
 
-    {{-- ── INFO SIDE ── --}}
+    
     <div class="ct-info-side" data-sr-d>
 
         <div class="ct-section-label">Contact Information</div>
@@ -186,9 +249,7 @@
 
 </section>
 
-{{-- ══════════════════════════════════════════
-     FAQ
-══════════════════════════════════════════ --}}
+
 <section class="ct-faq">
     <div class="ct-faq__head" data-sr>
         <div class="ct-faq__eyebrow">
@@ -198,7 +259,7 @@
         <p class="ct-faq__sub">Quick answers to things we get asked the most.</p>
     </div>
 
-    @php
+    <?php
 $faqs = [
 
 [
@@ -242,22 +303,21 @@ $faqs = [
 ],
 
 ];
-        @endphp
-        @foreach($faqs as $faq)
+        ?>
+        <?php $__currentLoopData = $faqs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $faq): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
         <div class="ct-faq-item" data-faq>
             <div class="ct-faq-item__q">
-                {{ $faq['q'] }}
+                <?php echo e($faq['q']); ?>
+
                 <i class="ti ti-circle-plus ct-faq-item__icon"></i>
             </div>
-            <div class="ct-faq-item__a">{{ $faq['a'] }}</div>
+            <div class="ct-faq-item__a"><?php echo e($faq['a']); ?></div>
         </div>
-        @endforeach
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </div>
 </section>
 
-{{-- ══════════════════════════════════════════
-     SOCIALS STRIP
-══════════════════════════════════════════ --}}
+
 <div class="ct-socials">
     <div class="ct-socials__text">Follow our <em>sweet journey.</em></div>
     <div class="ct-socials__links">
@@ -270,14 +330,12 @@ $faqs = [
     </div>
 </div>
 
-</div>{{-- /.ct --}}
+</div>
 
-@include('layouts.footer')
+<?php echo $__env->make('layouts.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
 
-{{-- ══════════════════════════════════════════
-     STYLES
-══════════════════════════════════════════ --}}
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Outfit:wght@300;400;500;600;700;900&display=swap');
 
@@ -555,9 +613,7 @@ $faqs = [
 </style>
 
 
-{{-- ══════════════════════════════════════════
-     SCRIPTS
-══════════════════════════════════════════ --}}
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -613,4 +669,5 @@ ${message}`;
 });
 </script>
 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Herd\webdev-frombroole\resources\views/customer/contact.blade.php ENDPATH**/ ?>

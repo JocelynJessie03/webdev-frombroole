@@ -1,6 +1,4 @@
-@extends('layouts.app')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -611,7 +609,7 @@
 
 <div class="tasks-page">
 
-    {{-- HERO --}}
+    
     <section class="tasks-hero">
         <div class="hero-inner">
             <span class="hero-eyebrow">From Broole Rewards</span>
@@ -620,132 +618,132 @@
 
             <div class="tier-pill">
                 <span class="tier-pill-label">Your Tier</span>
-                <span class="tier-pill-badge">{{ $customer->tier }}</span>
+                <span class="tier-pill-badge"><?php echo e($customer->tier); ?></span>
                 <div class="tier-pill-sep"></div>
                 <div>
-                    <span class="tier-pill-pts">{{ number_format($customer->member_points) }}</span>
+                    <span class="tier-pill-pts"><?php echo e(number_format($customer->member_points)); ?></span>
                     <span class="tier-pill-pts-label">pts</span>
                 </div>
             </div>
         </div>
     </section>
 
-    {{-- ALERTS --}}
-    @if(session('success') || session('error'))
+    
+    <?php if(session('success') || session('error')): ?>
     <div class="alert-wrap">
-        @if(session('success'))
+        <?php if(session('success')): ?>
         <div class="alert alert-success">
             <span>✨</span>
-            <span>{{ session('success') }}</span>
+            <span><?php echo e(session('success')); ?></span>
         </div>
-        @endif
-        @if(session('error'))
+        <?php endif; ?>
+        <?php if(session('error')): ?>
         <div class="alert alert-error">
             <span>🛑</span>
-            <span>{{ session('error') }}</span>
+            <span><?php echo e(session('error')); ?></span>
         </div>
-        @endif
+        <?php endif; ?>
     </div>
-    @endif
+    <?php endif; ?>
 
-    {{-- BODY --}}
+    
     <div class="tasks-body">
-        @foreach(['Bronze', 'Silver', 'Gold'] as $tierName)
-        @php
+        <?php $__currentLoopData = ['Bronze', 'Silver', 'Gold']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tierName): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+        <?php
             $discount = $tierName == 'Gold' ? '15%' : ($tierName == 'Silver' ? '10%' : '5%');
             $iconClass = strtolower($tierName);
             $icon = $tierName == 'Gold' ? '👑' : ($tierName == 'Silver' ? '🥈' : '🥉');
-        @endphp
+        ?>
 
         <div class="tier-section">
             <div class="tier-section-header">
                 <div class="tier-section-left">
-                    <div class="tier-icon {{ $iconClass }}">{{ $icon }}</div>
+                    <div class="tier-icon <?php echo e($iconClass); ?>"><?php echo e($icon); ?></div>
                     <div>
-                        <div class="tier-section-title">{{ $tierName }} Tasks</div>
-                        <div class="tier-section-sub">{{ $tierName }} Membership Rewards</div>
+                        <div class="tier-section-title"><?php echo e($tierName); ?> Tasks</div>
+                        <div class="tier-section-sub"><?php echo e($tierName); ?> Membership Rewards</div>
                     </div>
                 </div>
                 <div class="tier-reward-badge">
                     <div class="tier-reward-badge-label">Coupon Reward</div>
-                    <div class="tier-reward-badge-value">{{ $discount }} OFF</div>
+                    <div class="tier-reward-badge-value"><?php echo e($discount); ?> OFF</div>
                 </div>
             </div>
 
             <div class="task-grid">
-                @forelse($grouped[$tierName] as $task)
-                @php
+                <?php $__empty_1 = true; $__currentLoopData = $grouped[$tierName]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $task): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                <?php
                     $isLocked    = !$task['unlocked'];
                     $isClaimed   = $task['claimed'];
                     $hasPurchase = $task['has_purchases'];
                     $cardClass   = $isLocked ? 'is-locked' : ($isClaimed ? 'is-claimed' : '');
-                @endphp
+                ?>
 
-                <div class="task-card {{ $cardClass }}">
+                <div class="task-card <?php echo e($cardClass); ?>">
 
-                    {{-- Header --}}
+                    
                     <div class="task-card-top">
-                        <h3 class="task-card-title">{{ $task['title'] }}</h3>
+                        <h3 class="task-card-title"><?php echo e($task['title']); ?></h3>
                         <div class="task-pts-badge">
-                            <span class="task-pts-num">+{{ number_format($task['points_reward']) }}</span>
+                            <span class="task-pts-num">+<?php echo e(number_format($task['points_reward'])); ?></span>
                             <span class="task-pts-label">Pts</span>
                         </div>
                     </div>
 
-                    {{-- Description --}}
-                    <p class="task-desc">{{ $task['description'] ?? 'No extra criteria provided.' }}</p>
+                    
+                    <p class="task-desc"><?php echo e($task['description'] ?? 'No extra criteria provided.'); ?></p>
 
-                    {{-- Tags --}}
+                    
                     <div class="task-tags">
-                        @if($task['task_type'] === 'general')
+                        <?php if($task['task_type'] === 'general'): ?>
                             <span class="task-tag tag-general">🎯 Any Product</span>
-                        @else
+                        <?php else: ?>
                             <span class="task-tag tag-specific">📦 Specific Products</span>
-                        @endif
+                        <?php endif; ?>
 
-                        @if(!$hasPurchase)
+                        <?php if(!$hasPurchase): ?>
                             <span class="task-tag tag-locked">🔒 Not purchased yet</span>
-                        @else
+                        <?php else: ?>
                             <span class="task-tag tag-met">✓ Requirements met</span>
-                        @endif
+                        <?php endif; ?>
 
-                        @if($task['task_type'] === 'product_specific' && isset($task['product_count']) && $task['product_count'] > 0)
-                            <span class="task-tag tag-specific">{{ $task['product_count'] }} products</span>
-                        @endif
+                        <?php if($task['task_type'] === 'product_specific' && isset($task['product_count']) && $task['product_count'] > 0): ?>
+                            <span class="task-tag tag-specific"><?php echo e($task['product_count']); ?> products</span>
+                        <?php endif; ?>
                     </div>
 
-                    @if($task['task_type'] === 'product_specific' && !empty($task['products']))
+                    <?php if($task['task_type'] === 'product_specific' && !empty($task['products'])): ?>
                     <div class="task-products">
                         <div class="task-products-title">📦 Available Products</div>
-                        @foreach($task['products'] as $product)
+                        <?php $__currentLoopData = $task['products']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="task-product-row">
-                            <span class="task-product-name">{{ $product['name'] }}</span>
+                            <span class="task-product-name"><?php echo e($product['name']); ?></span>
                             
                         </div>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
-                    @endif
+                    <?php endif; ?>
 
-                    {{-- Footer --}}
+                    
                     <div class="task-card-footer">
-                        @if($isLocked && !$hasPurchase)
-                            <div class="task-footer-status status-locked">🔒 Locked — Buy products & reach {{ $task['required_tier'] }} Tier</div>
+                        <?php if($isLocked && !$hasPurchase): ?>
+                            <div class="task-footer-status status-locked">🔒 Locked — Buy products & reach <?php echo e($task['required_tier']); ?> Tier</div>
                             <div class="btn-locked">Locked</div>
 
-                        @elseif($isLocked)
-                            <div class="task-footer-status status-locked">🔒 Requires {{ $task['required_tier'] }} Tier</div>
+                        <?php elseif($isLocked): ?>
+                            <div class="task-footer-status status-locked">🔒 Requires <?php echo e($task['required_tier']); ?> Tier</div>
                             <div class="btn-locked">Locked</div>
 
-                        @elseif(!$hasPurchase)
+                        <?php elseif(!$hasPurchase): ?>
                             <div class="task-footer-status status-purchase">⚠️ Purchase qualifying products to unlock</div>
                             <div class="btn-purchase">Complete Purchases First</div>
 
-                        @elseif($isClaimed)
+                        <?php elseif($isClaimed): ?>
                             <div class="task-footer-status status-claimed">✓ Claimed — Your discount code:</div>
                             <div class="coupon-display">
                                 <div class="coupon-display-label">Discount Token</div>
-                                <div class="coupon-code">{{ $task['coupon_code'] }}</div>
-                                <button type="button" class="btn-copy" onclick="copyCouponCode('{{ $task['coupon_code'] }}', this)">
+                                <div class="coupon-code"><?php echo e($task['coupon_code']); ?></div>
+                                <button type="button" class="btn-copy" onclick="copyCouponCode('<?php echo e($task['coupon_code']); ?>', this)">
                                     <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
                                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                                         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -754,25 +752,25 @@
                                 </button>
                             </div>
 
-                        @else
+                        <?php else: ?>
                             <div class="task-footer-status status-eligible">✨ Unlocked &amp; eligible to claim</div>
-                            <form action="{{ route('customer.tasks.claim', ['task' => $task['id']]) }}" method="POST">
-                                @csrf
+                            <form action="<?php echo e(route('customer.tasks.claim', ['task' => $task['id']])); ?>" method="POST">
+                                <?php echo csrf_field(); ?>
                                 <button type="submit" class="btn-claim">Claim Coupon</button>
                             </form>
-                        @endif
+                        <?php endif; ?>
                     </div>
                 </div>
 
-                @empty
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                 <div class="task-empty">
                     <div class="task-empty-icon">🏅</div>
                     <div class="task-empty-text">No tasks defined for this tier yet.</div>
                 </div>
-                @endforelse
+                <?php endif; ?>
             </div>
         </div>
-        @endforeach
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </div>
 </div>
 <script>
@@ -837,4 +835,5 @@ function copyCouponCode(code, buttonElement) {
     });
 }
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Herd\webdev-frombroole\resources\views/customer/tasks.blade.php ENDPATH**/ ?>

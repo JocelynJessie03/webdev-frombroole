@@ -116,13 +116,44 @@ $masterpieces = [
 <div
 x-data="{
 currentSlide:0,
-desserts: {{ Js::from($signatureDesserts) }}
+desserts: {{ Js::from($signatureDesserts) }},
+startX: 0,
+isDragging: false,
+init() {
+    setInterval(() => {
+        if (!this.isDragging) {
+            this.currentSlide = this.currentSlide === this.desserts.length - 1 ? 0 : this.currentSlide + 1;
+        }
+    }, 4000);
+},
+handleDragStart(e) {
+    this.startX = e.clientX || (e.touches && e.touches[0].clientX);
+    this.isDragging = true;
+},
+handleDragEnd(e) {
+    if (!this.isDragging) return;
+    this.isDragging = false;
+    let endX = e.clientX || (e.changedTouches && e.changedTouches[0].clientX);
+    let diff = this.startX - endX;
+    if (diff > 50) {
+        this.currentSlide = this.currentSlide === this.desserts.length - 1 ? 0 : this.currentSlide + 1;
+    } else if (diff < -50) {
+        this.currentSlide = this.currentSlide === 0 ? this.desserts.length - 1 : this.currentSlide - 1;
+    }
+}
 }"
-class="pb-20 bg-[#F8F5F2]"
+class="pb-20"
 >
 
 {{-- ================= HERO ================= --}}
-<section class="relative overflow-hidden bg-gradient-to-r from-[#F7ECEB] via-[#F5F2EE] to-[#EFECE7] text-[#3D3833] py-10 px-6 sm:px-10 lg:px-16 rounded-b-[48px] shadow-sm min-h-[980px] lg:min-h-[760px] flex items-center">
+<section 
+    class="relative overflow-hidden text-[#3D3833] py-10 px-6 sm:px-10 lg:px-16 rounded-b-[48px] shadow-sm min-h-[980px] lg:min-h-[760px] flex items-center select-none"
+    @mousedown="handleDragStart"
+    @mouseup="handleDragEnd"
+    @mouseleave="handleDragEnd"
+    @touchstart="handleDragStart"
+    @touchend="handleDragEnd"
+>
 
     {{-- BIG BG TEXT --}}
     <div class="absolute right-[5%] top-1/2 -translate-y-1/2 select-none pointer-events-none z-0">
@@ -208,70 +239,49 @@ class="pb-20 bg-[#F8F5F2]"
         {{-- RIGHT --}}
         <div class="relative flex items-center justify-center min-h-[500px] lg:min-h-[650px] pt-10 lg:pt-0">
 
-            {{-- LEFT ARROW --}}
-            <button
-                @click="currentSlide = currentSlide === 0 ? desserts.length - 1 : currentSlide - 1"
-                class="absolute left-[2%] lg:left-[-2%] top-1/2 -translate-y-1/2 z-40 w-14 h-14 rounded-full bg-white/90 backdrop-blur-sm border border-[#3D3833]/10 shadow-xl flex items-center justify-center"
-            >
-                ←
-            </button>
-
-            {{-- RIGHT ARROW --}}
-            <button
-                @click="currentSlide = currentSlide === desserts.length - 1 ? 0 : currentSlide + 1"
-                class="absolute right-[2%] lg:right-[-2%] top-1/2 -translate-y-1/2 z-40 w-14 h-14 rounded-full bg-white/90 backdrop-blur-sm border border-[#3D3833]/10 shadow-xl flex items-center justify-center"
-            >
-                →
-            </button>
-
             {{-- PRODUCT --}}
-            <div class="relative z-30 flex flex-col items-center">
+            <div class="relative z-30 flex flex-col items-center w-full max-w-[600px] overflow-hidden cursor-grab active:cursor-grabbing py-8">
 
-                <img
-    :src="desserts[currentSlide].image"
-    :alt="desserts[currentSlide].name"
-
-    x-data="{ rotate: 0 }"
-
-    @mousemove="
-        rotate = (($event.offsetX / $event.target.offsetWidth) - 0.5) * 40
-    "
-
-    @mouseleave="
-        rotate = 0
-    "
-
-    :style="`
-        transform:
-        perspective(1000px)
-        rotateY(${rotate}deg);
-    `"
-
-    class="
-    hero-product
-    w-[260px]
-    sm:w-[320px]
-    lg:w-[600px]
-    object-contain
-    transition-all
-    duration-300
-    "
-
->
+                <div class="overflow-hidden w-full relative">
+                    <div 
+                        class="flex transition-transform duration-700 ease-out w-full"
+                        :style="`transform: translateX(-${currentSlide * 100}%)`"
+                    >
+                        <template x-for="(dessert, index) in desserts" :key="index">
+                            <div class="w-full flex-shrink-0 flex justify-center items-center">
+                                <img
+                                    :src="dessert.image"
+                                    :alt="dessert.name"
+                                    class="w-[280px] sm:w-[360px] lg:w-[600px] object-contain transition-all duration-700 drop-shadow-[0_30px_50px_rgba(0,0,0,0.15)]"
+                                    :class="currentSlide === index ? 'scale-100 opacity-100' : 'scale-90 opacity-40'"
+                                >
+                            </div>
+                        </template>
+                    </div>
+                </div>
 
                 {{-- INFO --}}
-                <div class="relative lg:absolute lg:bottom-[1%] text-center max-w-[380px] mt-6 lg:mt-0">
-
+                <div class="relative text-center max-w-[380px] mt-8 lg:mt-6 pointer-events-none">
                     <span
                         x-text="desserts[currentSlide].tagline"
                         class="font-black uppercase tracking-[0.3em] text-[#8C1717] text-xs"
                     ></span>
-
                     <p
                         x-text="desserts[currentSlide].desc"
-                        class="text-[15px] text-[#655F5A] italic mt-4 leading-[1.8]"
+                        class="text-[15px] text-[#655F5A] italic mt-3 leading-[1.8]"
                     ></p>
+                </div>
 
+                {{-- Pagination Dots --}}
+                <div class="flex gap-2 mt-6 lg:mt-8 z-40">
+                    <template x-for="(dessert, index) in desserts" :key="index">
+                        <button 
+                            @click="currentSlide = index"
+                            class="h-2 rounded-full transition-all duration-300"
+                            :class="currentSlide === index ? 'bg-[#8C1717] w-8' : 'bg-[#3D3833]/20 hover:bg-[#8C1717]/50 w-2'"
+                            :aria-label="'Go to slide ' + (index + 1)"
+                        ></button>
+                    </template>
                 </div>
 
             </div>
@@ -660,7 +670,7 @@ items-center
     </div>
 
 </div>
-```
+
 
 </section>
 

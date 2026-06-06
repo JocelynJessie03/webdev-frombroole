@@ -7,7 +7,7 @@
 
     <script
         src="https://app.sandbox.midtrans.com/snap/snap.js"
-        data-client-key="{{ config('midtrans.client_key') }}">
+        data-client-key="<?php echo e(config('midtrans.client_key')); ?>">
     </script>
 
 </head>
@@ -16,7 +16,7 @@
 
 <script>
 
-snap.pay('{{ $snapToken }}', {
+snap.pay('<?php echo e($snapToken); ?>', {
 
     onSuccess: function(result)
     {
@@ -40,4 +40,4 @@ snap.pay('{{ $snapToken }}', {
 
 </body>
 
-</html>
+</html><?php /**PATH D:\Herd\webdev-frombroole\resources\views/payment.blade.php ENDPATH**/ ?>

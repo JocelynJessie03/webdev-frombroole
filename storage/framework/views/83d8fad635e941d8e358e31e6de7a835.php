@@ -1,7 +1,4 @@
-{{-- resources/views/customer/shop.blade.php --}}
-@extends('layouts.app')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -629,7 +626,7 @@
 }
 </style>
 
-{{-- TOAST --}}
+
 <div class="toast-wrap" id="toast">
     <div class="toast-inner">
         <div class="toast-dot"></div>
@@ -639,7 +636,7 @@
 
 <div class="shop-page">
     
-    {{-- HERO --}}
+    
     <section class="shop-hero">
         <div class="hero-inner">
             <span class="hero-eyebrow">Taste The Perfection</span>
@@ -648,12 +645,12 @@
 
             <div class="hero-stats">
                 <div class="hero-stat">
-                    <span class="hero-stat-num">{{ $products->count() }}</span>
+                    <span class="hero-stat-num"><?php echo e($products->count()); ?></span>
                     <span class="hero-stat-label">Items</span>
                 </div>
                 <div class="hero-divider"></div>
                 <div class="hero-stat">
-                    <span class="hero-stat-num">{{ $categories->count() }}</span>
+                    <span class="hero-stat-num"><?php echo e($categories->count()); ?></span>
                     <span class="hero-stat-label">Categories</span>
                 </div>
                 <div class="hero-divider"></div>
@@ -665,26 +662,27 @@
         </div>
     </section>
 
-    {{-- SHOP BODY --}}
+    
     <div class="shop-body" id="shop-dynamic-content">
 
-        {{-- CATEGORY FILTER --}}
+        
         <div class="filter-section">
             <div class="filter-bar">
-                <a href="{{ route('customer.shop') }}"
-                   class="filter-btn {{ !request('category') ? 'is-active' : 'is-inactive' }}">
+                <a href="<?php echo e(route('customer.shop')); ?>"
+                   class="filter-btn <?php echo e(!request('category') ? 'is-active' : 'is-inactive'); ?>">
                     All Items
                 </a>
-                @foreach($categories as $category)
-                <a href="{{ route('customer.shop', ['category' => $category->id]) }}"
-                   class="filter-btn {{ request('category') == $category->id ? 'is-active' : 'is-inactive' }}">
-                    {{ $category->category_name }}
+                <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <a href="<?php echo e(route('customer.shop', ['category' => $category->id])); ?>"
+                   class="filter-btn <?php echo e(request('category') == $category->id ? 'is-active' : 'is-inactive'); ?>">
+                    <?php echo e($category->category_name); ?>
+
                 </a>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
         </div>
 
-        {{-- SEARCH BAR --}}
+        
         <div class="search-section" style="max-width: 480px; margin: 0 auto 32px auto; padding: 0 16px;">
             <form onsubmit="event.preventDefault();" style="display: flex; gap: 8px; position: relative;">
                 <div style="position: relative; flex: 1;">
@@ -705,87 +703,91 @@
             </form>
         </div>
 
-        {{-- RESULTS LABEL --}}
+        
         <div class="section-divider">
             <div class="divider-line"></div>
             <span class="divider-label">
-                {{ $products->count() }} {{ $products->count() == 1 ? 'item' : 'items' }} available
+                <?php echo e($products->count()); ?> <?php echo e($products->count() == 1 ? 'item' : 'items'); ?> available
             </span>
             <div class="divider-line"></div>
         </div>
 
-        {{-- PRODUCT GRID --}}
+        
         <div class="product-grid">
-            @forelse($products as $product)
-                @php
+            <?php $__empty_1 = true; $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                <?php
                     $isDrink = (stripos($product->category->category_name ?? '', 'drink') !== false
                              || stripos($product->category->category_name ?? '', 'minuman') !== false);
                     $isSoldOut = $product->calculated_stock <= 0;
-                @endphp
+                ?>
 
-                <div class="product-card {{ $isSoldOut ? 'is-soldout' : '' }}" style="display: flex; flex-direction: column; height: 100%;">
+                <div class="product-card <?php echo e($isSoldOut ? 'is-soldout' : ''); ?>" style="display: flex; flex-direction: column; height: 100%;">
 
-                    {{-- Image Area --}}
+                    
                     <div class="card-image-wrap">
-                        @if($isSoldOut)
+                        <?php if($isSoldOut): ?>
                             <div class="badge-soldout">Sold Out</div>
-                        @endif
+                        <?php endif; ?>
 
-                        @if($product->pro_image)
+                        <?php if($product->pro_image): ?>
                             <img
-                                src="{{ asset('products/' . rawurlencode($product->pro_image)) }}"
-                                alt="{{ $product->pro_name }}"
+                                src="<?php echo e(asset('products/' . rawurlencode($product->pro_image))); ?>"
+                                alt="<?php echo e($product->pro_name); ?>"
                                 loading="lazy"
                             >
-                        @else
+                        <?php else: ?>
                             <span class="card-no-image">No Image</span>
-                        @endif
+                        <?php endif; ?>
                     </div>
 
-                    {{-- Card Body --}}
+                    
                     <div class="card-body" style="display: flex; flex-direction: column; flex-grow: 1;">
 
                         <span class="card-category">
-                            {{ $product->category->category_name ?? 'Uncategorized' }}
+                            <?php echo e($product->category->category_name ?? 'Uncategorized'); ?>
+
                         </span>
 
-                        <h3 class="card-name">{{ $product->pro_name }}</h3>
+                        <h3 class="card-name"><?php echo e($product->pro_name); ?></h3>
 
                         <p class="card-desc" style="flex-grow: 1;">
-                            {{ $product->pro_description ?? 'No description available for this item.' }}
+                            <?php echo e($product->pro_description ?? 'No description available for this item.'); ?>
+
                         </p>
 
                         <div class="sugar-container-layout" style="margin-top: auto; min-height: 45px; display: flex; align-items: center;">
-                            @if($isDrink && !$isSoldOut)
+                            <?php if($isDrink && !$isSoldOut): ?>
                                 <div class="sugar-wrap" style="width: 100%;">
                                     <select
-                                        id="sugar-{{ $product->id }}"
+                                        id="sugar-<?php echo e($product->id); ?>"
                                         class="sugar-select"
-                                        aria-label="Sugar level for {{ $product->pro_name }}"
+                                        aria-label="Sugar level for <?php echo e($product->pro_name); ?>"
                                     >
                                         <option value="100">Normal Sugar (100%)</option>
                                         <option value="50">Less Sugar (50%)</option>
                                         <option value="0">No Sugar (0%)</option>
                                     </select>
                                 </div>
-                            @endif
+                            <?php endif; ?>
                         </div>
 
-                        {{-- Footer: Price + Add Button --}}
+                        
                         <div class="card-footer">
                             <div>
                                 <span class="card-price-label">Price</span>
                                 <span class="card-price">
-                                    Rp {{ number_format($product->pro_price, 0, ',', '.') }}
+                                    Rp <?php echo e(number_format($product->pro_price, 0, ',', '.')); ?>
+
                                 </span>
                             </div>
 
                             <button
                                 type="button"
-                                class="btn-add {{ !$isSoldOut ? 'available' : 'unavailable' }}"
-                                {{ $isSoldOut ? 'disabled' : '' }}
-                                onclick="addToCart({{ $product->id }}, '{{ addslashes($product->pro_name) }}', {{ $product->pro_price }}, {{ $product->calculated_stock }}, {{ $isDrink ? 'true' : 'false' }}, '{{ $product->pro_image }}')"
-                                aria-label="Add {{ $product->pro_name }} to cart"
+                                class="btn-add <?php echo e(!$isSoldOut ? 'available' : 'unavailable'); ?>"
+                                <?php echo e($isSoldOut ? 'disabled' : ''); ?>
+
+                                onclick="addToCart(<?php echo e($product->id); ?>, '<?php echo e(addslashes($product->pro_name)); ?>', <?php echo e($product->pro_price); ?>, <?php echo e($product->calculated_stock); ?>, <?php echo e($isDrink ? 'true' : 'false'); ?>, '<?php echo e($product->pro_image); ?>')"
+                                aria-label="Add <?php echo e($product->pro_name); ?> to cart"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
@@ -795,13 +797,13 @@
                     </div>
                 </div>
 
-            @empty
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                 <div class="empty-state">
                     <div class="empty-icon">🍰</div>
                     <div class="empty-title">Nothing here yet</div>
                     <p class="empty-sub">No products found in this category.</p>
                 </div>
-            @endforelse
+            <?php endif; ?>
         </div>
     </div>
 </div>
@@ -1025,5 +1027,6 @@
     });
 </script>
 
-@include('layouts.footer')
-@endsection
+<?php echo $__env->make('layouts.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Herd\webdev-frombroole\resources\views/customer/shop.blade.php ENDPATH**/ ?>

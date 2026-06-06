@@ -19,7 +19,8 @@ class Product extends Model
         'pro_description',
         'pro_price',
         'pro_image',
-        'category_id' // Pastikan ini ada untuk relasi ke kategori
+        'category_id',
+        'stock' // Added for webhook stock deduction
     ];
 
     /**

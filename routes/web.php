@@ -13,6 +13,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EditMemberController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IngredientController;
+use App\Http\Controllers\MidtransWebhookController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderHistoryController;
 use App\Http\Controllers\PosController;
@@ -49,7 +50,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/auth/google', [GoogleController::class, 'redirect']);
     Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
 });
-
+Route::post('/midtrans/webhook', [MidtransWebhookController::class, 'handleNotification']);
 // Logout (Harus login untuk bisa logout)
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::redirect('/', '/login');
@@ -70,7 +71,7 @@ Route::middleware(['auth:admin', 'admin'])->group(function () {
     Route::get('/checkout/{id}', [PosController::class, 'checkoutView'])->name('checkout.view');
     Route::post('/checkout-preview', [PosController::class, 'checkoutPreview'])->name('checkout.preview');
     Route::post('/payment-process', [PosController::class, 'processPayment'])->name('payment.process');
-    Route::get('/payment-success/{id}', [PosController::class, 'paymentSuccess'])->name('payment.success');
+    Route::get('/pos/payment-success/{id}', [PosController::class, 'paymentSuccess'])->name('payment.success');
     Route::get('/receipt/{id}', [PosController::class, 'receipt'])->name('receipt');
     Route::post('/check-member', [PosController::class, 'checkMember'])->name('check.member');
 

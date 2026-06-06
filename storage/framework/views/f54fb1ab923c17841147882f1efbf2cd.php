@@ -1,11 +1,6 @@
-{{-- resources/views/customer/profile.blade.php --}}
-@extends('layouts.app')
+<?php $__env->startSection('content'); ?>
 
-@section('content')
 
-{{-- ============================================================
-     FONT IMPORTS
-============================================================ --}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -42,7 +37,7 @@
 *, *::before, *::after { box-sizing: border-box; }
 
 .profile-page {
-    background: transparent;
+    background: var(--cream);
     min-height: 100vh;
     font-family: var(--font-body);
     overflow-x: hidden;
@@ -655,18 +650,17 @@
 }
 </style>
 
-{{-- ============================================================
-     HTML
-============================================================ --}}
+
 <div class="profile-page">
 
-    {{-- HERO --}}
+    
     <section class="profile-hero">
         <div class="hero-inner">
             <div class="hero-eyebrow">
                 Member Hub
                 &nbsp;✦&nbsp;
-                {{ $customer->tier ?? 'Bronze' }}
+                <?php echo e($customer->tier ?? 'Bronze'); ?>
+
             </div>
 
             <h1 class="hero-title">
@@ -679,26 +673,24 @@
         </div>
     </section>
 
-    {{-- PROFILE BODY --}}
+    
     <div class="profile-body">
 
-        {{-- Section label --}}
+        
         <div class="section-divider">
             <div class="divider-line"></div>
             <span class="divider-label">Your Member Details</span>
             <div class="divider-line"></div>
         </div>
 
-        {{-- MAIN GRID --}}
+        
         <div class="profile-grid">
 
-            {{-- ──────────────────────────────
-                 LEFT: Member Card + Privileges
-            ────────────────────────────── --}}
+            
             <div class="member-col">
 
-                {{-- Loyalty Card --}}
-                @php
+                
+                <?php
                     $tier = $customer->tier ?? 'Bronze';
                     if ($tier == 'Gold') {
                         $grad = 'linear-gradient(135deg, #B58500 0%, #E8B923 55%, #8C6500 100%)';
@@ -710,17 +702,17 @@
                         $grad = 'linear-gradient(135deg, #A8653D 0%, #D88B57 55%, #7D4625 100%)';
                         $shadow = '0 30px 60px rgba(216, 139, 87, 0.35), 0 8px 20px rgba(44, 38, 35, 0.12)';
                     }
-                @endphp
-                <div class="loyalty-card" style="background: {{ $grad }}; box-shadow: {{ $shadow }};">
+                ?>
+                <div class="loyalty-card" style="background: <?php echo e($grad); ?>; box-shadow: <?php echo e($shadow); ?>;">
                     <div class="loyalty-inner">
                         <div class="card-eyebrow">Loyalty Member Tier</div>
 
-                        <div class="card-tier">{{ $customer->tier ?? 'Bronze' }}</div>
+                        <div class="card-tier"><?php echo e($customer->tier ?? 'Bronze'); ?></div>
 
                         <div class="card-points-section">
                             <div class="card-points-label">Accumulated Points</div>
                             <div class="card-points-value">
-                                <span class="card-points-num">{{ $customer->member_points ?? 0 }}</span>
+                                <span class="card-points-num"><?php echo e($customer->member_points ?? 0); ?></span>
                                 <span class="card-points-unit">PTS</span>
                             </div>
                         </div>
@@ -728,16 +720,16 @@
                         <div class="card-progress-section">
                             <div class="card-progress-header">
                                 <span>Progress to next tier</span>
-                                <span>{{ $customer->progress_percentage ?? 0 }}%</span>
+                                <span><?php echo e($customer->progress_percentage ?? 0); ?>%</span>
                             </div>
                             <div class="card-progress-bar">
-                                <div class="card-progress-fill" style="width: {{ $customer->progress_percentage ?? 0 }}%;"></div>
+                                <div class="card-progress-fill" style="width: <?php echo e($customer->progress_percentage ?? 0); ?>%;"></div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {{-- Privileges Panel --}}
+                
                 <div class="privileges-panel">
                     <div class="privileges-title">
                         ✨ Tier Privileges
@@ -754,33 +746,32 @@
 
             </div>
 
-            {{-- ──────────────────────────────
-                 RIGHT: Profile Form
-            ────────────────────────────── --}}
+            
             <div class="form-col">
                 <div class="form-card">
 
-                    {{-- Form Header --}}
+                    
                     <div class="form-header">
                         <div class="form-header-eyebrow">Account Settings</div>
                         <div class="form-header-title">Update Your Information</div>
                     </div>
 
-                    {{-- Success Flash --}}
-                    @if(session('success'))
+                    
+                    <?php if(session('success')): ?>
                         <div class="alert-success">
-                            {{ session('success') }}
-                        </div>
-                    @endif
+                            <?php echo e(session('success')); ?>
 
-                    {{-- Form --}}
-                    <form action="{{ route('profile.update') }}" method="POST">
-                        @csrf
-                        @method('PUT')
+                        </div>
+                    <?php endif; ?>
+
+                    
+                    <form action="<?php echo e(route('profile.update')); ?>" method="POST">
+                        <?php echo csrf_field(); ?>
+                        <?php echo method_field('PUT'); ?>
 
                         <div class="form-fields">
 
-                            {{-- Full Name --}}
+                            
                             <div class="field-group">
                                 <div class="field-label-row">
                                     <label class="field-label" for="name">Full Name / Display Name</label>
@@ -790,7 +781,7 @@
                                         type="text"
                                         id="name"
                                         name="name"
-                                        value="{{ old('name', $user->name) }}"
+                                        value="<?php echo e(old('name', $user->name)); ?>"
                                         placeholder="Your display name"
                                         required
                                         class="field-input"
@@ -803,7 +794,7 @@
                                 <span class="field-hint">This name will appear on your member card and receipts.</span>
                             </div>
 
-                            {{-- Phone --}}
+                            
                             <div class="field-group">
                                 <div class="field-label-row">
                                     <label class="field-label" for="phone">Phone Number</label>
@@ -813,7 +804,7 @@
                                         type="tel"
                                         id="phone"
                                         name="phone"
-                                        value="{{ old('phone', $user->phone) }}"
+                                        value="<?php echo e(old('phone', $user->phone)); ?>"
                                         placeholder="+62 xxx xxxx xxxx"
                                         required
                                         class="field-input"
@@ -825,7 +816,7 @@
                                 </div>
                             </div>
 
-                            {{-- Email (read-only) --}}
+                            
                             <div class="field-group">
                                 <div class="field-label-row">
                                     <label class="field-label" for="email">Email Account</label>
@@ -835,7 +826,7 @@
                                     <input
                                         type="email"
                                         id="email"
-                                        value="{{ $user->email }}"
+                                        value="<?php echo e($user->email); ?>"
                                         disabled
                                         class="field-input"
                                     >
@@ -846,7 +837,7 @@
                                 <span class="field-hint">Contact support if you need to change your email address.</span>
                             </div>
 
-                            {{-- AVATAR SELECTION --}}
+                            
 <div class="field-group">
 
     <div class="field-label-row">
@@ -863,12 +854,13 @@
     type="radio"
     name="avatar"
     value="avatar3.png"
-    {{ $user->avatar == 'avatar3.png' ? 'checked' : '' }}
+    <?php echo e($user->avatar == 'avatar3.png' ? 'checked' : ''); ?>
+
     hidden
 >
 
             <img
-                src="{{ asset('Avatar/avatar3.png') }}"
+                src="<?php echo e(asset('Avatar/avatar3.png')); ?>"
                 class="avatar-img"
             >
         </label>
@@ -878,12 +870,13 @@
     type="radio"
     name="avatar"
     value="avatar4.png"
-    {{ $user->avatar == 'avatar4.png' ? 'checked' : '' }}
+    <?php echo e($user->avatar == 'avatar4.png' ? 'checked' : ''); ?>
+
     hidden
 >
 
             <img
-                src="{{ asset('Avatar/avatar4.png') }}"
+                src="<?php echo e(asset('Avatar/avatar4.png')); ?>"
                 class="avatar-img"
             >
         </label>
@@ -894,12 +887,13 @@
     type="radio"
     name="avatar"
     value="avatar6.png"
-    {{ $user->avatar == 'avatar6.png' ? 'checked' : '' }}
+    <?php echo e($user->avatar == 'avatar6.png' ? 'checked' : ''); ?>
+
     hidden
 >
 
             <img
-                src="{{ asset('Avatar/avatar6.png') }}"
+                src="<?php echo e(asset('Avatar/avatar6.png')); ?>"
                 class="avatar-img"
             >
         </label>
@@ -909,12 +903,13 @@
     type="radio"
     name="avatar"
     value="avatar8.png"
-    {{ $user->avatar == 'avatar8.png' ? 'checked' : '' }}
+    <?php echo e($user->avatar == 'avatar8.png' ? 'checked' : ''); ?>
+
     hidden
 >
 
             <img
-                src="{{ asset('Avatar/avatar8.png') }}"
+                src="<?php echo e(asset('Avatar/avatar8.png')); ?>"
                 class="avatar-img"
             >
         </label>
@@ -925,7 +920,7 @@
 
 </div>
 
-                            {{-- Save Button --}}
+                            
                             <button type="submit" class="btn-submit">
                                 Save Profile
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
@@ -939,8 +934,9 @@
             </div>
            
 
-        </div>{{-- /.profile-grid --}}
-    </div>{{-- /.profile-body --}}
-</div>{{-- /.profile-page --}}
- @include('layouts.footer')
-@endsection
+        </div>
+    </div>
+</div>
+ <?php echo $__env->make('layouts.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Herd\webdev-frombroole\resources\views/customer/profile/edit.blade.php ENDPATH**/ ?>

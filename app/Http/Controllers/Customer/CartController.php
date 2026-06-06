@@ -8,7 +8,9 @@ use App\Models\OrderHistory;
 use App\Models\OrderItem;
 use App\Models\DiscountCoupon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Midtrans\Config as MidtransConfig;
 use Midtrans\Snap;
 
@@ -28,7 +30,7 @@ class CartController extends Controller
      */
     public function getMemberPoints(Request $request)
     {
-        $user = auth()->user();
+        $user = Auth::user();
         if (!$user) {
             return response()->json(['success' => false, 'member_points' => 0], 401);
         }
@@ -50,7 +52,7 @@ class CartController extends Controller
      */
     public function checkout(Request $request)
     {
-        $user = auth()->user();
+        $user = Auth::user();
         if (!$user) {
             return response()->json(['success' => false, 'errors' => ['Please log in to continue.']], 401);
         }
@@ -109,6 +111,16 @@ class CartController extends Controller
         if (!empty($validated['promo'])) {
             $coupon = DiscountCoupon::query()->where('code', strtoupper($validated['promo']))->first();
             if ($coupon && $coupon->isAvailable()) {
+                // Cek apakah customer ini sudah pernah pakai kupon ini
+                $alreadyUsed = DB::table('coupon_usages')
+                    ->where('customer_id', $customer->id)
+                    ->where('coupon_id', $coupon->id)
+                    ->exists();
+
+                if ($alreadyUsed) {
+                    return response()->json(['success' => false, 'errors' => ['You have already used this coupon.']], 422);
+                }
+
                 $discountAmount = round($subtotal * (floatval($validated['discount']) / 100));
                 $couponApplied = $coupon->code;
             }
@@ -144,8 +156,11 @@ class CartController extends Controller
                 'order_date'     => now(),
                 'total_items'    => $totalItems,
                 'total_price'    => $total,
-                'status'         => 'Pending',
-                'payment_method' => 'Midtrans (Web)'
+                'status'         => 'Pending', // Status order/pengiriman tetap Pending
+                'payment_status' => 'UNPAID',  // Status pembayaran UNPAID
+                'payment_method' => 'Midtrans (Web)',
+                'points_used'    => $pointsUsed,    // <-- SIMPAN KE DB
+                'promo_code'     => $couponApplied  // <-- SIMPAN KE DB
             ]);
 
             foreach ($validated['items'] as $lineItem) {
@@ -157,11 +172,6 @@ class CartController extends Controller
                     'price_at_purchase' => $product->pro_price,
                     'sugar_level'       => $lineItem['sugarLevel'] ?? null,
                 ]);
-            }
-
-            session(['web_points_used_' . $order->id => $pointsUsed]);
-            if ($couponApplied) {
-                session(['web_promo_used_' . $order->id => $couponApplied]);
             }
 
             $item_details = [[
@@ -222,32 +232,51 @@ class CartController extends Controller
 
     /**
      * POST-PAYMENT: POTONG RESEP & UPDATE MEMBER TIERS
+     * Fallback dari Midtrans onSuccess callback — jalankan jika webhook belum memproses
      */
     public function paymentSuccess($id)
     {
-        $order = OrderHistory::with('items.product')->findOrFail($id);
+        $order = OrderHistory::with('items')->find($id);
 
-        if ($order->status === 'Pending') {
-            return redirect()->route('customer.shop')->with('success', 'Order has already been processed.');
+        if (!$order) {
+            return redirect()->route('customer.shop')->with('error', 'Order not found.');
+        }
+
+        // GUARD: Jika webhook sudah memproses (payment_status = PAID), skip
+        if ($order->payment_status === 'PAID') {
+            return redirect()->route('customer.shop')->with('success', 'Thank you! Your order is being processed.');
         }
 
         DB::beginTransaction();
         try {
-            $order->status = 'Pending';
+            // 1. Update status pembayaran
+            $order->payment_status = 'PAID';
             $order->save();
 
-            // [PROSES BOM] Potong stok bahan baku resep otomatis (Kode bawaan kamu sudah benar)
+            // 2. [PROSES BOM] Potong stok bahan baku berdasarkan resep
             foreach ($order->items as $item) {
                 $product = Product::with(['ingredients' => function($q) {
                     $q->withPivot('amount_needed');
                 }])->find($item->product_id);
 
-                if ($product && $product->ingredients) {
+                if ($product && $product->ingredients && $product->ingredients->isNotEmpty()) {
                     foreach ($product->ingredients as $ingredient) {
                         $takaran = $ingredient->pivot->amount_needed ?: 1;
+
+                        // Logika sugar level
+                        $namaBahan = strtolower($ingredient->name);
+                        if (str_contains($namaBahan, 'gula') || str_contains($namaBahan, 'sugar')) {
+                            $persentaseGula = $item->sugar_level ? ((int)$item->sugar_level / 100) : 1;
+                            $takaran = $takaran * $persentaseGula;
+                        }
+
                         $totalPotongan = $takaran * $item->quantity;
-                        
-                        $ingredient->stock = $ingredient->stock - $totalPotongan;
+
+                        if ($totalPotongan > $ingredient->stock) {
+                            $totalPotongan = $ingredient->stock;
+                        }
+
+                        $ingredient->stock = max(0, $ingredient->stock - $totalPotongan);
                         $ingredient->save();
 
                         DB::table('ingredient_histories')->insert([
@@ -262,36 +291,46 @@ class CartController extends Controller
                 }
             }
 
+            // 3. Proses Poin dan Kupon Customer
             $customerId = $order->customer_id;
             if ($customerId) {
-                // 1. Tarik dan hapus data poin lama yang digunakan
-                $pointsUsed = session()->pull('web_points_used_' . $order->id, 0);
-                if ($pointsUsed > 0) {
-                    DB::table('customers')->where('id', $customerId)->decrement('member_points', $pointsUsed);
+                // A. Potong Poin yang digunakan
+                if ($order->points_used > 0) {
+                    DB::table('customers')->where('id', $customerId)->decrement('member_points', $order->points_used);
                 }
 
-                // 2. [BARU] Tarik kupon yang digunakan lalu tambahkan hits pemakaiannya (+1)
-                $promoUsed = session()->pull('web_promo_used_' . $order->id);
-                if ($promoUsed) {
-                    $coupon = DiscountCoupon::query()->where('code', $promoUsed)->first();
+                // B. Proses kupon: increment used_count, catat di coupon_usages, nonaktifkan jika perlu
+                if ($order->promo_code) {
+                    $coupon = DiscountCoupon::query()->where('code', $order->promo_code)->first();
                     if ($coupon) {
-                        $coupon->query()->increment('used_count'); // Jatah kupon otomatis berkurang!
+                        $coupon->increment('used_count');
+
+                        // Nonaktifkan jika sudah mencapai batas pemakaian
+                        if ($coupon->max_uses !== null && $coupon->used_count >= $coupon->max_uses) {
+                            $coupon->update(['is_active' => false]);
+                        }
+
+                        // Catat penggunaan per-customer (ignore jika sudah ada)
+                        DB::table('coupon_usages')->insertOrIgnore([
+                            'customer_id'    => $customerId,
+                            'coupon_id'      => $coupon->id,
+                            'order_history_id' => $order->id,
+                            'created_at'     => now(),
+                            'updated_at'     => now()
+                        ]);
                     }
                 }
-                
-                // 3. Update data pengeluaran customer
+
+                // C. Update total spend & Tier
                 DB::table('customers')->where('id', $customerId)->increment('total_spend', $order->total_price);
                 $customer = DB::table('customers')->where('id', $customerId)->first();
-                
+
                 if ($customer) {
-                    // Update tingkatan Tier member
                     $newTier = 'Bronze';
-                    if ($customer->total_spend >= 700000) { $newTier = 'Gold'; } 
+                    if ($customer->total_spend >= 700000) { $newTier = 'Gold'; }
                     elseif ($customer->total_spend >= 300000) { $newTier = 'Silver'; }
 
                     $progressPercentage = min(($customer->total_spend / 700000) * 100, 100);
-                    
-                    // HITUNG BONUS POIN BARU (Harga Akhir dibagi 100)
                     $pointsEarned = floor($order->total_price / 100);
 
                     DB::table('customers')->where('id', $customerId)->update([
@@ -305,10 +344,10 @@ class CartController extends Controller
                 }
             }
 
-            // Kirim Notifikasi Admin (Kode bawaan kamu)
+            // 4. Notifikasi Admin
             DB::table('notifications')->insert([
                 'title'      => 'New Web Order Paid (Midtrans)',
-                'message'    => 'Order ' . $order->order_id . ' has been successfully paid with amount of Rp ' . number_format($order->total_price, 0, ',', '.'),
+                'message'    => 'Order ' . $order->order_id . ' has been successfully paid.',
                 'type'       => 'order',
                 'is_read'    => false,
                 'created_at' => now(),
@@ -316,12 +355,15 @@ class CartController extends Controller
             ]);
 
             DB::commit();
-            return redirect()->route('customer.shop')->with('success', 'Thank you! Your payment was successful.');
+            Log::info('paymentSuccess processed successfully', ['order_id' => $order->order_id]);
 
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('customer.shop')->with('error', 'Failed to finalize transaction: ' . $e->getMessage());
+            Log::error('paymentSuccess failed', ['order_id' => $order->order_id, 'error' => $e->getMessage()]);
+            return redirect()->route('customer.shop')->with('error', 'Payment processing error: ' . $e->getMessage());
         }
+
+        return redirect()->route('customer.shop')->with('success', 'Thank you! Your order is being processed.');
     }
 
     /**
@@ -345,6 +387,22 @@ class CartController extends Controller
 
         if ($coupon->max_uses && $coupon->used_count >= $coupon->max_uses) {
             return response()->json(['valid' => false, 'message' => 'This coupon has reached its usage limit.']);
+        }
+
+        // Cek apakah customer ini sudah pernah memakai kupon ini
+        $user = Auth::user();
+        if ($user) {
+            $customer = DB::table('customers')->where('email', $user->email)->first();
+            if ($customer) {
+                $alreadyUsed = DB::table('coupon_usages')
+                    ->where('customer_id', $customer->id)
+                    ->where('coupon_id', $coupon->id)
+                    ->exists();
+
+                if ($alreadyUsed) {
+                    return response()->json(['valid' => false, 'message' => 'You have already used this coupon.']);
+                }
+            }
         }
 
         return response()->json([

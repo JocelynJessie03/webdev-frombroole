@@ -4,12 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-
 class OrderHistory extends Model
 {
-    protected $fillable = ['order_id', 'customer_id', 'order_date', 'total_items', 'total_price', 'status','payment_method'];
+    // Tambahkan points_used dan promo_code, serta payment_status
+    protected $fillable = [
+        'order_id', 'customer_id', 'order_date', 'total_items', 
+        'total_price', 'status', 'payment_method', 'payment_status',
+        'points_used', 'promo_code' 
+    ];
+    
     protected $casts = [
-    'order_date' => 'datetime',];
+        'order_date' => 'datetime',
+    ];
     
     public function customer()
     {
@@ -18,7 +24,6 @@ class OrderHistory extends Model
 
     public function items()
     {
-    return $this->hasMany(OrderItem::class, 'order_id');
+        return $this->hasMany(OrderItem::class, 'order_id');
     }
-
 }

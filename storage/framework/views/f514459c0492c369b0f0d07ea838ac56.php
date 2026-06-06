@@ -1,6 +1,4 @@
-@extends('layouts.app')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -518,7 +516,7 @@
 <div class="th-wrapper">
     <div class="th-inner" style="position: relative; z-index: 1;">
 
-        {{-- Page header --}}
+        
         <div class="th-header" style="opacity: 0; animation: fadeUp 0.7s 0.1s ease forwards;">
             <p class="eyebrow">Your From Broole Journey</p>
             <div class="title-wrap">
@@ -527,20 +525,20 @@
             <p class="subtitle">Review status and details of your orders.</p>
         </div>
 
-        {{-- Empty state --}}
-        @if($orders->isEmpty())
+        
+        <?php if($orders->isEmpty()): ?>
         <div class="empty-state" style="opacity: 0; animation: fadeUp 0.7s 0.3s ease forwards;">
             <div class="empty-icon">🧁</div>
             <h3>No Orders Yet</h3>
             <p>Looks like you haven't treated yourself yet.<br>Start exploring our handcrafted desserts 🍰</p>
-            <a href="{{ route('customer.shop') }}" class="btn-brand">Explore Shop</a>
+            <a href="<?php echo e(route('customer.shop')); ?>" class="btn-brand">Explore Shop</a>
         </div>
 
-        @else
+        <?php else: ?>
 
-        @foreach($orders as $order)
+        <?php $__currentLoopData = $orders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
 
-        @php
+        <?php
             $badgeClass = match($order->status) {
                 'Pending'   => 'badge-pending',
                 'Preparing' => 'badge-preparing',
@@ -580,23 +578,24 @@
                     'svg'   => '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>',
                 ],
             ];
-        @endphp
+        ?>
 
-        <div class="order-card" style="opacity: 0; animation: fadeUp 0.6s {{ 0.2 + $loop->index * 0.1 }}s ease forwards;">
+        <div class="order-card" style="opacity: 0; animation: fadeUp 0.6s <?php echo e(0.2 + $loop->index * 0.1); ?>s ease forwards;">
             <details>
 
                 <summary>
                     <div class="order-meta">
-                        <div class="order-id">Order {{ $order->order_id }}</div>
-                        <div class="order-date">{{ $order->order_date?->format('d M Y • H:i') }}</div>
+                        <div class="order-id">Order <?php echo e($order->order_id); ?></div>
+                        <div class="order-date"><?php echo e($order->order_date?->format('d M Y • H:i')); ?></div>
                     </div>
 
                     <div class="order-right">
                         <div style="text-align:right;">
                             <div class="order-price">
-                                Rp {{ number_format($order->total_price, 0, ',', '.') }}
+                                Rp <?php echo e(number_format($order->total_price, 0, ',', '.')); ?>
+
                             </div>
-                            <span class="badge {{ $badgeClass }}">{{ $order->status }}</span>
+                            <span class="badge <?php echo e($badgeClass); ?>"><?php echo e($order->status); ?></span>
                         </div>
 
                         <svg class="chevron-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -607,84 +606,89 @@
 
                 <div class="order-body">
 
-                    {{-- ── 3-step progress tracker ── --}}
+                    
                     <div class="progress-section">
                         <div class="section-label">Order Progress</div>
 
                         <div class="stepper">
-                            @foreach($steps as $i => $step)
-                            @php
+                            <?php $__currentLoopData = $steps; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i => $step): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php
                                 $state = $stepStates[$i];
                                 $nodeClass  = $state === 2 ? 'done' : ($state === 1 ? 'active' : 'inactive');
                                 $labelClass = $state === 2 ? 'done' : ($state === 1 ? 'active' : '');
                                 $lineActive = $i < 2 && $stepStates[$i + 1] > 0;
-                            @endphp
+                            ?>
                             <div class="step">
-                                {{-- Connector to next step --}}
-                                @if(!$loop->last)
+                                
+                                <?php if(!$loop->last): ?>
                                 <div class="step-line">
-                                    <div class="step-line-fill {{ $lineActive ? 'active' : '' }}"></div>
+                                    <div class="step-line-fill <?php echo e($lineActive ? 'active' : ''); ?>"></div>
                                 </div>
-                                @endif
+                                <?php endif; ?>
 
-                                {{-- Node --}}
-                                <div class="step-node {{ $nodeClass }}">
-                                    @if($state === 2)
+                                
+                                <div class="step-node <?php echo e($nodeClass); ?>">
+                                    <?php if($state === 2): ?>
                                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                             <polyline points="20 6 9 17 4 12"/>
                                         </svg>
-                                    @else
-                                        {!! $step['svg'] !!}
-                                    @endif
+                                    <?php else: ?>
+                                        <?php echo $step['svg']; ?>
 
-                                    {{-- Floating emoji HANYA di step active --}}
-                                    @if($state === 1)
+                                    <?php endif; ?>
+
+                                    
+                                    <?php if($state === 1): ?>
                                         <span class="float-emoji cupcake">🧁</span>
                                         <span class="float-emoji star1">⭐</span>
                                         <span class="float-emoji star2">✨</span>
                                         <span class="float-emoji star3">⭐</span>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
 
-                                {{-- Label --}}
-                                <div class="step-label {{ $labelClass }}">
-                                    {{ $step['label'] }}
+                                
+                                <div class="step-label <?php echo e($labelClass); ?>">
+                                    <?php echo e($step['label']); ?>
+
                                 </div>
                             </div>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
                     </div>
 
-                    {{-- ── Item breakdown ── --}}
+                    
                     <div class="items-section">
                         <div class="section-label">Item Breakdown</div>
 
-                        @foreach($order->items as $index => $item)
+                        <?php $__currentLoopData = $order->items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="item-row">
                             <div class="item-left">
-                                <div class="item-num">{{ $index + 1 }}</div>
+                                <div class="item-num"><?php echo e($index + 1); ?></div>
                                 <div>
                                     <div class="item-name">
-                                        {{ optional($item->product)->pro_name ?? 'Deleted Product' }}
+                                        <?php echo e(optional($item->product)->pro_name ?? 'Deleted Product'); ?>
+
                                     </div>
-                                    <div class="item-qty">Qty {{ $item->quantity }}</div>
+                                    <div class="item-qty">Qty <?php echo e($item->quantity); ?></div>
                                 </div>
                             </div>
                             <div class="item-price">
-                                Rp {{ number_format($item->price_at_purchase * $item->quantity, 0, ',', '.') }}
+                                Rp <?php echo e(number_format($item->price_at_purchase * $item->quantity, 0, ',', '.')); ?>
+
                             </div>
                         </div>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
 
-                </div>{{-- /.order-body --}}
+                </div>
             </details>
-        </div>{{-- /.order-card --}}
+        </div>
 
-        @endforeach
-        @endif
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        <?php endif; ?>
 
-    </div>{{-- /.th-inner --}}
-</div>{{-- /.th-wrapper --}}
+    </div>
+</div>
 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Herd\webdev-frombroole\resources\views/customer/transaction-history.blade.php ENDPATH**/ ?>

@@ -1,14 +1,12 @@
-@extends('layouts.app')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 
 <div class="fb">
 
-{{-- ============================================================ HERO --}}
+
 <section class="fb-hero" id="fb-hero">
     <div class="fb-grain"></div>
 
-    {{-- Vertical side label --}}
+    
     <div class="fb-hero__vert">
         <span class="fb-hero__vert-line"></span>
         <span>Since 2022</span>
@@ -17,27 +15,27 @@
         <span class="fb-hero__vert-line"></span>
     </div>
 
-    {{-- BIG LAGUNITAS-STYLE TITLE --}}
+    
     <div class="fb-hero__title-area">
         <div class="fb-title">
-            {{-- Row 1: Crafted --}}
+            
             <span class="fb-title__main">Crafted</span>
-            {{-- Row 2: WI [broole] TH --}}
+            
             <div class="fb-title__mid-row">
                 <span class="fb-title__ghost">WI</span>
                 <span class="fb-title__ghost fb-title__ghost--r">TH</span>
             </div>
-            {{-- Row 3: Burnt Sugar. --}}
+            
             <span class="fb-title__main">Burnt Sugar.</span>
         </div>
     </div>
 
-    {{-- PARALLAX BROOLE (sits inside the WI_TH gap) --}}
+    
     <div class="fb-hero__broole" id="fb-broole">
-        <img src="{{ asset('home_assets/fb_broole.png') }}" alt="Signature Crème Brûlée">
+        <img src="<?php echo e(asset('home_assets/fb_broole.png')); ?>" alt="Signature Crème Brûlée">
     </div>
 
-    {{-- Floating badges --}}
+    
     <div class="fb-badge fb-badge--tl">
         <span class="fb-badge__dot"></span>Halal Certified
     </div>
@@ -45,7 +43,7 @@
         <span>★</span> 5.0 Rating
     </div>
 
-    {{-- Bottom strip: about + buttons --}}
+    
     <div class="fb-hero__bottom">
         <div class="fb-hero__bottom-left">
             <p class="fb-hero__eyebrow">
@@ -61,7 +59,7 @@
 
    
 
-    <a href="{{ route('customer.shop') }}" class="fb-btn fb-btn--outline">
+    <a href="<?php echo e(route('customer.shop')); ?>" class="fb-btn fb-btn--outline">
         See Menu
     </a>
 
@@ -69,17 +67,17 @@
     
 </section>
 
-{{-- ============================================================ TICKER --}}
+
 <div class="fb-ticker">
     <div class="fb-ticker__track">
-        @php $items = ['Crème Brûlée','Artisan Cheesecake','Craft Drinks','100% Halal','Handcrafted Daily','Premium Ingredients','Burnt Sugar','Fresh Made']; @endphp
-        @foreach(array_merge($items,$items) as $item)
-        <span class="fb-ticker__item"><span class="fb-ticker__star">✦</span>{{ $item }}</span>
-        @endforeach
+        <?php $items = ['Crème Brûlée','Artisan Cheesecake','Craft Drinks','100% Halal','Handcrafted Daily','Premium Ingredients','Burnt Sugar','Fresh Made']; ?>
+        <?php $__currentLoopData = array_merge($items,$items); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+        <span class="fb-ticker__item"><span class="fb-ticker__star">✦</span><?php echo e($item); ?></span>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </div>
 </div>
 
-{{-- ============================================================ CRACK / VIDEO SECTION --}}
+
 <section class="fb-crack" id="story">
     <div class="fb-crack__left" data-sr>
         <div class="fb-crack__plus">✦</div>
@@ -97,7 +95,7 @@
         loop
         playsinline
     >
-        <source src="{{ asset('home_assets/crack-video.MP4') }}" type="video/mp4">
+        <source src="<?php echo e(asset('home_assets/crack-video.MP4')); ?>" type="video/mp4">
     </video>
 
    
@@ -105,7 +103,7 @@
 </div>
 </section>
 
-{{-- ============================================================ PROCESS --}}
+
 <section class="fb-process">
     <div class="fb-process__vert">
         <span class="fb-vert-line"></span>Our Process<span class="fb-vert-line"></span>
@@ -121,7 +119,7 @@
                     <span class="fb-pstep__arrow">→</span>
                 </div>
                 <div class="fb-pstep__label">Premium<br>Custard</div>
-                <div class="fb-pstep__img"><img src="{{ asset('home_assets/custard.png') }}" alt="Premium Custard"></div>
+                <div class="fb-pstep__img"><img src="<?php echo e(asset('home_assets/custard.png')); ?>" alt="Premium Custard"></div>
             </div>
             <div class="fb-pstep" data-sr-d>
                 <div class="fb-pstep__head">
@@ -129,7 +127,7 @@
                     <span class="fb-pstep__arrow">→</span>
                 </div>
                 <div class="fb-pstep__label">Torched<br>Sugar</div>
-                <div class="fb-pstep__img"><img src="{{ asset('home_assets/torched.jpeg') }}" alt="Torched Sugar"></div>
+                <div class="fb-pstep__img"><img src="<?php echo e(asset('home_assets/torched.jpeg')); ?>" alt="Torched Sugar"></div>
             </div>
             <div class="fb-pstep" data-sr-d>
                 <div class="fb-pstep__head">
@@ -137,55 +135,55 @@
                     <span class="fb-pstep__arrow">→</span>
                 </div>
                 <div class="fb-pstep__label">Signature<br>Toppings</div>
-                <div class="fb-pstep__img"><img src="{{ asset('home_assets/step3.png') }}" alt="Signature Toppings"></div>
+                <div class="fb-pstep__img"><img src="<?php echo e(asset('home_assets/step3.png')); ?>" alt="Signature Toppings"></div>
             </div>
             <div class="fb-pstep" data-sr-d2>
                 <div class="fb-pstep__head">
                     <span class="fb-pstep__num">04</span>
                 </div>
                 <div class="fb-pstep__label">Ready To<br>Enjoy</div>
-                <div class="fb-pstep__img"><img src="{{ asset('home_assets/step4.png') }}" alt="Ready to Enjoy"></div>
+                <div class="fb-pstep__img"><img src="<?php echo e(asset('home_assets/step4.png')); ?>" alt="Ready to Enjoy"></div>
             </div>
         </div>
     </div>
 </section>
 
-{{-- ============================================================ BEST SELLERS --}}
+
 <section class="fb-sellers" id="menu">
     <div class="fb-sellers__left" data-sr>
         <div class="fb-sellers__plus">✦</div>
         <h2 class="fb-sellers__big">Best<br><em>Sellers</em></h2>
         <p class="fb-body">We don't take shortcuts. We choose quality, we craft with passion, and we serve with heart.</p>
-        <a href="{{ route('customer.shop') }}" class="fb-viewall"><span class="fb-viewall__line"></span>View All Menu →</a>
+        <a href="<?php echo e(route('customer.shop')); ?>" class="fb-viewall"><span class="fb-viewall__line"></span>View All Menu →</a>
     </div>
     
     <div class="fb-sellers__grid">
-        @foreach($bestSellers as $index => $item)
+        <?php $__currentLoopData = $bestSellers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
         <div class="fb-scard" 
-            @if($index === 0) data-sr 
-            @elseif($index === 1) data-sr-d 
-            @else data-sr-d2 
-            @endif
+            <?php if($index === 0): ?> data-sr 
+            <?php elseif($index === 1): ?> data-sr-d 
+            <?php else: ?> data-sr-d2 
+            <?php endif; ?>
         >
             <div class="fb-scard__img-wrap">
-                <img src="{{ asset('products/' . $item->pro_image) }}" alt="{{ $item->pro_name }}">
+                <img src="<?php echo e(asset('products/' . $item->pro_image)); ?>" alt="<?php echo e($item->pro_name); ?>">
             </div>
             <div class="fb-scard__body">
-                <p class="fb-scard__name">{{ $item->pro_name }}</p>
+                <p class="fb-scard__name"><?php echo e($item->pro_name); ?></p>
                 
-                {{-- TOTAL SOLD Menggantikan Bintang --}}
+                
                 <p class="fb-scard__stars">
-                    🔥 <span class="fb-scard__ct" style="color: #E6C07B; font-weight: 600;">{{ number_format($item->total_sold, 0, ',', '.') }} Sold</span>
+                    🔥 <span class="fb-scard__ct" style="color: #E6C07B; font-weight: 600;"><?php echo e(number_format($item->total_sold, 0, ',', '.')); ?> Sold</span>
                 </p>
                 
-                <a href="{{ route('customer.shop', ['category' => $item->category_id]) }}" class="fb-scard__order">Order Now →</a>
+                <a href="<?php echo e(route('customer.shop', ['category' => $item->category_id])); ?>" class="fb-scard__order">Order Now →</a>
             </div>
         </div>
-        @endforeach
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </div>
 </section>
 
-{{-- ============================================================ WHY BROOLE --}}
+
 
 <section class="fb-why">
 
@@ -204,7 +202,7 @@
 
     <!-- CENTER -->
     <div class="fb-why__photo">
-        <img src="{{ asset('home_assets/why.png') }}" alt="">
+        <img src="<?php echo e(asset('home_assets/why.png')); ?>" alt="">
     </div>
 
     <!-- RIGHT -->
@@ -249,21 +247,21 @@
 
 </section>
 
-{{-- ============================================================ GALLERY --}}
+
 <div class="fb-gallery">
     <div class="fb-gallery__vert">
         <span class="fb-vert-line"></span>Gallery<span class="fb-vert-line"></span>
     </div>
     <div class="fb-gallery__strip">
-        <div class="fb-gallery__item"><img src="{{ asset('home_assets/step4.png') }}" alt=""></div>
-        <div class="fb-gallery__item"><img src="{{ asset('home_assets/maskot.png') }}" alt=""></div>
-        <div class="fb-gallery__item"><img src="{{ asset('home_assets/step3.png') }}" alt=""></div>
-        <div class="fb-gallery__item"><img src="{{ asset('products/drink2.png') }}" alt=""></div>
-        <div class="fb-gallery__item"><img src="{{ asset('home_assets/fb_cake.png') }}" alt=""></div>
+        <div class="fb-gallery__item"><img src="<?php echo e(asset('home_assets/step4.png')); ?>" alt=""></div>
+        <div class="fb-gallery__item"><img src="<?php echo e(asset('home_assets/maskot.png')); ?>" alt=""></div>
+        <div class="fb-gallery__item"><img src="<?php echo e(asset('home_assets/step3.png')); ?>" alt=""></div>
+        <div class="fb-gallery__item"><img src="<?php echo e(asset('products/drink2.png')); ?>" alt=""></div>
+        <div class="fb-gallery__item"><img src="<?php echo e(asset('home_assets/fb_cake.png')); ?>" alt=""></div>
     </div>
 </div>
 
-{{-- ============================================================ TESTIMONIAL --}}
+
 <section class="fb-testi">
     <div class="fb-testi__grain"></div>
     <div class="fb-testi__inner">
@@ -281,7 +279,7 @@
         </div>
         <div class="fb-testi__right" data-sr-d>
             <div class="fb-testi__img-wrap">
-                <img src="{{ asset('home_assets/fb_broole.png') }}" alt="Crème Brûlée">
+                <img src="<?php echo e(asset('home_assets/fb_broole.png')); ?>" alt="Crème Brûlée">
                 <div class="fb-testi__badge">
                     <svg class="fb-testi__badge-ring" viewBox="0 0 100 100">
                         <defs><path id="circle" d="M 50,50 m -37,0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"/></defs>
@@ -296,10 +294,10 @@
     </div>
 </section>
 
-</div>{{-- /.fb --}}
+</div>
 
 
-{{-- ============================================================ STYLES --}}
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Outfit:wght@300;400;500;600;700;900&display=swap');
 
@@ -1290,7 +1288,7 @@
 </style>
 
 
-{{-- ============================================================ SCRIPTS --}}
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -1364,6 +1362,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-@include('layouts.footer')
+<?php echo $__env->make('layouts.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Herd\webdev-frombroole\resources\views/customer/about.blade.php ENDPATH**/ ?>
