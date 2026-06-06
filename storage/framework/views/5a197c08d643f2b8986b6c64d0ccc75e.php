@@ -188,7 +188,7 @@ class="pb-20"
     <div class="max-w-7xl w-full mx-auto relative z-20 grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] items-center gap-4 lg:gap-0">
 
         
-        <div class="relative z-30 max-w-[520px] pl-2 lg:pl-6">
+        <div class="relative z-30 max-w-[520px] pl-2 lg:pl-6" data-sr>
 
             <div class="inline-flex items-center gap-2 bg-white/70 backdrop-blur-sm border border-[#8C1717]/10 px-5 py-2 rounded-full shadow-sm mb-8">
 
@@ -235,7 +235,7 @@ class="pb-20"
         </div>
 
         
-        <div class="relative flex items-center justify-center min-h-[500px] lg:min-h-[650px] pt-10 lg:pt-0">
+        <div class="relative flex items-center justify-center min-h-[500px] lg:min-h-[650px] pt-10 lg:pt-0" data-sr-d>
 
             
             <div class="relative z-30 flex flex-col items-center w-full max-w-[600px] overflow-hidden cursor-grab active:cursor-grabbing py-8">
@@ -259,7 +259,7 @@ class="pb-20"
                 </div>
 
                 
-                <div class="relative text-center max-w-[380px] mt-8 lg:mt-6 pointer-events-none">
+                <div class="relative text-center max-w-[380px] -mt-12 lg:-mt-40 pointer-events-none">
                     <span
                         x-text="desserts[currentSlide].tagline"
                         class="font-black uppercase tracking-[0.3em] text-[#8C1717] text-xs"
@@ -327,7 +327,7 @@ class="pb-20"
 <section class="max-w-[1800px] mx-auto px-10 mt-28">
 
     
-    <div class="text-center max-w-3xl mx-auto">
+    <div class="text-center max-w-3xl mx-auto" data-sr>
 
         <span class="text-[#8C1717] font-black text-[10px] uppercase tracking-[0.3em]">
             Our Signature Pillars
@@ -354,6 +354,7 @@ class="pb-20"
         <?php $__currentLoopData = $masterpieces; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
 
         <div
+        <?php if($index === 0): ?> data-sr <?php elseif($index === 1): ?> data-sr-d <?php else: ?> data-sr-d2 <?php endif; ?>
         class="group relative rounded-[30px] border transition-all duration-700 hover:-translate-y-3"
 
         :class="{
@@ -501,7 +502,7 @@ items-center
    
 
     
-    <div class="relative z-10">
+    <div class="relative z-10" data-sr>
 
         <span
         class="
@@ -641,7 +642,7 @@ items-center
     </div>
 
     
-    <div class="relative flex justify-center items-center">
+    <div class="relative flex justify-center items-center" data-sr-d>
 
         <div
         class="
@@ -683,7 +684,7 @@ items-center
 
 <section class="max-w-7xl mx-auto px-8 mt-28 pb-24">
 
-    <div class="text-center mb-14">
+    <div class="text-center mb-14" data-sr>
 
         <span class="text-[#B88A44] font-black uppercase tracking-[0.35em] text-xs">
             WHY CHOOSE FROM BROOLE
@@ -703,7 +704,7 @@ items-center
     <div class="grid md:grid-cols-3 gap-8">
 
         
-<div class="group relative overflow-hidden bg-white rounded-[36px] p-10 border border-[#B88A44]/10 hover:-translate-y-3 transition duration-500 hover:shadow-[0_25px_60px_rgba(184,138,68,0.12)]">
+<div class="group relative overflow-hidden bg-white rounded-[36px] p-10 border border-[#B88A44]/10 hover:-translate-y-3 transition duration-500 hover:shadow-[0_25px_60px_rgba(184,138,68,0.12)]" data-sr>
 
     <img
     src="<?php echo e(asset('home_assets/hehe1.png')); ?>"
@@ -725,7 +726,7 @@ items-center
 
 
         
-        <div class="group relative overflow-hidden bg-gradient-to-br from-[#FFF8EE] to-[#FFFDFB] rounded-[36px] p-10 border border-[#D4AF37]/20 hover:-translate-y-3 transition duration-500 hover:shadow-[0_25px_60px_rgba(212,175,55,0.15)]">
+        <div class="group relative overflow-hidden bg-gradient-to-br from-[#FFF8EE] to-[#FFFDFB] rounded-[36px] p-10 border border-[#D4AF37]/20 hover:-translate-y-3 transition duration-500 hover:shadow-[0_25px_60px_rgba(212,175,55,0.15)]" data-sr-d>
 
           <img
     src="<?php echo e(asset('home_assets/hehe2.png')); ?>"
@@ -743,7 +744,7 @@ items-center
         </div>
 
         
-        <div class="group relative overflow-hidden bg-white rounded-[36px] p-10 border border-[#B88A44]/10 hover:-translate-y-3 transition duration-500 hover:shadow-[0_25px_60px_rgba(184,138,68,0.12)]">
+        <div class="group relative overflow-hidden bg-white rounded-[36px] p-10 border border-[#B88A44]/10 hover:-translate-y-3 transition duration-500 hover:shadow-[0_25px_60px_rgba(184,138,68,0.12)]" data-sr-d2>
 
          <img
     src="<?php echo e(asset('home_assets/hehe3.png')); ?>"
@@ -1673,7 +1674,23 @@ items-center
 
 }
 
+/* ─── SCROLL REVEAL ──────────────────────────────── */
+[data-sr]    { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
+[data-sr-d]  { opacity: 0; transform: translateY(28px); transition: opacity .7s ease .18s, transform .7s ease .18s; }
+[data-sr-d2] { opacity: 0; transform: translateY(28px); transition: opacity .7s ease .34s, transform .7s ease .34s; }
+[data-sr].vis, [data-sr-d].vis, [data-sr-d2].vis { opacity: 1; transform: translateY(0); }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const io = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting) { e.target.classList.add('vis'); io.unobserve(e.target); }
+        });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('[data-sr],[data-sr-d],[data-sr-d2]').forEach(el => io.observe(el));
+});
+</script>
 
 <?php echo $__env->make('layouts.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 <?php $__env->stopSection(); ?>

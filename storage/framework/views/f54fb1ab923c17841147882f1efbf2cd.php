@@ -37,7 +37,7 @@
 *, *::before, *::after { box-sizing: border-box; }
 
 .profile-page {
-    background: var(--cream);
+    background: transparent;
     min-height: 100vh;
     font-family: var(--font-body);
     overflow-x: hidden;
