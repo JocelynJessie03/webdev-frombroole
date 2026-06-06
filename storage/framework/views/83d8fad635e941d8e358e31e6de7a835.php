@@ -1147,61 +1147,6 @@
             });
         }
 
-        // AJAX Category Filtering
-        document.body.addEventListener('click', function(e) {
-            const btn = e.target.closest('.filter-btn');
-            if (btn) {
-                e.preventDefault();
-                const url = btn.getAttribute('href');
-                
-                // Visual feedback
-                const grid = document.querySelector('.product-grid');
-                if (grid) grid.style.opacity = '0.5';
-
-                fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-                    .then(res => res.text())
-                    .then(html => {
-                        const parser = new DOMParser();
-                        const doc = parser.parseFromString(html, "text/html");
-                        
-                        const newContent = doc.getElementById('shop-dynamic-content');
-                        const oldContent = document.getElementById('shop-dynamic-content');
-                        
-                        if (newContent && oldContent) {
-                            oldContent.innerHTML = newContent.innerHTML;
-                        }
-                        
-                        // Update Hero stats (number of items)
-                        const newHeroStats = doc.querySelector('.hero-stats');
-                        const oldHeroStats = document.querySelector('.hero-stats');
-                        if (newHeroStats && oldHeroStats) {
-                            oldHeroStats.innerHTML = newHeroStats.innerHTML;
-                        }
-                        
-                        // Update URL
-                        window.history.pushState({}, '', url);
-
-                        // Rebind search events
-                        const newSearchInput = document.getElementById('searchInput');
-                        if (newSearchInput) {
-                            newSearchInput.addEventListener('input', applyCustomerProductFilters);
-                        }
-                        const newClearBtn = document.getElementById('clearSearchBtn');
-                        if (newClearBtn) {
-                            newClearBtn.addEventListener('click', function(ev) {
-                                ev.preventDefault();
-                                newSearchInput.value = '';
-                                applyCustomerProductFilters();
-                                newSearchInput.focus();
-                            });
-                        }
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        window.location.href = url;
-                    });
-            }
-        });
     });
 
     // ── Cart Logic ──
