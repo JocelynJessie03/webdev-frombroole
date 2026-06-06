@@ -913,7 +913,7 @@
                     });
             }
         });
-
+    });
 
     // ── Cart Logic ──
     window.addToCart = function (id, name, price, maxStock, isDrink, proImage) {
