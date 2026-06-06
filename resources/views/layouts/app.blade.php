@@ -945,6 +945,15 @@
         box-shadow: 0 2px 12px rgba(0,0,0,.15);
     }
     #dm-toggle:hover::after { opacity: 1; }
+    
+    /* ── MOBILE NAVBAR HIDE ── */
+    @media (max-width: 639px) {
+        .hide-on-mobile { display: none !important; }
+        .show-on-mobile-only { display: block !important; }
+    }
+    @media (min-width: 640px) {
+        .show-on-mobile-only { display: none !important; }
+    }
     </style>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1254,7 +1263,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                     </a>
 
                     {{-- ACCOUNT DROPDOWN --}}
-                    <div x-data="{ open:false }" class="relative hidden sm:block">
+                    <div x-data="{ open:false }" class="relative hide-on-mobile">
 
                         <button
                             @click="open = !open"
@@ -1458,20 +1467,20 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                             Cart
                         </a>
 
-                        <div class="h-px w-full bg-[#8C1717]/10 my-1 sm:hidden"></div>
+                        <div class="h-px w-full bg-[#8C1717]/10 my-1 show-on-mobile-only"></div>
                         
                         @auth
-                            <a href="{{ route('profile.edit') }}" class="font-semibold text-[#7A6E68] sm:hidden">
+                            <a href="{{ route('profile.edit') }}" class="font-semibold text-[#7A6E68] show-on-mobile-only">
                                 Profile ({{ auth()->user()->name }})
                             </a>
-                            <form method="POST" action="{{ route('logout') }}" onsubmit="clearCustomerLocalStorage()" class="sm:hidden">
+                            <form method="POST" action="{{ route('logout') }}" onsubmit="clearCustomerLocalStorage()" class="show-on-mobile-only">
                                 @csrf
                                 <button type="submit" class="font-semibold text-red-600 text-left w-full">
                                     Logout
                                 </button>
                             </form>
                         @else
-                            <a href="/" class="font-semibold text-[#8C1717] sm:hidden">
+                            <a href="/" class="font-semibold text-[#8C1717] show-on-mobile-only">
                                 Login / Register
                             </a>
                         @endauth

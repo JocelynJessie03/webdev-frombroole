@@ -945,6 +945,15 @@
         box-shadow: 0 2px 12px rgba(0,0,0,.15);
     }
     #dm-toggle:hover::after { opacity: 1; }
+    
+    /* ── MOBILE NAVBAR HIDE ── */
+    @media (max-width: 639px) {
+        .hide-on-mobile { display: none !important; }
+        .show-on-mobile-only { display: block !important; }
+    }
+    @media (min-width: 640px) {
+        .show-on-mobile-only { display: none !important; }
+    }
     </style>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1248,7 +1257,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                     </a>
 
                     
-                    <div x-data="{ open:false }" class="relative">
+                    <div x-data="{ open:false }" class="relative hide-on-mobile">
 
                         <button
                             @click="open = !open"
@@ -1304,7 +1313,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
 
                                             </h3>
                                             <span class="px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700 text-[10px] uppercase font-bold flex-shrink-0">
-                                                <?php echo e($cust->tier ?? 'Bronze'); ?>
+                                                <?php echo e($cust?->tier ?? 'Bronze'); ?>
 
                                             </span>
                                         </div>
@@ -1312,7 +1321,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                                         <div class="flex items-center gap-1 mt-1">
                                             <span class="text-[#8C1717] text-sm">✨</span>
                                             <span class="font-bold text-[#8C1717] text-sm">
-                                                <?php echo e(number_format($cust->member_points ?? 0)); ?>
+                                                <?php echo e(number_format($cust?->member_points ?? 0)); ?>
 
                                             </span>
                                             <span class="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">pts</span>
@@ -1455,6 +1464,24 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                             </svg>
                             Cart
                         </a>
+
+                        <div class="h-px w-full bg-[#8C1717]/10 my-1 show-on-mobile-only"></div>
+                        
+                        <?php if(auth()->guard()->check()): ?>
+                            <a href="<?php echo e(route('profile.edit')); ?>" class="font-semibold text-[#7A6E68] show-on-mobile-only">
+                                Profile (<?php echo e(auth()->user()->name); ?>)
+                            </a>
+                            <form method="POST" action="<?php echo e(route('logout')); ?>" onsubmit="clearCustomerLocalStorage()" class="show-on-mobile-only">
+                                <?php echo csrf_field(); ?>
+                                <button type="submit" class="font-semibold text-red-600 text-left w-full">
+                                    Logout
+                                </button>
+                            </form>
+                        <?php else: ?>
+                            <a href="/" class="font-semibold text-[#8C1717] show-on-mobile-only">
+                                Login / Register
+                            </a>
+                        <?php endif; ?>
 
                     </div>
 
