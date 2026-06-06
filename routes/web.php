@@ -143,6 +143,7 @@ Route::middleware(['auth', 'customer'])->group(function () {
     
     // [BARU] Rute untuk menangani pembukuan stok & poin setelah sukses bayar Midtrans
     Route::get('/payment-success/{id}', [CartController::class, 'paymentSuccess'])->name('customer.payment.success');
+    Route::post('/payment-cancel/{id}', [CartController::class, 'paymentCancel'])->name('customer.payment.cancel');
     
     // History
     Route::get(

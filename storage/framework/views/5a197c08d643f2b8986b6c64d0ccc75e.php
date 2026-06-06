@@ -768,8 +768,8 @@ items-center
 </div>
 
 
+<?php $__env->startPush('styles'); ?>
 <style>
-
 /* ─── ABOUT ─── */
 
 .about-section{
@@ -1680,6 +1680,7 @@ items-center
 [data-sr-d2] { opacity: 0 !important; transform: translateY(28px) !important; transition: opacity .7s ease .34s, transform .7s ease .34s !important; }
 [data-sr].vis, [data-sr-d].vis, [data-sr-d2].vis { opacity: 1 !important; transform: translateY(0) !important; }
 </style>
+<?php $__env->stopPush(); ?>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {

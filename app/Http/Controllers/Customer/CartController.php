@@ -367,6 +367,24 @@ class CartController extends Controller
     }
 
     /**
+     * CANCEL PAYMENT (Midtrans Modal Closed)
+     */
+    public function paymentCancel($id)
+    {
+        $order = OrderHistory::find($id);
+
+        if ($order && $order->payment_status === 'UNPAID') {
+            // Hapus item pesanan dan order history
+            OrderItem::where('order_id', $order->id)->delete();
+            $order->delete();
+
+            return response()->json(['success' => true, 'message' => 'Order cancelled successfully.']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Order cannot be cancelled.'], 400);
+    }
+
+    /**
      * VALIDATE COUPON
      */
     public function validateCoupon(Request $request)

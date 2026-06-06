@@ -1,10 +1,7 @@
 <?php $__env->startSection('content'); ?>
 <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-
+<?php $__env->startPush('styles'); ?>
 <style>
 :root {
     --cream:        #F8F5F2;
@@ -762,6 +759,7 @@
     .qty-row { margin-left: auto; margin-right: 12px; }
 }
 </style>
+<?php $__env->stopPush(); ?>
 
 <div class="toast-wrap" id="toast">
     <div class="toast-inner">
@@ -1233,6 +1231,20 @@
                     },
                     onClose: function () {
                         // Menangani jika user menutup popup Midtrans secara sengaja
+                        const cancelUrl = '<?php echo e(route("customer.payment.cancel", ":id")); ?>'.replace(':id', data.order_id);
+                        fetch(cancelUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': csrf,
+                            }
+                        }).then(res => res.json()).then(result => {
+                            if (result.success) {
+                                console.log('Order cancelled successfully.');
+                            }
+                        }).catch(err => console.error('Failed to cancel order:', err));
+
                         resetCheckoutBtn();
                     }
                 });

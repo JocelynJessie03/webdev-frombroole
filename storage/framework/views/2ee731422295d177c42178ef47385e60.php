@@ -335,11 +335,8 @@ $faqs = [
 <?php echo $__env->make('layouts.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
 
-
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Outfit:wght@300;400;500;600;700;900&display=swap');
-
-/* ─── TOKENS ─── */
+<?php $__env->startPush('styles'); ?>
+<style>/* ─── TOKENS ─── */
 :root {
     --red:      #B81C1C;
     --red-deep: #6B0F1A;
@@ -619,6 +616,7 @@ $faqs = [
     .ct-socials { flex-direction: column; align-items: flex-start; padding: 2.5rem 6%; }
 }
 </style>
+<?php $__env->stopPush(); ?>
 
 
 

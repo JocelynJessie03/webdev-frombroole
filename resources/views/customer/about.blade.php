@@ -340,11 +340,8 @@
 </div>{{-- /.fb --}}
 
 
-{{-- ============================================================ STYLES --}}
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Outfit:wght@300;400;500;600;700;900&display=swap');
-
-/* ─── TOKENS ─────────────────────────────────── */
+@push('styles')
+<style>/* ─── TOKENS ─────────────────────────────────── */
 :root {
     --red:      #B81C1C;
     --red-deep: #6B0F1A;
@@ -1409,6 +1406,7 @@
 [data-sr-d3] { opacity: 0; transform: translateY(28px); transition: opacity .7s ease .5s, transform .7s ease .5s; }
 [data-sr].vis, [data-sr-d].vis, [data-sr-d2].vis, [data-sr-d3].vis { opacity: 1; transform: translateY(0); }
 </style>
+@endpush
 
 
 {{-- ============================================================ SCRIPTS --}}
