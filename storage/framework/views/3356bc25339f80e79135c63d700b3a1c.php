@@ -467,8 +467,17 @@
         border-color: var(--border-light) !important;
     }
     [data-theme="dark"] .fb-sellers__big,
-    [data-theme="dark"] .fb-why__big {
-        color: var(--text-heading) !important;
+    [data-theme="dark"] .fb-why__big,
+    [data-theme="dark"] .fb-team__big,
+    [data-theme="dark"] .fb-tcard__name {
+        color: var(--text-primary) !important;
+    }
+    [data-theme="dark"] .fb-team {
+        background: var(--bg-base) !important;
+        border-color: var(--border-light) !important;
+    }
+    [data-theme="dark"] .fb-tcard__img-wrap {
+        border-color: var(--bg-card) !important;
     }
 
     /* ─── CUSTOM CURSOR ─── */

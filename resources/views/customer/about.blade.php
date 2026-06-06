@@ -246,7 +246,48 @@
         </div>
 
     </div>
+</section>
 
+{{-- ============================================================ TEAM --}}
+<section class="fb-team" id="team">
+    <div class="fb-team__header" data-sr>
+        <p class="fb-eyebrow"><span class="fb-edash"></span>Our Artisans<span class="fb-edash"></span></p>
+        <h2 class="fb-team__big">Meet The <em>Team</em></h2>
+        <p class="fb-body" style="max-width: 600px; margin: 0 auto;">
+            We are a small team of four, passionate about bringing you the finest artisan dessert experience. Every crème brûlée is crafted with our dedication.
+        </p>
+    </div>
+    
+    <div class="fb-team__grid">
+        <div class="fb-tcard" data-sr>
+            <div class="fb-tcard__img-wrap">
+                <img src="https://ui-avatars.com/api/?name=Steven&background=8F1717&color=fff&size=200&bold=true" alt="Steven">
+            </div>
+            <h3 class="fb-tcard__name">Steven</h3>
+            <p class="fb-tcard__role">Co-Founder</p>
+        </div>
+        <div class="fb-tcard" data-sr-d>
+            <div class="fb-tcard__img-wrap">
+                <img src="https://ui-avatars.com/api/?name=Venny&background=8F1717&color=fff&size=200&bold=true" alt="Venny">
+            </div>
+            <h3 class="fb-tcard__name">Venny</h3>
+            <p class="fb-tcard__role">Head Baker</p>
+        </div>
+        <div class="fb-tcard" data-sr-d2>
+            <div class="fb-tcard__img-wrap">
+                <img src="https://ui-avatars.com/api/?name=Eveline&background=8F1717&color=fff&size=200&bold=true" alt="Eveline">
+            </div>
+            <h3 class="fb-tcard__name">Eveline</h3>
+            <p class="fb-tcard__role">Pastry Chef</p>
+        </div>
+        <div class="fb-tcard" data-sr-d3>
+            <div class="fb-tcard__img-wrap">
+                <img src="https://ui-avatars.com/api/?name=Jessie&background=8F1717&color=fff&size=200&bold=true" alt="Jessie">
+            </div>
+            <h3 class="fb-tcard__name">Jessie</h3>
+            <p class="fb-tcard__role">Quality Control</p>
+        </div>
+    </div>
 </section>
 
 {{-- ============================================================ GALLERY --}}
@@ -1020,6 +1061,79 @@
 }
 
 
+
+/* ─── TEAM ─────────────────────────────────────── */
+.fb-team {
+    padding: 80px 50px;
+    background: #faf5ee;
+    border-bottom: 1px solid rgba(0,0,0,.06);
+    text-align: center;
+}
+.fb-team__header {
+    margin-bottom: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.fb-team__big {
+    font-family: var(--serif);
+    font-size: 75px;
+    line-height: .9;
+    font-weight: 500;
+    color: #111;
+    margin-bottom: 20px;
+}
+.fb-team__big em {
+    color: #9e1f1f;
+    font-style: normal;
+}
+.fb-team__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+.fb-tcard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.fb-tcard__img-wrap {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 20px;
+    border: 3px solid #FAF3E8;
+    box-shadow: 0 10px 30px rgba(0,0,0,.08);
+    transition: transform .4s ease;
+}
+.fb-tcard:hover .fb-tcard__img-wrap {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 15px 40px rgba(143,23,23,.15);
+}
+.fb-tcard__img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.fb-tcard__name {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 4px;
+}
+.fb-tcard__role {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: #8F1717;
+}
+
 /* ─── GALLERY ──────────────────────────────────── */
 .fb-gallery { position: relative; overflow: hidden; background: var(--cream2); }
 .fb-gallery__vert {
@@ -1230,6 +1344,12 @@
         padding:40px 25px;
     }
 
+    /* TEAM */
+    .fb-team { padding: 60px 20px; }
+    .fb-team__big { font-size: 50px; }
+    .fb-team__grid { grid-template-columns: repeat(2, 1fr); gap: 40px 20px; }
+    .fb-tcard__img-wrap { width: 130px; height: 130px; }
+
     /* GALLERY */
     .fb-gallery__vert{
         display:none;
@@ -1286,7 +1406,8 @@
 [data-sr]    { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
 [data-sr-d]  { opacity: 0; transform: translateY(28px); transition: opacity .7s ease .18s, transform .7s ease .18s; }
 [data-sr-d2] { opacity: 0; transform: translateY(28px); transition: opacity .7s ease .34s, transform .7s ease .34s; }
-[data-sr].vis, [data-sr-d].vis, [data-sr-d2].vis { opacity: 1; transform: translateY(0); }
+[data-sr-d3] { opacity: 0; transform: translateY(28px); transition: opacity .7s ease .5s, transform .7s ease .5s; }
+[data-sr].vis, [data-sr-d].vis, [data-sr-d2].vis, [data-sr-d3].vis { opacity: 1; transform: translateY(0); }
 </style>
 
 
@@ -1331,7 +1452,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.isIntersecting) { e.target.classList.add('vis'); io.unobserve(e.target); }
         });
     }, { threshold: 0.1 });
-    document.querySelectorAll('[data-sr],[data-sr-d],[data-sr-d2]').forEach(el => io.observe(el));
+    document.querySelectorAll('[data-sr],[data-sr-d],[data-sr-d2],[data-sr-d3]').forEach(el => io.observe(el));
 
     /* ══════════════════════════════════════════════
        TESTIMONIAL SLIDER
