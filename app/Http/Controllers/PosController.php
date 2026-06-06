@@ -406,7 +406,7 @@ public function receipt($id)
 }
     public function checkMember(Request $request)
 {
-    $customer = DB::table('customers')->where('phone', $request->phone)->first();
+    $customer = DB::table('customers')->where('email', $request->email)->first();
 
     if ($customer) {
         return response()->json([

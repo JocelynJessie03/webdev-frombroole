@@ -1,27 +1,25 @@
-@extends('partials.sidebar')
+<?php $__env->startSection('content'); ?>
 
-@section('content')
-
-@php
+<?php
     $subtotal = 0;
     foreach($cart as $item) {
         $subtotal += $item['price'] * $item['qty'];
     }
     $tax = $subtotal * 0.10;
     $total = $subtotal + $tax;
-@endphp
+?>
 
 <div class="max-w-6xl mx-auto">
 
     <div class="flex flex-col gap-8">
 
-        {{-- TOP (CART ITEMS) --}}
+        
         <div class="w-full">
             <div class="bg-white rounded-3xl border border-gray-200 shadow-sm p-8">
                 
-                {{-- TOMBOL BACK & JUDUL --}}
+                
                 <div class="flex items-center gap-4 mb-8">
-                    <a href="{{ route('pos') }}" class="text-gray-400 hover:text-[#7b0000] p-2 hover:bg-gray-100 rounded-full transition flex items-center justify-center">
+                    <a href="<?php echo e(route('pos')); ?>" class="text-gray-400 hover:text-[#7b0000] p-2 hover:bg-gray-100 rounded-full transition flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
                         </svg>
@@ -31,41 +29,43 @@
                     </h1>
                 </div>
 
-                {{-- ITEMS --}}
+                
                 <div class="space-y-6">
-                    @foreach($cart as $item)
+                    <?php $__currentLoopData = $cart; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="flex justify-between items-center border-b pb-5">
                             <div>
-                                <h2 class="font-black text-xl mb-2">{{ $item['name'] }}</h2>
-                                {{-- BADGE SUGAR LEVEL JIKA MINUMAN --}}
-                                @if(isset($item['isDrink']) && $item['isDrink'])
-                                    @php
+                                <h2 class="font-black text-xl mb-2"><?php echo e($item['name']); ?></h2>
+                                
+                                <?php if(isset($item['isDrink']) && $item['isDrink']): ?>
+                                    <?php
                                         $sugarText = $item['sugarLevel'] == '100' ? 'Normal Sugar' : ($item['sugarLevel'] == '50' ? 'Less Sugar (50%)' : 'No Sugar');
                                         $badgeColor = $item['sugarLevel'] == '100' ? 'bg-gray-100 text-gray-500' : 'bg-blue-50 text-blue-600';
-                                    @endphp
-                                    <span class="text-xs font-bold {{ $badgeColor }} px-2 py-1 rounded-md inline-block mb-2">
-                                        {{ $sugarText }}
+                                    ?>
+                                    <span class="text-xs font-bold <?php echo e($badgeColor); ?> px-2 py-1 rounded-md inline-block mb-2">
+                                        <?php echo e($sugarText); ?>
+
                                     </span>
-                                @endif
-                                <p class="text-gray-400">Qty : {{ $item['qty'] }}</p>
+                                <?php endif; ?>
+                                <p class="text-gray-400">Qty : <?php echo e($item['qty']); ?></p>
                             </div>
                             <div class="text-right">
                                 <p class="font-black text-[#7b0000] text-lg">
-                                    Rp {{ number_format($item['price'] * $item['qty'], 0, ',', '.') }}
+                                    Rp <?php echo e(number_format($item['price'] * $item['qty'], 0, ',', '.')); ?>
+
                                 </p>
                             </div>
                         </div>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </div>
             </div>
         </div>
 
-        {{-- BOTTOM (SUMMARY & PAYMENT) --}}
+        
         <div class="w-full">
             <div class="bg-white rounded-3xl border border-gray-200 shadow-sm p-8">
                 <h2 class="text-2xl font-black mb-8">Payment Summary</h2>
 
-                {{-- CUSTOMER TYPE TOGGLE --}}
+                
                 <div class="mb-8">
                     <h3 class="font-bold mb-3 text-gray-700">Customer Type</h3>
                     <div class="flex gap-4">
@@ -80,7 +80,7 @@
                     </div>
                 </div>
 
-                {{-- MEMBER CHECK SECTION (HIDDEN BY DEFAULT) --}}
+                
                 <div id="member-section" class="mb-8 hidden">
                     <label class="block text-sm font-bold mb-2">Member Email Address</label>
                     <div class="flex gap-2 mb-2">
@@ -93,7 +93,7 @@
                     </div>
                     <p id="member-alert" class="text-xs text-red-600 font-bold hidden mb-4"></p>
 
-                    {{-- MEMBER DETAILS (SHOW IF FOUND) --}}
+                    
                     <div id="member-details" class="hidden bg-gray-50 border border-gray-200 p-4 rounded-xl space-y-4">
                         <div>
                             <label class="block text-xs font-bold text-gray-500 mb-1">Customer Name</label>
@@ -112,42 +112,43 @@
                     </div>
                 </div>
 
-                {{-- TOTAL SUMMARY --}}
+                
                 <div class="space-y-4 mb-8 bg-gray-50 p-5 rounded-2xl">
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-500">Subtotal</span>
-                        <span class="font-bold">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
+                        <span class="font-bold">Rp <?php echo e(number_format($subtotal, 0, ',', '.')); ?></span>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-500">Tax (10%)</span>
-                        <span class="font-bold">Rp {{ number_format($tax, 0, ',', '.') }}</span>
+                        <span class="font-bold">Rp <?php echo e(number_format($tax, 0, ',', '.')); ?></span>
                     </div>
                     <div class="flex justify-between text-sm text-green-600 font-bold hidden" id="discount-row">
                         <span>Points Discount</span>
                         <span id="discount-amount">- Rp 0</span>
                     </div>
                     
-                    {{-- GRAND TOTAL SEJAJAR HORIZONTAL DAN PRESISI BASELINE --}}
+                    
                     <div class="flex justify-between items-center border-t border-gray-200 pt-4">
                         <span class="text-xl font-black text-gray-800">Grand Total</span>
                         
                         <div class="flex items-baseline gap-1 text-[#7b0000]">
                             <span class="text-lg font-black uppercase">Rp</span>
                             <span class="text-2xl font-black tracking-tight" id="grand-total-text">
-                                {{ number_format($total, 0, ',', '.') }}
+                                <?php echo e(number_format($total, 0, ',', '.')); ?>
+
                             </span>
                         </div>
                     </div>
                 </div>
 
-                {{-- PAYMENT FORM --}}
-                <form action="{{ route('payment.process') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="cart" value="{{ json_encode($cart) }}">
+                
+                <form action="<?php echo e(route('payment.process')); ?>" method="POST">
+                    <?php echo csrf_field(); ?>
+                    <input type="hidden" name="cart" value="<?php echo e(json_encode($cart)); ?>">
                     <input type="hidden" name="customer_id" id="hidden_customer_id" value="">
                     <input type="hidden" name="points_used" id="hidden_points_used" value="0">
 
-                    {{-- PILIHAN METODE PEMBAYARAN DIUBAH MENJADI BERDAMPINGAN (2 KOLOM) KARENA AREA SUDAH LEBAR --}}
+                    
                     <div class="mb-6 bg-gray-50 p-4 rounded-2xl border border-gray-200">
                         <label class="block font-black text-gray-700 text-sm mb-3 uppercase tracking-wider">Payment Method</label>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -180,7 +181,7 @@
 </div>
 
 <script>
-    const baseTotal = {{ $total }};
+    const baseTotal = <?php echo e($total); ?>;
     let maxPoints = 0;
 
     function toggleCustomerType() {
@@ -215,11 +216,11 @@
             return;
         }
 
-        fetch("{{ route('check.member') }}", {
+        fetch("<?php echo e(route('check.member')); ?>", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                "X-CSRF-TOKEN": "<?php echo e(csrf_token()); ?>"
             },
             body: JSON.stringify({ email: email })
         })
@@ -279,4 +280,5 @@
     }
 </script>
 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('partials.sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Herd\webdev-frombroole\resources\views/checkout_preview.blade.php ENDPATH**/ ?>

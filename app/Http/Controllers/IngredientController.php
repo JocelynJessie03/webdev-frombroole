@@ -89,7 +89,8 @@ class IngredientController extends Controller
             $usedTodayCount = DB::table('ingredient_histories')
                 ->where('type', 'out')
                 ->whereDate('created_at', now('Asia/Jakarta'))
-                ->sum('amount');
+                ->distinct('ingredient_id')
+                ->count('ingredient_id');
         }
 
         return view('ingredient.inventory', [
