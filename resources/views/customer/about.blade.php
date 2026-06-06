@@ -282,7 +282,7 @@
         </div>
         <div class="fb-tcard" data-sr-d3>
             <div class="fb-tcard__img-wrap">
-                <img src="https://ui-avatars.com/api/?name=Jessie&background=8F1717&color=fff&size=200&bold=true" alt="Jessie">
+                <img src="{{ asset('images/muka jessie.jpeg') }}" alt="Jessie" style="object-fit: cover;">
             </div>
             <h3 class="fb-tcard__name">Jessie</h3>
             <p class="fb-tcard__role">Quality Control</p>
