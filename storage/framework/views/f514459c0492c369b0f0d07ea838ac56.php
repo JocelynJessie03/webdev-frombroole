@@ -3,7 +3,7 @@
 <?php $__env->startPush('styles'); ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
     :root {
@@ -17,7 +17,7 @@
         --text-muted:   #7a7068;
         --border:       rgba(123, 0, 0, 0.08);
         --radius:       24px;
-        --font-display: 'Playfair Display', Georgia, serif;
+        --font-display: 'Cormorant Garamond', Georgia, serif;
         --font-body:    'DM Sans', sans-serif;
     }
 
