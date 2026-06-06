@@ -296,12 +296,20 @@
             </form>
 
             <!-- Footer -->
-            <p class="text-center mt-10 text-gray-500 text-sm font-medium animate-fade-in-up delay-500">
-                Are You new here?
-                <a href="/register" class="text-[#8d1010] font-black hover:underline underline-offset-4 decoration-2">
-                    Create an account
-                </a>
-            </p>
+            <div class="text-center mt-10 animate-fade-in-up delay-500">
+                <p class="text-gray-500 text-sm font-medium mb-3">
+                    Are You new here?
+                    <a href="/register" class="text-[#8d1010] font-black hover:underline underline-offset-4 decoration-2">
+                        Create an account
+                    </a>
+                </p>
+                <p class="text-gray-500 text-sm font-medium">
+                    Or just looking around?
+                    <a href="{{ route('customer.home') }}" class="text-[#8d1010] font-black hover:underline underline-offset-4 decoration-2">
+                        Continue as Guest
+                    </a>
+                </p>
+            </div>
 
         </div>
     </div>

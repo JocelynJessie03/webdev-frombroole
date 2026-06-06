@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderReceiptMail;
 use Midtrans\Config as MidtransConfig;
 use Midtrans\Snap;
 
@@ -353,6 +355,16 @@ class CartController extends Controller
                 'created_at' => now(),
                 'updated_at' => now()
             ]);
+
+            // 5. Kirim Email Receipt ke Customer
+            if ($customer && !empty($customer->email)) {
+                try {
+                    Mail::to($customer->email)->send(new OrderReceiptMail($order));
+                    Log::info('Order receipt email sent to customer', ['email' => $customer->email, 'order_id' => $order->order_id]);
+                } catch (\Exception $mailEx) {
+                    Log::error('Failed to send order receipt email', ['order_id' => $order->order_id, 'error' => $mailEx->getMessage()]);
+                }
+            }
 
             DB::commit();
             Log::info('paymentSuccess processed successfully', ['order_id' => $order->order_id]);
