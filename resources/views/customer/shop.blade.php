@@ -1283,7 +1283,7 @@
                 
                 card.style.transform = `perspective(1000px) translateY(-6px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
                 card.style.transformStyle = 'preserve-3d';
-                card.style.transition = 'transform 0.1s ease-out';
+                card.style.transition = 'transform 0.1s ease-out, box-shadow 0.2s ease, border-color 0.2s ease';
                 card.style.zIndex = '10';
 
                 // Reverse the tilt for the image so it stays visually flat but pops out in 3D!
@@ -1300,18 +1300,17 @@
             if (card && !card.contains(e.relatedTarget)) {
                 // Reset card transform
                 card.style.transform = '';
-                card.style.transition = 'transform 0.5s ease-out';
+                card.style.transition = 'transform 0.2s ease-out, box-shadow 0.2s ease, border-color 0.2s ease';
                 card.style.zIndex = '';
                 
                 const imgWrap = card.querySelector('.card-image-wrap');
                 if (imgWrap) {
                     imgWrap.style.transform = '';
-                    imgWrap.style.transition = 'transform 0.5s ease-out';
+                    imgWrap.style.transition = 'transform 0.2s ease-out';
                 }
             }
         });
     });
 </script>
-
 @include('layouts.footer')
 @endsection

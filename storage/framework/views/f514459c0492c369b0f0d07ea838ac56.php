@@ -692,5 +692,20 @@
     </div>
 </div>
 
+<?php if(session('success')): ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        Swal.fire({
+            title: 'Payment Successful!',
+            html: 'Thank you! Your order is being processed.<br><br><small style="color:#655F5A;">We have sent the receipt to your email.<br><b>Please check your spam/junk folder if you cannot find it.</b></small>',
+            icon: 'success',
+            confirmButtonColor: '#8C1717',
+            confirmButtonText: 'Got it!'
+        });
+    });
+</script>
+<?php endif; ?>
+
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Herd\webdev-frombroole\resources\views/customer/transaction-history.blade.php ENDPATH**/ ?>

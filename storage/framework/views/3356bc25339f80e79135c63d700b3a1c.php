@@ -1403,7 +1403,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                             x-show="open"
                             x-cloak
                             x-transition
-                            class="absolute right-0 mt-3 w-64 overflow-hidden rounded-2xl border border-[#E5E0DA] bg-white shadow-xl z-50"
+                            class="absolute right-0 mt-3 w-72 sm:w-80 overflow-hidden rounded-2xl border border-[#E5E0DA] bg-white shadow-xl z-50"
                         >
 
                             <?php if(auth()->guard()->check()): ?>
@@ -1419,13 +1419,15 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                                         to-[#B12828]
                                         text-white
                                         flex items-center justify-center
+                                        flex-shrink-0
                                         text-lg font-bold
                                         shadow-md
+                                        overflow-hidden
                                         "
                                     >
                                        <img
                                             src="<?php echo e(auth()->user()->avatar ? asset('Avatar/' . auth()->user()->avatar) : 'https://ui-avatars.com/api/?name='.urlencode(auth()->user()->name).'&background=8C1717&color=fff'); ?>"
-                                            class="w-14 h-14 rounded-full object-cover"
+                                            class="w-full h-full object-cover"
                                         >
                                     </div>
 
@@ -1436,9 +1438,9 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                                     )->first();
                                     ?>
 
-                                    <div>
+                                    <div class="flex-1 min-w-0">
                                         <div class="flex items-center gap-2">
-                                            <h3 class="font-bold text-lg text-[#2C2623] leading-tight">
+                                            <h3 class="font-bold text-lg text-[#2C2623] leading-tight truncate">
                                                 <?php echo e(auth()->user()->name); ?>
 
                                             </h3>
@@ -1454,10 +1456,10 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                                                 <?php echo e(number_format($cust?->member_points ?? 0)); ?>
 
                                             </span>
-                                            <span class="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">pts</span>
+                                            <span class="text-[10px] text-gray-400 font-semibold uppercase tracking-wider flex-shrink-0">pts</span>
                                         </div>
 
-                                        <p class="text-xs text-gray-500 mt-1">
+                                        <p class="text-xs text-gray-500 mt-1 truncate">
                                             <?php echo e(auth()->user()->email); ?>
 
                                         </p>

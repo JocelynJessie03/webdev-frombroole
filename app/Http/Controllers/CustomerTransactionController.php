@@ -31,6 +31,7 @@ class CustomerTransactionController extends Controller
                 '=',
                 $customer->id
             )
+            ->where('payment_status', 'PAID')
             ->orderBy(
                 'order_date',
                 'desc'

@@ -241,12 +241,12 @@ class CartController extends Controller
         $order = OrderHistory::with('items')->find($id);
 
         if (!$order) {
-            return redirect()->route('customer.shop')->with('error', 'Order not found.');
+            return redirect()->route('customer.history')->with('error', 'Order not found.');
         }
 
         // GUARD: Jika webhook sudah memproses (payment_status = PAID), skip
         if ($order->payment_status === 'PAID') {
-            return redirect()->route('customer.shop')->with('success', 'Thank you! Your order is being processed.');
+            return redirect()->route('customer.history')->with('success', 'Thank you! Your order is being processed.');
         }
 
         DB::beginTransaction();
@@ -372,10 +372,10 @@ class CartController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             Log::error('paymentSuccess failed', ['order_id' => $order->order_id, 'error' => $e->getMessage()]);
-            return redirect()->route('customer.shop')->with('error', 'Payment processing error: ' . $e->getMessage());
+            return redirect()->route('customer.history')->with('error', 'Payment processing error: ' . $e->getMessage());
         }
 
-        return redirect()->route('customer.shop')->with('success', 'Thank you! Your order is being processed.');
+        return redirect()->route('customer.history')->with('success', 'Thank you! Your order is being processed.');
     }
 
     /**
