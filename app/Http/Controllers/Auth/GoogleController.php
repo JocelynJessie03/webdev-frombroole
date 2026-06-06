@@ -41,6 +41,26 @@ class GoogleController extends Controller
             'password' => bcrypt('google-login'),
             'role' => $role,
         ]);
+
+        if ($role === 'customer') {
+            \App\Models\Customer::create([
+                'customer_ID' => fake()->unique()->numerify('CUST###'),
+                'customer_name' => $googleName,
+                'email' => $googleEmail,
+                'phone' => '-',
+                'password' => bcrypt('google-login'),
+                'total_spend' => 0,
+                'member_points' => 0,
+                'tier' => 'Bronze',
+            ]);
+        }
+    } else {
+        if (!$user->google_id) {
+            $user->update([
+                'google_id' => $googleId,
+                'avatar' => $googleAvatar ?? $user->avatar
+            ]);
+        }
     }
 
     Auth::login($user);

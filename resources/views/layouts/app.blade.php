@@ -1309,14 +1309,14 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                                                 {{ auth()->user()->name }}
                                             </h3>
                                             <span class="px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700 text-[10px] uppercase font-bold flex-shrink-0">
-                                                {{ $cust->tier ?? 'Bronze' }}
+                                                {{ $cust?->tier ?? 'Bronze' }}
                                             </span>
                                         </div>
 
                                         <div class="flex items-center gap-1 mt-1">
                                             <span class="text-[#8C1717] text-sm">✨</span>
                                             <span class="font-bold text-[#8C1717] text-sm">
-                                                {{ number_format($cust->member_points ?? 0) }}
+                                                {{ number_format($cust?->member_points ?? 0) }}
                                             </span>
                                             <span class="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">pts</span>
                                         </div>
