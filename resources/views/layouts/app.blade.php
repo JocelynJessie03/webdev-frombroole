@@ -82,9 +82,11 @@
     [data-theme="dark"] .dm-icon-moon { display: none !important; }
     [data-theme="dark"] .dm-icon-sun { display: block !important; }
 
-    /* --- Body & Base Background --- */
-    body, header {
-        transition: background .35s, background-color .35s, color .35s, border-color .35s;
+    /* --- Universal Theme Transition --- */
+    html.theme-animating *, html.theme-animating *::before, html.theme-animating *::after {
+        transition-property: background-color, border-color, color, fill, stroke !important;
+        transition-duration: .4s !important;
+        transition-timing-function: ease !important;
     }
     [data-theme="dark"] body {
         background: var(--bg-base) !important;
@@ -94,7 +96,7 @@
     /* --- Header / Nav --- */
     header { background: var(--bg-nav) !important; border-color: var(--border-light) !important; }
 
-    /* --- All light background classes → dark --- */
+
     [data-theme="dark"] .bg-\[\#F8F5F2\],
     [data-theme="dark"] .bg-\[\#F5F2EE\],
     [data-theme="dark"] .bg-\[\#EFECE7\] {
@@ -1550,10 +1552,19 @@ function clearCustomerLocalStorage() {
     <script>
     // Toggle
     function dmToggle() {
-    var html = document.documentElement;
-    var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    html.setAttribute('data-theme', next);
-    localStorage.setItem('frombroole_theme', next);
+        var html = document.documentElement;
+        var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        
+        // Add class to trigger global CSS transitions
+        html.classList.add('theme-animating');
+        
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('frombroole_theme', next);
+        
+        // Remove class after transition completes
+        setTimeout(() => {
+            html.classList.remove('theme-animating');
+        }, 400);
     }
     </script>
 
