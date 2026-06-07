@@ -164,6 +164,7 @@ document.addEventListener("DOMContentLoaded", function() {
             this.walkDirection = Math.random() > 0.5 ? 1 : -1;
             this.walkTimer = 0;
             this.fightTimer = 0;
+            this.fightCooldown = 0;
             
             this.bindEvents();
         }
@@ -290,8 +291,11 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function gameLoop() {
+        if (cat.fightCooldown > 0) cat.fightCooldown--;
+        if (dog.fightCooldown > 0) dog.fightCooldown--;
+
         // Collision Detection for Fighting
-        if (cat.state !== 'fighting' && dog.state !== 'fighting' && !cat.isDragging && !dog.isDragging) {
+        if (cat.state !== 'fighting' && dog.state !== 'fighting' && !cat.isDragging && !dog.isDragging && cat.fightCooldown <= 0 && dog.fightCooldown <= 0) {
             let dx = cat.x - dog.x;
             let dy = cat.y - dog.y;
             let dist = Math.sqrt(dx*dx + dy*dy);
@@ -316,11 +320,6 @@ document.addEventListener("DOMContentLoaded", function() {
             if (pet.state === 'fighting') {
                 pet.fightTimer--;
                 
-                // Keep them tumbling around each other
-                pet.x += (Math.random() - 0.5) * 10;
-                pet.y += (Math.random() - 0.5) * 10;
-                if (pet.y < 0) pet.y = 0;
-                
                 if (fightCloud) {
                     fightCloud.style.left = ((cat.x + dog.x)/2 + 30) + 'px';
                     fightCloud.style.bottom = ((cat.y + dog.y)/2) + 'px';
@@ -330,13 +329,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 if (pet.fightTimer <= 0) {
                     pet.setState('falling');
-                    pet.vy = 15 + Math.random() * 5;
+                    pet.vy = 8 + Math.random() * 4;
                     // Bounce away from each other
                     if (pet.id === 'virtual-cat') {
-                        pet.vx = cat.x < dog.x ? -15 : 15;
+                        pet.vx = cat.x < dog.x ? -10 : 10;
                     } else {
-                        pet.vx = dog.x < cat.x ? -15 : 15;
+                        pet.vx = dog.x < cat.x ? -10 : 10;
                     }
+                    pet.fightCooldown = 250; // Wait a few seconds before fighting again
                     removeDustCloud();
                 }
                 return;
