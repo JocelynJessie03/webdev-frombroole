@@ -63,8 +63,30 @@ class ShopController extends Controller
             break;
     }
 
-    // 6. Paginate (8 per page) & keep query strings
-    $products = $query->paginate(12)->appends($request->query());
+    // 6. Sort out of stock items to the bottom
+    $allProducts = $query->get();
+
+    $inStock = $allProducts->filter(function($product) {
+        return $product->calculated_stock > 0;
+    });
+
+    $outOfStock = $allProducts->filter(function($product) {
+        return $product->calculated_stock <= 0;
+    });
+
+    $sortedProducts = $inStock->merge($outOfStock);
+
+    // 7. Paginate (12 per page) & keep query strings manually
+    $perPage = 12;
+    $page = \Illuminate\Pagination\Paginator::resolveCurrentPage() ?: 1;
+
+    $products = new \Illuminate\Pagination\LengthAwarePaginator(
+        $sortedProducts->forPage($page, $perPage)->values(),
+        $sortedProducts->count(),
+        $perPage,
+        $page,
+        ['path' => \Illuminate\Pagination\Paginator::resolveCurrentPath(), 'query' => $request->query()]
+    );
 
     // [BARU] Jika di-request via JavaScript (Real-time), kirimkan html bagian grid saja
     if ($request->ajax()) {

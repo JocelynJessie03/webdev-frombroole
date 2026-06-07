@@ -89,6 +89,10 @@
 
 
             {{-- MENU --}}
+            @php
+                $adminUser = Auth::guard('admin')->user() ?? Auth::user();
+                $isSuperAdmin = $adminUser && $adminUser->role === 'super_admin';
+            @endphp
             <div class="px-5 space-y-1.5">
 
                 <a
@@ -171,6 +175,7 @@
 
 
 
+                @if($isSuperAdmin)
                 <a
                     href="{{ route('customers') }}"
                     class="menu-item flex items-center gap-4 px-5 py-3 rounded-2xl text-lg transition-all
@@ -200,6 +205,21 @@
                     </span>
 
                 </a>
+
+                <a
+                    href="{{ route('manage_admin.index') }}"
+                    class="menu-item flex items-center gap-4 px-5 py-3 rounded-2xl text-lg transition-all
+                    {{ Route::is('manage_admin.*') ? 'bg-white/10 border-r-4 border-white font-bold' : 'opacity-70 hover:bg-white/10' }}"
+                >
+
+                    <i data-lucide="user-cog" class="shrink-0 w-5 h-5"></i>
+
+                    <span class="hide-on-collapse whitespace-nowrap">
+                        Manage Admin
+                    </span>
+
+                </a>
+                @endif
 
             </div>
 
@@ -251,6 +271,8 @@
     'reports' => 'Reports',
 
     'order_history' => 'Order History',
+
+    'manage-admin' => 'Manage Admin',
 
     default => 'Dashboard',
 

@@ -110,6 +110,12 @@ Route::middleware(['auth:admin', 'admin'])->group(function () {
 
     Route::post('/admin/tasks', [App\Http\Controllers\AdminTaskController::class, 'store'])->name('admin.tasks.store');
     Route::delete('/admin/tasks/{task}', [App\Http\Controllers\AdminTaskController::class, 'destroy'])->name('admin.tasks.destroy');
+
+    // Manage Admin (Super Admin only - check in controller)
+    Route::get('/manage-admin', [\App\Http\Controllers\ManageAdminController::class, 'index'])->name('manage_admin.index');
+    Route::post('/manage-admin', [\App\Http\Controllers\ManageAdminController::class, 'store'])->name('manage_admin.store');
+    Route::put('/manage-admin/{id}', [\App\Http\Controllers\ManageAdminController::class, 'update'])->name('manage_admin.update');
+    Route::delete('/manage-admin/{id}', [\App\Http\Controllers\ManageAdminController::class, 'destroy'])->name('manage_admin.destroy');
 });
 
 // ==========================================
