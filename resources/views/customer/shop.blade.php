@@ -1022,7 +1022,7 @@
                 <div class="product-card {{ $isSoldOut ? 'is-soldout' : '' }}" x-data="{ showIng: false }" style="display: flex; flex-direction: column; height: 100%;">
 
                     {{-- Image Area --}}
-                    <div class="card-image-wrap" @click="showIng = !showIng" style="cursor: pointer;">
+                    <div class="card-image-wrap" @click="showIng = !showIng">
                         @if($isSoldOut)
                             <div class="badge-soldout">Sold Out</div>
                         @endif

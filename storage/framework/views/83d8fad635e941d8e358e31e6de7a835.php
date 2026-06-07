@@ -1021,7 +1021,7 @@
                 <div class="product-card <?php echo e($isSoldOut ? 'is-soldout' : ''); ?>" x-data="{ showIng: false }" style="display: flex; flex-direction: column; height: 100%;">
 
                     
-                    <div class="card-image-wrap" @click="showIng = !showIng" style="cursor: pointer;">
+                    <div class="card-image-wrap" @click="showIng = !showIng">
                         <?php if($isSoldOut): ?>
                             <div class="badge-soldout">Sold Out</div>
                         <?php endif; ?>
