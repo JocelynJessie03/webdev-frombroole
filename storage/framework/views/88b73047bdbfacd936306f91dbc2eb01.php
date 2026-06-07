@@ -1,45 +1,43 @@
-@extends('partials.sidebar')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 
 <div class="space-y-4">
 
-    {{-- MEMBERSHIP STATS --}}
+    
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {{-- GOLD --}}
+        
         <div class="bg-[#fff9e9] border border-[#f6e7a8] rounded-2xl p-5 text-center flex flex-col items-center justify-center">
             <i data-lucide="star" class="w-5 h-5 text-yellow-600 mb-3"></i>
             <p class="uppercase tracking-widest text-[10px] font-bold text-yellow-700 mb-2">
                 Gold Members
             </p>
-            <h2 class="text-3xl font-black text-yellow-700">{{ $goldCount ?? 0 }}</h2>
+            <h2 class="text-3xl font-black text-yellow-700"><?php echo e($goldCount ?? 0); ?></h2>
         </div>
 
-        {{-- SILVER --}}
+        
         <div class="bg-[#f5f5f5] border rounded-2xl p-5 text-center flex flex-col items-center justify-center">
             <i data-lucide="star" class="w-5 h-5 text-gray-600 mb-3"></i>
             <p class="uppercase tracking-widest text-[10px] font-bold text-gray-600 mb-2">
                 Silver Members
             </p>
-            <h2 class="text-3xl font-black text-gray-700">{{ $silverCount ?? 0 }}</h2>
+            <h2 class="text-3xl font-black text-gray-700"><?php echo e($silverCount ?? 0); ?></h2>
         </div>
 
-        {{-- BRONZE --}}
+        
         <div class="bg-[#fff5ec] border border-[#ffd8b5] rounded-2xl p-5 text-center flex flex-col items-center justify-center">
             <i data-lucide="star" class="w-5 h-5 text-orange-600 mb-3"></i>
             <p class="uppercase tracking-widest text-[10px] font-bold text-orange-600 mb-2">
                 Bronze Members
             </p>
-            <h2 class="text-3xl font-black text-orange-600">{{ $bronzeCount ?? 0 }}</h2>
+            <h2 class="text-3xl font-black text-orange-600"><?php echo e($bronzeCount ?? 0); ?></h2>
         </div>
     </div>
 
-    {{-- TABLE CONTAINER --}}
+    
     <div class="bg-white rounded-3xl border shadow-sm overflow-hidden">
 
-        {{-- SEARCH & FILTERS --}}
+        
         <div class="p-4 flex justify-between items-center border-b gap-4">
-            {{-- INPUT SEARCH NAMA --}}
+            
             <div class="bg-[#f7f5f3] rounded-full px-4 py-2.5 flex items-center gap-3 w-[360px]">
                 <i data-lucide="search" class="w-4 h-4 text-gray-400"></i>
                 <input
@@ -51,14 +49,14 @@
             </div>
 
             <div class="flex gap-2">
-                {{-- TOMBOL SORT TOP SPENDER --}}
+                
                 <button id="btnTopSpender" data-sort="none" class="border px-4 py-2 rounded-xl flex items-center gap-2 font-medium text-sm hover:bg-gray-50 transition">
                     <i data-lucide="trending-up" class="w-4 h-4 text-gray-500"></i>
                     <span>Sort Spend</span>
                     <span id="sortIndicator" class="text-xs text-gray-400 font-bold">↕</span>
                 </button>
 
-                {{-- DROPDOWN SELECT TIER FILTER --}}
+                
                 <div class="relative flex items-center border px-4 py-2 rounded-xl gap-2 font-medium text-sm bg-white">
                     <i data-lucide="star" class="w-4 h-4 text-gray-500"></i>
                     <select id="tierFilter" class="bg-transparent outline-none cursor-pointer appearance-none pr-4 font-semibold">
@@ -68,7 +66,7 @@
                         <option value="bronze">Bronze</option>
                     </select>
                 </div>
-                {{-- TAMBAHAN BARU: TOMBOL PEMICU MODAL TASK --}}
+                
                 <button onclick="openTaskModal()" class="bg-[#9E1111] hover:bg-[#8C1717] text-white px-4 py-2 rounded-xl flex items-center gap-2 font-medium text-sm transition shadow-sm">
                     <i data-lucide="plus-circle" class="w-4 h-4"></i>
                     <span>Manage Tier Tasks</span>
@@ -76,7 +74,7 @@
             </div>
         </div>
 
-        {{-- TABLE REAL --}}
+        
         <table class="w-full" id="customerTable">
             <thead class="bg-[#faf7f5]">
                 <tr class="text-left text-gray-400 uppercase tracking-widest text-[10px]">
@@ -91,21 +89,21 @@
             </thead>
 
             <tbody id="customerTableBody">
-                @foreach($customers as $customer)
+                <?php $__currentLoopData = $customers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $customer): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 
                 <tr class="customer-row border-t hover:bg-gray-50 transition" 
-                    data-name="{{ strtolower($customer->customer_name) }} {{ strtolower($customer->customer_ID) }}" 
-                    data-spend="{{ $customer->total_spend }}" 
-                    data-tier="{{ strtolower($customer->tier) }}">
+                    data-name="<?php echo e(strtolower($customer->customer_name)); ?> <?php echo e(strtolower($customer->customer_ID)); ?>" 
+                    data-spend="<?php echo e($customer->total_spend); ?>" 
+                    data-tier="<?php echo e(strtolower($customer->tier)); ?>">
                     
-                    {{-- CUSTOMER --}}
+                    
                     <td class="px-6 py-5">
                         <div class="flex items-center gap-3">
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode($customer->customer_name) }}&background=random" 
+                            <img src="https://ui-avatars.com/api/?name=<?php echo e(urlencode($customer->customer_name)); ?>&background=random" 
                                  class="w-12 h-12 rounded-xl object-cover">
                             <div>
-                                <h3 class="font-bold text-base">{{ $customer->customer_name }}</h3>
-                                <span class="text-[10px] text-gray-400 font-mono">{{ $customer->customer_ID }}</span>
+                                <h3 class="font-bold text-base"><?php echo e($customer->customer_name); ?></h3>
+                                <span class="text-[10px] text-gray-400 font-mono"><?php echo e($customer->customer_ID); ?></span>
                             </div>
                         </div>
                     </td>
@@ -113,58 +111,59 @@
                     
                     <td class="px-6 py-5">
                         <div class="space-y-1 text-sm text-gray-600">
-                            <div class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i> {{ $customer->email }}</div>
-                            <div class="flex items-center gap-2"><i data-lucide="phone" class="w-4 h-4"></i> {{ $customer->phone }}</div>
+                            <div class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i> <?php echo e($customer->email); ?></div>
+                            <div class="flex items-center gap-2"><i data-lucide="phone" class="w-4 h-4"></i> <?php echo e($customer->phone); ?></div>
                         </div>
                     </td>
 
                     
                     <td class="px-6 py-5">
-                        <h3 class="font-bold text-lg">Rp {{ number_format($customer->total_spend, 0, ',', '.') }}</h3>
+                        <h3 class="font-bold text-lg">Rp <?php echo e(number_format($customer->total_spend, 0, ',', '.')); ?></h3>
                     </td>
 
                     
                     <td class="px-6 py-5">
                         <div class="font-semibold text-sm">
-                            {{ $customer->orders ? $customer->orders->count() : 0 }} visits
+                            <?php echo e($customer->orders ? $customer->orders->count() : 0); ?> visits
                         </div>
                     </td>
 
                     
                     <td class="px-6 py-5">
-                        @php
+                        <?php
                             $targetPoinMaksimal = 10000; 
                             $calculatedPercentage = min(100, max(0, ($customer->member_points / $targetPoinMaksimal) * 100));
-                        @endphp
+                        ?>
 
                         <div class="flex items-center gap-3">
                             
-                            <div class="w-24 h-2 bg-gray-100 rounded-full overflow-hidden" title="{{ round($calculatedPercentage) }}% to Target">
+                            <div class="w-24 h-2 bg-gray-100 rounded-full overflow-hidden" title="<?php echo e(round($calculatedPercentage)); ?>% to Target">
                                 
                                 <div class="bg-[#7f876e] h-full rounded-full transition-all duration-500 ease-in-out" 
-                                    style="width: {{ $calculatedPercentage }}%">
+                                    style="width: <?php echo e($calculatedPercentage); ?>%">
                                 </div>
                             </div>
                             
-                            {{-- Teks Angka Poin --}}
+                            
                             <span class="text-sm font-semibold text-[#7f876e]">
-                                {{ number_format($customer->member_points, 0, ',', '.') }} pts
+                                <?php echo e(number_format($customer->member_points, 0, ',', '.')); ?> pts
                             </span>
                         </div>
                     </td>
 
-                    {{-- TIER --}}
+                    
                     <td class="px-6 py-5">
-                        @php
+                        <?php
                             $tierStyles = [
                                 'Gold' => 'bg-[#fff2c9] text-yellow-700',
                                 'Silver' => 'bg-gray-100 text-gray-600',
                                 'Bronze' => 'bg-[#ffe7d1] text-orange-700',
                             ];
                             $style = $tierStyles[$customer->tier] ?? 'bg-gray-100 text-gray-600';
-                        @endphp
-                        <div class="{{ $style }} px-4 py-1 rounded-full text-xs font-bold inline-block uppercase">
-                            {{ $customer->tier }}
+                        ?>
+                        <div class="<?php echo e($style); ?> px-4 py-1 rounded-full text-xs font-bold inline-block uppercase">
+                            <?php echo e($customer->tier); ?>
+
                         </div>
                     </td>
 
@@ -173,8 +172,8 @@
                         <div class="flex gap-3 text-[#7b0000]">
                         
                             <button onclick="openHistory(this)" 
-                                    data-name="{{ $customer->customer_name }}"
-                                    data-history="{{ json_encode($customer->orders ?? []) }}"
+                                    data-name="<?php echo e($customer->customer_name); ?>"
+                                    data-history="<?php echo e(json_encode($customer->orders ?? [])); ?>"
                                     class="hover:scale-110 transition flex items-center gap-1.5"
                                     title="View Transaction History">
                                 <i data-lucide="history" class="w-4 h-4"></i>
@@ -182,7 +181,7 @@
                         </div>
                     </td>
                 </tr>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </tbody>
         </table>
     </div>
@@ -447,8 +446,8 @@ window.onclick = function(event) {
         <div class="p-6 overflow-y-auto flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="bg-[#faf7f5] p-5 rounded-2xl border">
                 <h3 class="font-bold text-sm mb-4 text-[#7b0000] uppercase tracking-wider">📝 Create New Task</h3>
-                <form action="{{ route('admin.tasks.store') }}" method="POST" class="space-y-3" id="taskForm">
-                    @csrf
+                <form action="<?php echo e(route('admin.tasks.store')); ?>" method="POST" class="space-y-3" id="taskForm">
+                    <?php echo csrf_field(); ?>
                     
                     <div>
                         <label class="block text-[11px] font-bold text-gray-500 uppercase mb-1">Task Title</label>
@@ -498,13 +497,13 @@ window.onclick = function(event) {
                     <div id="productSelectorContainer" class="hidden">
                         <label class="block text-[11px] font-bold text-gray-500 uppercase mb-2">Select Products</label>
                         <div class="max-h-48 overflow-y-auto border rounded-xl p-3 bg-white space-y-2" id="productList">
-                            @php $products = \App\Models\Product::all(); @endphp
-                            @foreach($products as $product)
+                            <?php $products = \App\Models\Product::all(); ?>
+                            <?php $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
-                                    <input type="checkbox" name="product_ids[]" value="{{ $product->id }}" class="w-4 h-4 rounded cursor-pointer">
-                                    <span class="text-sm text-gray-700">{{ $product->pro_name }}</span>
+                                    <input type="checkbox" name="product_ids[]" value="<?php echo e($product->id); ?>" class="w-4 h-4 rounded cursor-pointer">
+                                    <span class="text-sm text-gray-700"><?php echo e($product->pro_name); ?></span>
                                 </label>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
                     </div>
 
@@ -528,50 +527,50 @@ window.onclick = function(event) {
 
             <div class="space-y-4 overflow-y-auto max-h-96">
                 <h3 class="font-bold text-sm text-gray-700 uppercase tracking-wider sticky top-0 bg-white pb-2">📋 Active Tasks</h3>
-                @php 
+                <?php 
                     $allActiveTasks = \App\Models\Task::where('is_active', true)->get();
-                @endphp
+                ?>
                 
-                @foreach(['Bronze', 'Silver', 'Gold'] as $tName)
+                <?php $__currentLoopData = ['Bronze', 'Silver', 'Gold']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tName): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <div class="border rounded-xl p-3 bg-white">
                         <h4 class="font-black text-xs uppercase text-gray-400 mb-2 tracking-widest border-b pb-1">
-                            {{ $tName }} Tasks
+                            <?php echo e($tName); ?> Tasks
                         </h4>
                         <div class="space-y-2">
-                            @forelse($allActiveTasks->where('required_tier', $tName) as $tAct)
+                            <?php $__empty_1 = true; $__currentLoopData = $allActiveTasks->where('required_tier', $tName); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tAct): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                 <div class="flex justify-between items-start bg-[#faf7f5] p-2.5 rounded-lg border border-gray-100 text-xs gap-2">
                                     <div class="flex-1">
-                                        <p class="font-bold text-gray-800">{{ $tAct->title }}</p>
-                                        <p class="text-[10px] text-gray-400 mb-1">{{ Str::limit($tAct->description, 50) }}</p>
+                                        <p class="font-bold text-gray-800"><?php echo e($tAct->title); ?></p>
+                                        <p class="text-[10px] text-gray-400 mb-1"><?php echo e(Str::limit($tAct->description, 50)); ?></p>
                                         <div class="flex flex-wrap gap-1">
-                                            <span class="bg-white px-2 py-0.5 rounded text-[9px] font-semibold border">{{ $tAct->task_type === 'general' ? '🎯 General' : '📦 Specific' }}</span>
-                                            @if($tAct->task_type === 'product_specific' && $tAct->products->count() > 0)
-                                                <span class="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-[9px] font-semibold">{{ $tAct->products->count() }} products</span>
-                                            @endif
+                                            <span class="bg-white px-2 py-0.5 rounded text-[9px] font-semibold border"><?php echo e($tAct->task_type === 'general' ? '🎯 General' : '📦 Specific'); ?></span>
+                                            <?php if($tAct->task_type === 'product_specific' && $tAct->products->count() > 0): ?>
+                                                <span class="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-[9px] font-semibold"><?php echo e($tAct->products->count()); ?> products</span>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                     <div class="flex items-center gap-2 whitespace-nowrap">
-                                        <span class="font-mono bg-white border px-1.5 py-0.5 rounded text-gray-600 font-bold">+{{ $tAct->points_reward }}p</span>
-                                        <form action="{{ route('admin.tasks.destroy', $tAct->id) }}" method="POST" onsubmit="return confirm('Delete?')">
-                                            @csrf @method('DELETE')
+                                        <span class="font-mono bg-white border px-1.5 py-0.5 rounded text-gray-600 font-bold">+<?php echo e($tAct->points_reward); ?>p</span>
+                                        <form action="<?php echo e(route('admin.tasks.destroy', $tAct->id)); ?>" method="POST" onsubmit="return confirm('Delete?')">
+                                            <?php echo csrf_field(); ?> <?php echo method_field('DELETE'); ?>
                                             <button type="submit" class="text-red-600 hover:text-red-900 transition p-1" title="Delete">
                                                 <i data-lucide="trash-2" class="w-3 h-3"></i>
                                             </button>
                                         </form>
                                     </div>
                                 </div>
-                            @empty
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                 <p class="text-[11px] text-gray-400 italic py-2">No tasks yet</p>
-                            @endforelse
+                            <?php endif; ?>
                         </div>
                     </div>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
         </div>
     </div>
 </div>
 
-{{-- JAVASCRIPT CONTROLLER UNTUK TRIGGER MODAL TASK & TASK TYPE TOGGLE --}}
+
 <script>
 function openTaskModal() {
     document.getElementById('taskModal').classList.remove('hidden');
@@ -615,4 +614,5 @@ window.addEventListener('click', function(event) {
     if (event.target == taskModal) closeTaskModal();
 });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('partials.sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Herd\webdev-frombroole\resources\views/customers.blade.php ENDPATH**/ ?>

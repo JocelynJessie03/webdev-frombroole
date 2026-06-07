@@ -1753,7 +1753,7 @@ function clearCustomerLocalStorage() {
 
                 // Create trailing dot effect
                 const now = Date.now();
-                if (now - lastParticleTime > 20) {
+                if (now - lastParticleTime > 10) {
                     createParticle(mouseX, mouseY, 'cursor-particle');
                     lastParticleTime = now;
                 }
@@ -1761,7 +1761,7 @@ function clearCustomerLocalStorage() {
             
             // On Click: spawn Heart particles!
             document.addEventListener('mousedown', (e) => {
-                const heartsCount = Math.floor(Math.random() * 4) + 6; // 6 to 9 hearts
+                const heartsCount = Math.floor(Math.random() * 8) + 12; // 12 to 19 hearts
                 for(let i=0; i<heartsCount; i++) {
                     createParticle(e.clientX, e.clientY, 'heart-pop');
                 }
