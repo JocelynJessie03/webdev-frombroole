@@ -157,6 +157,7 @@ class OrderHistorySeeder extends Seeder
                 'total_price'    => $order['total_price'],
                 'payment_method' => $order['payment_method'],
                 'status'         => $order['status'],
+                'payment_status' => 'PAID', // Tambahkan payment_status PAID
             ]);
         }
 
