@@ -331,7 +331,7 @@
     display: flex;
     flex-direction: column;
     position: relative;
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
     box-shadow: inset 0 0 0 0 var(--crimson), var(--shadow-card);
     opacity: 0;
     animation: cardIn 0.5s ease forwards;
@@ -596,6 +596,73 @@
     cursor: not-allowed;
 }
 .btn-add svg { pointer-events: none; }
+
+/* ── INGREDIENTS OVERLAY ── */
+.ingredients-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(248, 245, 242, 0.75);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 5;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transform: translateY(100%);
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease, visibility 0.5s;
+    opacity: 0;
+    visibility: hidden;
+}
+[data-theme="dark"] .shop-page .ingredients-overlay {
+    background: rgba(37, 33, 32, 0.75);
+}
+.ingredients-overlay.show {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+}
+.ing-title {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--charcoal);
+    margin-bottom: 8px;
+    letter-spacing: 0.1em;
+}
+.ing-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    overflow-y: auto;
+    max-height: 100%;
+    width: 100%;
+}
+.ing-list li {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    padding: 4px 0;
+    border-bottom: 1px dashed var(--border);
+}
+.ing-list li:last-child {
+    border-bottom: none;
+}
+[data-theme="dark"] .shop-page .ing-list li {
+    color: var(--charcoal); /* which is actually light cream in dark mode */
+}
+.ing-list::-webkit-scrollbar {
+    width: 3px;
+}
+.ing-list::-webkit-scrollbar-thumb {
+    background: var(--crimson);
+    border-radius: 4px;
+}
 
 .empty-state {
     grid-column: 1 / -1;
@@ -952,10 +1019,10 @@
                     $isSoldOut = $product->calculated_stock <= 0;
                 @endphp
 
-                <div class="product-card {{ $isSoldOut ? 'is-soldout' : '' }}" style="display: flex; flex-direction: column; height: 100%;">
+                <div class="product-card {{ $isSoldOut ? 'is-soldout' : '' }}" x-data="{ showIng: false }" style="display: flex; flex-direction: column; height: 100%;">
 
                     {{-- Image Area --}}
-                    <div class="card-image-wrap">
+                    <div class="card-image-wrap" @click="showIng = !showIng" style="cursor: pointer;">
                         @if($isSoldOut)
                             <div class="badge-soldout">Sold Out</div>
                         @endif
@@ -969,6 +1036,19 @@
                         @else
                             <span class="card-no-image">No Image</span>
                         @endif
+
+                        {{-- Glassmorphism Ingredients Overlay --}}
+                        <div class="ingredients-overlay" :class="{ 'show': showIng }">
+                            <h4 class="ing-title">Ingredients</h4>
+                            <ul class="ing-list">
+                                @forelse($product->ingredients as $ing)
+                                    <li>{{ $ing->name }}</li>
+                                @empty
+                                    <li>No ingredients found</li>
+                                @endforelse
+                            </ul>
+                            <div style="font-size: 8px; color: var(--crimson); margin-top: 8px; font-weight: bold; letter-spacing: 0.1em; text-transform: uppercase;">Tap to close</div>
+                        </div>
                     </div>
 
                     {{-- Card Body --}}
