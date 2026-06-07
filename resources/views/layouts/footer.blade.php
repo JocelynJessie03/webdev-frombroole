@@ -53,9 +53,14 @@
         <div class="fb-footer__col">
             <div class="fb-footer__col-title">Our Menu</div>
             <nav class="fb-footer__links">
-                <a href="{{ route('customer.shop', ['category' => 1]) }}" class="fb-footer__link">Signature Broole</a>
-                <a href="{{ route('customer.shop', ['category' => 3]) }}" class="fb-footer__link">Burnt Cheesecake</a>
-                <a href="{{ route('customer.shop', ['category' => 2]) }}" class="fb-footer__link">Craft Drinks</a>
+                @php
+                    $footerCategories = \App\Models\Category::where('category_delete', false)
+                        ->where('category_name', '!=', 'Uncategorized')
+                        ->get();
+                @endphp
+                @foreach($footerCategories as $category)
+                    <a href="{{ route('customer.shop', ['category' => $category->id]) }}" class="fb-footer__link">{{ $category->category_name }}</a>
+                @endforeach
             </nav>
         </div>
 
