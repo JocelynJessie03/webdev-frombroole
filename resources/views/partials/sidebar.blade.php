@@ -274,7 +274,7 @@
 
     'manage-admin' => 'Manage Admin',
 
-    default => 'Dashboard',
+    default => '',
 
 };
 
