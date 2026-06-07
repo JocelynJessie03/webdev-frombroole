@@ -23,7 +23,10 @@ class PosController extends Controller
         // Pastikan meload relasi dengan pivot table amount_needed agar Accessor di Model bisa menghitungnya
         $query = Product::with(['category', 'ingredients' => function($q) {
             $q->withPivot('amount_needed');
-        }])->where('pro_delete', false);
+        }])->where('pro_delete', false)
+          ->whereHas('category', function($q) {
+              $q->where('category_name', '!=', 'Uncategorized');
+          });
 
         if ($request->filled('category')) {
             $query->where('category_id', $request->category);

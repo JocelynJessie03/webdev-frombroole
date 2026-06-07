@@ -27,7 +27,10 @@ class ShopController extends Controller
         'ingredients' => function ($q) {
             $q->withPivot('amount_needed');
         },
-    ])->where('pro_delete', false);
+    ])->where('pro_delete', false)
+      ->whereHas('category', function($q) {
+          $q->where('category_name', '!=', 'Uncategorized');
+      });
 
     // 3. Live Search Filter
     if ($request->filled('search')) {
