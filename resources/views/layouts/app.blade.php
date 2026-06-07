@@ -1808,5 +1808,6 @@ function clearCustomerLocalStorage() {
         document.getElementById('globalLoginModal').classList.remove('show');
     }
     </script>
+    @include('components.pet')
 </body>
 </html>

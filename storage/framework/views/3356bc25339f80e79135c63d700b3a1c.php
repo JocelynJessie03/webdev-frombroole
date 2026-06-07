@@ -1804,5 +1804,6 @@ function clearCustomerLocalStorage() {
         document.getElementById('globalLoginModal').classList.remove('show');
     }
     </script>
+    <?php echo $__env->make('components.pet', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 </body>
 </html><?php /**PATH D:\Herd\webdev-frombroole\resources\views/layouts/app.blade.php ENDPATH**/ ?>

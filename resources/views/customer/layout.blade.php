@@ -402,5 +402,6 @@ function clearCustomerLocalStorage() {
     })();
     </script>
 
+    @include('components.pet')
 </body>
 </html>
