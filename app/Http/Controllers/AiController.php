@@ -129,6 +129,11 @@ class AiController extends Controller
         Instagram:
         @frombroole
 
+        Virtual Pets on Website:
+        - Dog's name: Leno 🐶
+        - Cat's name: Lenny 🐈
+        (Feel free to mention them playfully if the customer asks!)
+
         Drink Sweetness Options:
         100% Sugar
         50% Sugar
