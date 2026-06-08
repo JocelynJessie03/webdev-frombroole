@@ -139,6 +139,7 @@ class IngredientController extends Controller
         ]);
 
         DB::table('notifications')->insert([
+                        'id' => \Illuminate\Support\Str::uuid(),
             'title' => 'Ingredient Stock Adjusted',
             'message' => 'Stock for "' . $request->name . '" has been updated from ' . $oldStock . ' to ' . $newStock . ' ' . strtolower($request->unit) . '.',
             'type' => 'stock',
@@ -172,6 +173,7 @@ class IngredientController extends Controller
         ]);
 
         DB::table('notifications')->insert([
+                        'id' => \Illuminate\Support\Str::uuid(),
             'title' => 'New Ingredient Added',
             'message' => 'Ingredient "' . $request->name . '" (' . $request->stock . ' ' . strtolower($request->unit) . ') has been successfully registered.',
             'type' => 'stock',
@@ -198,6 +200,7 @@ class IngredientController extends Controller
         $ingredient->delete();
 
         DB::table('notifications')->insert([
+                        'id' => \Illuminate\Support\Str::uuid(),
             'title' => 'Ingredient Deleted',
             'message' => 'Ingredient "' . $ingredient->name . '" has been permanently removed from the system.',
             'type' => 'stock',

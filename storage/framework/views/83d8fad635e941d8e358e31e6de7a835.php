@@ -1096,7 +1096,7 @@
                                 class="btn-add <?php echo e(!$isSoldOut ? 'available' : 'unavailable'); ?>"
                                 <?php echo e($isSoldOut ? 'disabled' : ''); ?>
 
-                                onclick="addToCart(<?php echo e($product->id); ?>, '<?php echo e(addslashes($product->pro_name)); ?>', <?php echo e($product->pro_price); ?>, <?php echo e($product->calculated_stock); ?>, <?php echo e($isDrink ? 'true' : 'false'); ?>, '<?php echo e($product->pro_image); ?>')"
+                                onclick="addToCart('<?php echo e($product->id); ?>', '<?php echo e(addslashes($product->pro_name)); ?>', <?php echo e($product->pro_price); ?>, <?php echo e($product->calculated_stock); ?>, <?php echo e($isDrink ? 'true' : 'false'); ?>, '<?php echo e($product->pro_image); ?>')"
                                 aria-label="Add <?php echo e($product->pro_name); ?> to cart"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">

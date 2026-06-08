@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\Syncable;
+
 use Illuminate\Database\Eloquent\Model;
 
 class OrderHistory extends Model
 {
+    use Syncable;
+
     // Tambahkan points_used dan promo_code, serta payment_status
     protected $fillable = [
         'order_id', 'customer_id', 'order_date', 'total_items', 

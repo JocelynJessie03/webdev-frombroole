@@ -1,23 +1,21 @@
-@extends('partials.sidebar')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <div class="space-y-5">
-    @if(session('success'))
+    <?php if(session('success')): ?>
         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl relative font-bold text-sm flex items-center gap-2 shadow-sm transition">
             <i data-lucide="check-circle" class="w-4 h-4"></i>
-            <span>{{ session('success') }}</span>
+            <span><?php echo e(session('success')); ?></span>
         </div>
-    @endif
+    <?php endif; ?>
 
-    @if(session('error'))
+    <?php if(session('error')): ?>
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl relative font-bold text-sm flex items-center gap-2 shadow-sm transition">
             <i data-lucide="alert-circle" class="w-4 h-4"></i>
-            <span>{{ session('error') }}</span>
+            <span><?php echo e(session('error')); ?></span>
         </div>
-    @endif
+    <?php endif; ?>
 
     <div class="grid grid-cols-3 gap-4">
         <div class="bg-white rounded-2xl border p-5 shadow-sm">
@@ -30,71 +28,76 @@
                 Total Products
             </p>
             <h2 class="text-4xl font-black text-[#7b0000]">
-                {{ $totalProducts }}
+                <?php echo e($totalProducts); ?>
+
             </h2>
         </div>
         <div class="bg-white rounded-2xl border p-5 shadow-sm">
             <div class="flex justify-between items-start mb-5">
                 
-                @if(request('filter') == 'out_of_stock')
-                    {{-- Tampilan Merah saat Filter OUT OF STOCK Aktif --}}
-                    <div class="w-12 h-12 rounded-xl {{ $outOfStockCount > 0 ? 'bg-red-50' : 'bg-gray-50' }} flex items-center justify-center transition-colors">
-                        <i data-lucide="info" class="w-5 h-5 {{ $outOfStockCount > 0 ? 'text-red-600' : 'text-gray-400' }}"></i>
+                <?php if(request('filter') == 'out_of_stock'): ?>
+                    
+                    <div class="w-12 h-12 rounded-xl <?php echo e($outOfStockCount > 0 ? 'bg-red-50' : 'bg-gray-50'); ?> flex items-center justify-center transition-colors">
+                        <i data-lucide="info" class="w-5 h-5 <?php echo e($outOfStockCount > 0 ? 'text-red-600' : 'text-gray-400'); ?>"></i>
                     </div>
-                    @if($outOfStockCount > 0)
+                    <?php if($outOfStockCount > 0): ?>
                         <div class="bg-red-100 text-red-700 text-xs font-bold px-3 py-1 rounded-full animate-pulse">
                             Empty Stock
                         </div>
-                    @endif
+                    <?php endif; ?>
 
-                @elseif(request('filter') == 'low_stock')
-                    {{-- Tampilan Kuning saat Filter LOW STOCK Aktif --}}
-                    <div class="w-12 h-12 rounded-xl {{ $lowStockCount > 0 ? 'bg-amber-50' : 'bg-gray-50' }} flex items-center justify-center transition-colors">
-                        <i data-lucide="triangle-alert" class="w-5 h-5 {{ $lowStockCount > 0 ? 'text-amber-500' : 'text-gray-400' }}"></i>
+                <?php elseif(request('filter') == 'low_stock'): ?>
+                    
+                    <div class="w-12 h-12 rounded-xl <?php echo e($lowStockCount > 0 ? 'bg-amber-50' : 'bg-gray-50'); ?> flex items-center justify-center transition-colors">
+                        <i data-lucide="triangle-alert" class="w-5 h-5 <?php echo e($lowStockCount > 0 ? 'text-amber-500' : 'text-gray-400'); ?>"></i>
                     </div>
-                    @if($lowStockCount > 0)
+                    <?php if($lowStockCount > 0): ?>
                         <div class="bg-amber-100 text-amber-700 text-xs font-bold px-3 py-1 rounded-full">
                             Monitor Stock
                         </div>
-                    @endif
+                    <?php endif; ?>
 
-                @else
-                    {{-- Tampilan GABUNGAN (ALL) saat tidak ada filter atau filter = all --}}
-                    @php
+                <?php else: ?>
+                    
+                    <?php
                         $totalWarnings = $lowStockCount + $outOfStockCount;
                         $isCritical = $outOfStockCount > 0;
-                    @endphp
-                    <div class="w-12 h-12 rounded-xl {{ $totalWarnings > 0 ? ($isCritical ? 'bg-red-50' : 'bg-amber-50') : 'bg-gray-50' }} flex items-center justify-center transition-colors">
-                        <i data-lucide="{{ $isCritical ? 'info' : 'triangle-alert' }}" class="w-5 h-5 {{ $totalWarnings > 0 ? ($isCritical ? 'text-red-600' : 'text-amber-500') : 'text-gray-400' }}"></i>
+                    ?>
+                    <div class="w-12 h-12 rounded-xl <?php echo e($totalWarnings > 0 ? ($isCritical ? 'bg-red-50' : 'bg-amber-50') : 'bg-gray-50'); ?> flex items-center justify-center transition-colors">
+                        <i data-lucide="<?php echo e($isCritical ? 'info' : 'triangle-alert'); ?>" class="w-5 h-5 <?php echo e($totalWarnings > 0 ? ($isCritical ? 'text-red-600' : 'text-amber-500') : 'text-gray-400'); ?>"></i>
                     </div>
-                    @if($totalWarnings > 0)
-                        <div class="{{ $isCritical ? 'bg-red-100 text-red-700 animate-pulse' : 'bg-amber-100 text-amber-700' }} text-xs font-bold px-3 py-1 rounded-full">
-                            {{ $isCritical ? 'Action Needed' : 'Monitor Stock' }}
+                    <?php if($totalWarnings > 0): ?>
+                        <div class="<?php echo e($isCritical ? 'bg-red-100 text-red-700 animate-pulse' : 'bg-amber-100 text-amber-700'); ?> text-xs font-bold px-3 py-1 rounded-full">
+                            <?php echo e($isCritical ? 'Action Needed' : 'Monitor Stock'); ?>
+
                         </div>
-                    @endif
-                @endif
+                    <?php endif; ?>
+                <?php endif; ?>
             </div>
             
-            {{-- Judul dinamis --}}
+            
             <p class="uppercase tracking-widest text-xs text-gray-400 font-bold mb-1">
-                @if(request('filter') == 'out_of_stock')
+                <?php if(request('filter') == 'out_of_stock'): ?>
                     Out Of Stock
-                @elseif(request('filter') == 'low_stock')
+                <?php elseif(request('filter') == 'low_stock'): ?>
                     Low Stock
-                @else
+                <?php else: ?>
                     Stock Warnings
-                @endif
+                <?php endif; ?>
             </p>
 
-            {{-- Angka dinamis --}}
+            
             <h2 class="text-4xl font-black text-black">
-                @if(request('filter') == 'out_of_stock')
-                    {{ $outOfStockCount }}
-                @elseif(request('filter') == 'low_stock')
-                    {{ $lowStockCount }}
-                @else
-                    {{ $lowStockCount + $outOfStockCount }}
-                @endif
+                <?php if(request('filter') == 'out_of_stock'): ?>
+                    <?php echo e($outOfStockCount); ?>
+
+                <?php elseif(request('filter') == 'low_stock'): ?>
+                    <?php echo e($lowStockCount); ?>
+
+                <?php else: ?>
+                    <?php echo e($lowStockCount + $outOfStockCount); ?>
+
+                <?php endif; ?>
             </h2>
         
         </div>
@@ -111,7 +114,8 @@
                 Product Value
             </p>
             <h2 class="text-4xl font-black">
-                Rp {{ number_format($totalValue, 0, ',', '.') }}
+                Rp <?php echo e(number_format($totalValue, 0, ',', '.')); ?>
+
             </h2>
         </div>
     </div>
@@ -119,33 +123,34 @@
     <div class="bg-white rounded-2xl border shadow-sm overflow-hidden">
         <div class="p-5 flex justify-between items-center border-b gap-4">
             <div class="bg-[#f6f3f1] rounded-xl p-1 flex gap-1 shrink-0">
-                <a href="{{ route('product.inventory', array_merge(request()->except('highlight'), ['filter' => ''])) }}" 
-                class="{{ !request('filter') ? 'bg-white shadow text-[#7b0000]' : 'text-gray-500' }} px-4 py-2 rounded-lg font-bold text-sm transition">
+                <a href="<?php echo e(route('product.inventory', array_merge(request()->except('highlight'), ['filter' => '']))); ?>" 
+                class="<?php echo e(!request('filter') ? 'bg-white shadow text-[#7b0000]' : 'text-gray-500'); ?> px-4 py-2 rounded-lg font-bold text-sm transition">
                     All
                 </a>
-                <a href="{{ route('product.inventory', array_merge(request()->query(), ['filter' => 'low_stock'])) }}" 
-                   class="{{ request('filter') == 'low_stock' ? 'bg-white shadow text-[#7b0000]' : 'text-gray-500' }} px-4 py-2 rounded-lg font-bold text-sm transition">
+                <a href="<?php echo e(route('product.inventory', array_merge(request()->query(), ['filter' => 'low_stock']))); ?>" 
+                   class="<?php echo e(request('filter') == 'low_stock' ? 'bg-white shadow text-[#7b0000]' : 'text-gray-500'); ?> px-4 py-2 rounded-lg font-bold text-sm transition">
                     Low Stock
                 </a>
-                <a href="{{ route('product.inventory', array_merge(request()->query(), ['filter' => 'out_of_stock'])) }}" 
-                   class="{{ request('filter') == 'out_of_stock' ? 'bg-white shadow text-[#7b0000]' : 'text-gray-500' }} px-4 py-2 rounded-lg font-bold text-sm transition">
+                <a href="<?php echo e(route('product.inventory', array_merge(request()->query(), ['filter' => 'out_of_stock']))); ?>" 
+                   class="<?php echo e(request('filter') == 'out_of_stock' ? 'bg-white shadow text-[#7b0000]' : 'text-gray-500'); ?> px-4 py-2 rounded-lg font-bold text-sm transition">
                     Out of Stock
                 </a>
             </div>
 
-            <form action="{{ route('product.inventory') }}" method="GET" class="m-0 flex items-center shrink-0">
-                @if(request('filter'))
-                    <input type="hidden" name="filter" value="{{ request('filter') }}">
-                @endif
+            <form action="<?php echo e(route('product.inventory')); ?>" method="GET" class="m-0 flex items-center shrink-0">
+                <?php if(request('filter')): ?>
+                    <input type="hidden" name="filter" value="<?php echo e(request('filter')); ?>">
+                <?php endif; ?>
                 <div class="bg-[#f6f3f1] border border-gray-200 rounded-xl px-3 py-2 flex items-center gap-2 focus-within:ring-2 focus-within:ring-[#7b0000]/20 transition">
                     <i data-lucide="filter" class="w-4 h-4 text-gray-400"></i>
                     <select name="category_filter" onchange="this.form.submit()" class="bg-transparent outline-none text-sm font-bold text-gray-700 cursor-pointer pr-2">
                         <option value="">All Categories</option>
-                        @foreach($categories->filter(fn($c) => !$c->category_delete && strtolower($c->category_name) !== 'uncategorized') as $cat)
-                            <option value="{{ $cat->id }}" {{ request('category_filter') == $cat->id ? 'selected' : '' }}>
-                                {{ $cat->category_name }}
+                        <?php $__currentLoopData = $categories->filter(fn($c) => !$c->category_delete && strtolower($c->category_name) !== 'uncategorized'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($cat->id); ?>" <?php echo e(request('category_filter') == $cat->id ? 'selected' : ''); ?>>
+                                <?php echo e($cat->category_name); ?>
+
                             </option>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </select>
                 </div>
             </form>
@@ -164,7 +169,7 @@
                     Manage Category
                 </button>
 
-                <a href="{{ route('products.create') }}"
+                <a href="<?php echo e(route('products.create')); ?>"
                    class="bg-[#7b0000] hover:bg-[#920000] text-white px-5 py-2 rounded-xl font-bold text-sm flex items-center gap-2 transition">
                     <i data-lucide="plus" class="w-4 h-4"></i>
                     Add Product
@@ -185,49 +190,53 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($products as $product)
+                    <?php $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <tr class="border-b last:border-0 hover:bg-gray-50 transition">
                         <td class="px-6 py-5">
                             <div class="flex items-center gap-3">
-                                <img src="{{ $product->pro_image ? asset('products/' . $product->pro_image) : 'https://placehold.co/100x100' }}" 
+                                <img src="<?php echo e($product->pro_image ? asset('products/' . $product->pro_image) : 'https://placehold.co/100x100'); ?>" 
                                      class="w-12 h-12 rounded-xl object-cover">
-                                <h3 class="font-bold text-base leading-tight">{{ $product->pro_name }}</h3>
+                                <h3 class="font-bold text-base leading-tight"><?php echo e($product->pro_name); ?></h3>
                             </div>
                         </td>
 
                         <td class="px-4 py-5 text-gray-400 text-sm font-semibold">
-                            {{ $product->pro_ID }}
+                            <?php echo e($product->pro_ID); ?>
+
                         </td>
 
                         <td class="px-4 py-5 text-sm font-medium text-gray-700">
-                            @if($product->category)
-                                {{ $product->category->category_name }}
-                            @else
+                            <?php if($product->category): ?>
+                                <?php echo e($product->category->category_name); ?>
+
+                            <?php else: ?>
                                 <span class="text-gray-400 italic">Uncategorized</span>
-                            @endif
+                            <?php endif; ?>
                         </td>
                         
                         <td class="px-4 py-5 font-black text-lg">
-                            Rp {{ number_format($product->pro_price, 0, ',', '.') }}
+                            Rp <?php echo e(number_format($product->pro_price, 0, ',', '.')); ?>
+
                         </td>
 
                         <td class="px-4 py-5 text-lg font-black">
-                            {{ $product->calculated_stock }}
+                            <?php echo e($product->calculated_stock); ?>
+
                         </td>
 
                         <td class="px-4 py-5">
                             <span class="
-                                {{ 
-                                    $product->status_label == 'IN STOCK'
+                                <?php echo e($product->status_label == 'IN STOCK'
                                     ? 'bg-green-100 text-green-700'
                                     : (
                                         $product->status_label == 'LOW STOCK'
                                         ? 'bg-yellow-100 text-yellow-700'
                                         : 'bg-red-100 text-red-600'
-                                    )
-                                }}
+                                    )); ?>
+
                                 px-3 py-1 rounded-full text-xs font-bold">
-                                {{ $product->status_label }}
+                                <?php echo e($product->status_label); ?>
+
                             </span>
                         </td>
              
@@ -239,29 +248,29 @@
 
                                 <div class="hidden absolute right-0 top-12 w-48 bg-white border rounded-2xl shadow-xl z-40 overflow-hidden action-dropdown transition-all duration-200">
                                     
-                                    @php
+                                    <?php
                                         $bomData = $product->ingredients->map(function($ing) {
                                             return $ing->name . ' (' . $ing->pivot->amount_needed . ' ' . $ing->unit . ')';
                                         })->toArray();
-                                    @endphp
+                                    ?>
                                     <button type="button"
                                             onclick="openBomModalFromDropdown(this)"
-                                            data-title="{{ $product->pro_name }}"
-                                            data-ingredients="{{ json_encode($bomData) }}"
+                                            data-title="<?php echo e($product->pro_name); ?>"
+                                            data-ingredients="<?php echo e(json_encode($bomData)); ?>"
                                             class="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm font-semibold flex items-center gap-3 text-gray-700 transition">
                                         <i data-lucide="cooking-pot" class="w-4 h-4"></i>
                                         View BOM
                                     </button>
 
-                                    <a href="{{ route('product.edit', $product->id) }}"
+                                    <a href="<?php echo e(route('product.edit', $product->id)); ?>"
                                        class="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm font-semibold flex items-center gap-3 text-gray-700 transition">
                                         <i data-lucide="square-pen" class="w-4 h-4"></i>
                                         Edit Product
                                     </a>
 
-                                    <form action="{{ route('products.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete {{ $product->pro_name }}?');">
-                                        @csrf
-                                        @method('DELETE')
+                                    <form action="<?php echo e(route('products.destroy', $product->id)); ?>" method="POST" onsubmit="return confirm('Are you sure you want to delete <?php echo e($product->pro_name); ?>?');">
+                                        <?php echo csrf_field(); ?>
+                                        <?php echo method_field('DELETE'); ?>
                                         <button type="submit"
                                                 class="w-full text-left px-4 py-3 hover:bg-red-50 text-red-600 text-sm font-semibold flex items-center gap-3 transition">
                                             <i data-lucide="trash-2" class="w-4 h-4"></i>
@@ -272,7 +281,7 @@
                             </div>
                         </td>
                     </tr>
-                    @endforeach    
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>    
                 </tbody>
             </table>
         </div>
@@ -292,8 +301,8 @@
         </div>
 
         <div class="p-6 border-b bg-white">
-            <form action="{{ route('categories.store') }}" method="POST" class="flex gap-2 m-0">
-                @csrf 
+            <form action="<?php echo e(route('categories.store')); ?>" method="POST" class="flex gap-2 m-0">
+                <?php echo csrf_field(); ?> 
                 <div class="flex-1">
                     <input type="text" 
                            name="category_name" 
@@ -312,78 +321,78 @@
         <div class="p-6 overflow-y-auto flex-1 space-y-2.5 bg-white" style="scrollbar-width: thin;">
             <p class="text-[10px] uppercase tracking-wider font-bold text-gray-400 mb-1">Active Categories</p>
             
-            @php
+            <?php
                 $activeCategories = $categories->filter(fn($c) => !$c->category_delete && strtolower($c->category_name) !== 'uncategorized');
                 $deletedCategories = $categories->filter(fn($c) => $c->category_delete && strtolower($c->category_name) !== 'uncategorized');
-            @endphp
+            ?>
 
-            @if($activeCategories->count() > 0)
-                @foreach($activeCategories as $category)
-                    <div id="row-cat-{{ $category->id }}" class="flex justify-between items-center bg-[#f7f5f3] px-4 py-3 rounded-xl border border-gray-100 transition-all">
+            <?php if($activeCategories->count() > 0): ?>
+                <?php $__currentLoopData = $activeCategories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <div id="row-cat-<?php echo e($category->id); ?>" class="flex justify-between items-center bg-[#f7f5f3] px-4 py-3 rounded-xl border border-gray-100 transition-all">
                         <div class="flex-1 view-mode">
-                            <span class="font-bold text-sm text-gray-800 cat-name-text">{{ $category->category_name }}</span>
-                            <span class="text-[10px] text-gray-400 font-mono ml-2 bg-gray-200/60 px-1.5 py-0.5 rounded">{{ $category->category_ID }}</span>
+                            <span class="font-bold text-sm text-gray-800 cat-name-text"><?php echo e($category->category_name); ?></span>
+                            <span class="text-[10px] text-gray-400 font-mono ml-2 bg-gray-200/60 px-1.5 py-0.5 rounded"><?php echo e($category->category_ID); ?></span>
                         </div>
 
                         <div class="flex-1 edit-mode hidden pr-2">
-                            <form action="{{ route('categories.update', $category->id) }}" method="POST" class="flex items-center gap-1.5 m-0">
-                                @csrf
-                                @method('PUT')
-                                <input type="text" name="category_name" value="{{ $category->category_name }}" required
+                            <form action="<?php echo e(route('categories.update', $category->id)); ?>" method="POST" class="flex items-center gap-1.5 m-0">
+                                <?php echo csrf_field(); ?>
+                                <?php echo method_field('PUT'); ?>
+                                <input type="text" name="category_name" value="<?php echo e($category->category_name); ?>" required
                                        class="w-full bg-white border border-[#7b0000] rounded-lg px-2.5 py-1 text-sm font-bold text-gray-800 focus:outline-none">
                                 
                                 <button type="submit" class="text-green-600 hover:bg-green-50 p-1.5 rounded-md transition">
                                     <i data-lucide="check" class="w-4 h-4"></i>
                                 </button>
-                                <button type="button" onclick="cancelInlineEdit('{{ $category->id }}')" class="text-gray-400 hover:bg-gray-200 p-1.5 rounded-md transition">
+                                <button type="button" onclick="cancelInlineEdit('<?php echo e($category->id); ?>')" class="text-gray-400 hover:bg-gray-200 p-1.5 rounded-md transition">
                                     <i data-lucide="x" class="w-4 h-4"></i>
                                 </button>
                             </form>
                         </div>
 
                         <div class="flex items-center gap-1 action-buttons-block">
-                            <button onclick="enableInlineEdit('{{ $category->id }}')" class="text-gray-500 hover:text-black hover:bg-gray-200 p-2 rounded-lg transition">
+                            <button onclick="enableInlineEdit('<?php echo e($category->id); ?>')" class="text-gray-500 hover:text-black hover:bg-gray-200 p-2 rounded-lg transition">
                                 <i data-lucide="square-pen" class="w-4 h-4"></i>
                             </button>
                             
-                            <form action="{{ route('categories.destroy', $category->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this category? All related products will become Uncategorized.');" class="inline m-0">
-                                @csrf
-                                @method('DELETE')
+                            <form action="<?php echo e(route('categories.destroy', $category->id)); ?>" method="POST" onsubmit="return confirm('Are you sure you want to delete this category? All related products will become Uncategorized.');" class="inline m-0">
+                                <?php echo csrf_field(); ?>
+                                <?php echo method_field('DELETE'); ?>
                                 <button type="submit" class="text-red-600 hover:bg-red-50 p-2 rounded-lg transition">
                                     <i data-lucide="trash-2" class="w-4 h-4"></i>
                                 </button>
                             </form>
                         </div>
                     </div>
-                @endforeach
-            @else
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            <?php else: ?>
                 <p class="text-gray-400 italic text-xs py-2 pl-1">No active categories found.</p>
-            @endif
+            <?php endif; ?>
 
-            @if($deletedCategories->count() > 0)
+            <?php if($deletedCategories->count() > 0): ?>
                 <div class="pt-4 mt-2 border-t border-dashed border-gray-200">
                     <p class="text-[10px] uppercase tracking-wider font-bold text-red-500 mb-2 flex items-center gap-1">
                         <i data-lucide="archive" class="w-3 h-3"></i> Archived / Deleted
                     </p>
                     <div class="space-y-2">
-                        @foreach($deletedCategories as $delCategory)
+                        <?php $__currentLoopData = $deletedCategories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $delCategory): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <div class="flex justify-between items-center bg-gray-50/70 px-4 py-2.5 rounded-xl border border-gray-100 opacity-75">
                                 <div>
-                                    <span class="font-semibold text-sm text-gray-500 line-through">{{ $delCategory->category_name }}</span>
-                                    <span class="text-[9px] text-gray-400 font-mono ml-2 bg-gray-200/40 px-1 py-0.5 rounded">{{ $delCategory->category_ID }}</span>
+                                    <span class="font-semibold text-sm text-gray-500 line-through"><?php echo e($delCategory->category_name); ?></span>
+                                    <span class="text-[9px] text-gray-400 font-mono ml-2 bg-gray-200/40 px-1 py-0.5 rounded"><?php echo e($delCategory->category_ID); ?></span>
                                 </div>
 
-                                <form action="{{ route('categories.restore', $delCategory->id) }}" method="POST" class="m-0">
-                                    @csrf
+                                <form action="<?php echo e(route('categories.restore', $delCategory->id)); ?>" method="POST" class="m-0">
+                                    <?php echo csrf_field(); ?>
                                     <button type="submit" title="Restore Category" class="text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition cursor-pointer">
                                         <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
                                     </button>
                                 </form>
                             </div>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
                 </div>
-            @endif
+            <?php endif; ?>
         </div>
 
         <div class="p-4 bg-gray-50 border-t flex justify-end">
@@ -609,4 +618,5 @@
         }
     });
 </script> 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('partials.sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Herd\webdev-frombroole\resources\views/product/inventory.blade.php ENDPATH**/ ?>

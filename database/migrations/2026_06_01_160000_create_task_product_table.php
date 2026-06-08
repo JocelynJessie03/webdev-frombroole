@@ -13,11 +13,13 @@ return new class extends Migration
         });
 
         Schema::create('task_product', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('task_id')->constrained('tasks')->onDelete('cascade');
-            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('task_id')->constrained('tasks')->onDelete('cascade');
+            $table->foreignUuid('product_id')->constrained('products')->onDelete('cascade');
             $table->unique(['task_id', 'product_id']);
             $table->timestamps();
+            $table->softDeletes();
+            $table->timestamp('synced_at')->nullable();
         });
     }
 

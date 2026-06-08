@@ -131,7 +131,7 @@ class MemberTaskController extends Controller
         ]);
  
         // Attach task to customer
-        $customer->tasks()->attach($task->id, [
+        $customer->tasks()->attach($task->id, ['id' => \Illuminate\Support\Str::uuid(), 
             'status'      => 'claimed',
             'coupon_code' => $couponCode,
             'claimed_at'  => now(),

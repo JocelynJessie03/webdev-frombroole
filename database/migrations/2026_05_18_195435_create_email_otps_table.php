@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('email_otps', function (Blueprint $table) {
 
-            $table->id();
+            $table->uuid('id')->primary();
 
             $table->string('name');
 
@@ -23,6 +23,8 @@ return new class extends Migration
             $table->timestamp('expires_at');
 
             $table->timestamps();
+            $table->softDeletes();
+            $table->timestamp('synced_at')->nullable();
         });
     }
 

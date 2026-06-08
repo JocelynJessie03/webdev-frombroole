@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tasks', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('title');
             $table->text('description')->nullable();
             $table->enum('required_tier', ['Bronze', 'Silver', 'Gold']);
@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('coupon_code')->nullable(); // linked coupon code
             $table->boolean('is_active')->default(true);
             $table->timestamps();
+            $table->softDeletes();
+            $table->timestamp('synced_at')->nullable();
         });
     }
 

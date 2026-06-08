@@ -66,7 +66,7 @@ class CartController extends Controller
 
         $validated = $request->validate([
             'items'              => ['required', 'array', 'min:1'],
-            'items.*.id'         => ['required', 'integer', 'exists:products,id'],
+            'items.*.id'         => ['required', 'string', 'exists:products,id'],
             'items.*.qty'        => ['required', 'integer', 'min:1'],
             'items.*.price'      => ['required', 'numeric', 'min:0'],
             'items.*.sugarLevel' => ['nullable', 'string'], // Diubah ke string agar fleksibel
@@ -282,6 +282,7 @@ class CartController extends Controller
                         $ingredient->save();
 
                         DB::table('ingredient_histories')->insert([
+                            'id'            => \Illuminate\Support\Str::uuid(),
                             'ingredient_id' => $ingredient->id,
                             'amount'        => $totalPotongan,
                             'type'          => 'out',
@@ -314,6 +315,7 @@ class CartController extends Controller
 
                         // Catat penggunaan per-customer (ignore jika sudah ada)
                         DB::table('coupon_usages')->insertOrIgnore([
+                            'id'             => \Illuminate\Support\Str::uuid(),
                             'customer_id'    => $customerId,
                             'coupon_id'      => $coupon->id,
                             'order_history_id' => $order->id,
@@ -348,6 +350,7 @@ class CartController extends Controller
 
             // 4. Notifikasi Admin
             DB::table('notifications')->insert([
+                        'id' => \Illuminate\Support\Str::uuid(),
                 'title'      => 'New Web Order Paid (Midtrans)',
                 'message'    => 'Order ' . $order->order_id . ' has been successfully paid.',
                 'type'       => 'order',

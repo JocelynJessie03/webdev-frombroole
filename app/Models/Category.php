@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\Syncable;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
 {
+    use Syncable;
+
     use SoftDeletes;
     protected $fillable = ['category_name', 'category_ID'];
     

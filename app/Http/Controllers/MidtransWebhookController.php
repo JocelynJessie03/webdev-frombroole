@@ -101,6 +101,7 @@ class MidtransWebhookController extends Controller
                             $ingredient->save();
 
                             DB::table('ingredient_histories')->insert([
+                                'id'            => \Illuminate\Support\Str::uuid(),
                                 'ingredient_id' => $ingredient->id,
                                 'amount'        => $totalPotongan,
                                 'type'          => 'out',
@@ -133,6 +134,7 @@ class MidtransWebhookController extends Controller
 
                             // Catat penggunaan per-customer (ignore jika sudah ada dari paymentSuccess)
                             DB::table('coupon_usages')->insertOrIgnore([
+                                'id'               => \Illuminate\Support\Str::uuid(),
                                 'customer_id'      => $customerId,
                                 'coupon_id'        => $coupon->id,
                                 'order_history_id' => $order->id,
@@ -167,6 +169,7 @@ class MidtransWebhookController extends Controller
 
                 // 4. Notifikasi Admin
                 DB::table('notifications')->insert([
+                        'id' => \Illuminate\Support\Str::uuid(),
                     'title'      => 'New Web Order Paid (Midtrans)',
                     'message'    => 'Order ' . $order->order_id . ' has been successfully paid.',
                     'type'       => 'order',

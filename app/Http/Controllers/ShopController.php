@@ -110,7 +110,7 @@ class ShopController extends Controller
         // 1. Validate the incoming payload
         $validated = $request->validate([
             'items'            => ['required', 'array', 'min:1'],
-            'items.*.id'       => ['required', 'integer', 'exists:products,id'],
+            'items.*.id'       => ['required', 'string', 'exists:products,id'],
             'items.*.qty'      => ['required', 'integer', 'min:1'],
             'items.*.price'    => ['required', 'numeric', 'min:0'],
             'items.*.sugarLevel' => ['nullable', 'in:0,50,100'],

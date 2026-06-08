@@ -73,7 +73,7 @@ class TaskSeeder extends Seeder
                 'order_count'             => 1,
                 'is_active'               => true,
             ]);
-            $task5->products()->sync($matchaProducts);
+            $sync = []; foreach ($matchaProducts as $p) { $sync[$p] = ['id' => \Illuminate\Support\Str::uuid()]; } $task5->products()->sync($sync);
         }
 
         $oreoProducts = Product::where('pro_name', 'like', '%Oreo%')->pluck('id')->toArray();
@@ -88,7 +88,7 @@ class TaskSeeder extends Seeder
                 'order_count'             => 1,
                 'is_active'               => true,
             ]);
-            $task6->products()->sync($oreoProducts);
+            $sync = []; foreach ($oreoProducts as $p) { $sync[$p] = ['id' => \Illuminate\Support\Str::uuid()]; } $task6->products()->sync($sync);
         }
 
         // ========== SILVER TIER TASKS ==========
@@ -127,7 +127,7 @@ class TaskSeeder extends Seeder
                 'order_count'             => 2,
                 'is_active'               => true,
             ]);
-            $task9->products()->sync($chocolateProducts);
+            $sync = []; foreach ($chocolateProducts as $p) { $sync[$p] = ['id' => \Illuminate\Support\Str::uuid()]; } $task9->products()->sync($sync);
         }
 
         $tiramisuProducts = Product::where('pro_name', 'like', '%Tiramisu%')->pluck('id')->toArray();
@@ -142,7 +142,7 @@ class TaskSeeder extends Seeder
                 'order_count'             => 1,
                 'is_active'               => true,
             ]);
-            $task10->products()->sync($tiramisuProducts);
+            $sync = []; foreach ($tiramisuProducts as $p) { $sync[$p] = ['id' => \Illuminate\Support\Str::uuid()]; } $task10->products()->sync($sync);
         }
 
         $task11 = Task::create([
@@ -193,7 +193,7 @@ class TaskSeeder extends Seeder
                 'order_count'             => 5,
                 'is_active'               => true,
             ]);
-            $task14->products()->sync($allProducts);
+            $sync = []; foreach ($allProducts as $p) { $sync[$p] = ['id' => \Illuminate\Support\Str::uuid()]; } $task14->products()->sync($sync);
         }
 
         $task15 = Task::create([

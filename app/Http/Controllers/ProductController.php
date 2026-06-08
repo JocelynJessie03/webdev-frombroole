@@ -166,11 +166,12 @@ class ProductController extends Controller
         // 2. Simpan Relasi Bahan Baku (Resep) ke tabel pivot
         foreach ($request->ingredients as $ingredientId => $amount) {
             if ($amount > 0) {
-                $product->ingredients()->attach($ingredientId, ['amount_needed' => $amount]);
+                $product->ingredients()->attach($ingredientId, ['id' => \Illuminate\Support\Str::uuid(), 'amount_needed' => $amount]);
             }
         }
 
         DB::table('notifications')->insert([
+                        'id' => \Illuminate\Support\Str::uuid(),
             'title' => 'New Product Added',
             'message' => 'Product "' . $request->pro_name . '" has been successfully registered to the inventory.',
             'type' => 'product',
@@ -251,9 +252,10 @@ class ProductController extends Controller
                 $syncData[$ingredientId] = ['amount_needed' => $amount];
             }
         }
-        $product->ingredients()->sync($syncData);
+        foreach ($syncData as $key => $value) { $syncData[$key]['id'] = \Illuminate\Support\Str::uuid(); } $product->ingredients()->sync($syncData);
         
         DB::table('notifications')->insert([
+                        'id' => \Illuminate\Support\Str::uuid(),
             'title' => 'Product Info Updated',
             'message' => 'The data for product "' . $request->pro_name . '" has been successfully modified.',
             'type' => 'product',
@@ -274,6 +276,7 @@ class ProductController extends Controller
         $product->save();
 
         DB::table('notifications')->insert([
+                        'id' => \Illuminate\Support\Str::uuid(),
             'title' => 'Product Deleted',
             'message' => 'Product "' . $product->pro_name . '" has been successfully removed from the inventory.',
             'type' => 'product', // Tetap pakai type product agar warna ikonnya konsisten

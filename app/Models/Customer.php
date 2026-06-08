@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\Syncable;
+
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Task;
 
 class Customer extends Model
 {
+    use Syncable;
+
     protected $fillable = [
     'customer_ID', 'customer_name', 'email', 'phone', 'password',
     'total_spend', 'member_points', 'progress_percentage', 'tier'

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
 
-            $table->id();
+            $table->uuid('id')->primary();
 
             $table->string('title');
 
@@ -24,6 +24,8 @@ return new class extends Migration
             $table->boolean('is_read')->default(false);
 
             $table->timestamps();
+            $table->softDeletes();
+            $table->timestamp('synced_at')->nullable();
 
         });
     }

@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('contact_messages', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
 
             $table->string('first_name');
             $table->string('last_name')->nullable();
@@ -26,6 +26,8 @@ return new class extends Migration
             ])->default('unread');
 
             $table->timestamps();
+            $table->softDeletes();
+            $table->timestamp('synced_at')->nullable();
         });
     }
 

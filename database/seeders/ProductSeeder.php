@@ -241,6 +241,7 @@ class ProductSeeder extends Seeder
             // Tambahkan relasi bahan baku ke tabel pivot
             foreach ($pData['recipe'] as $item) {
                 $product->ingredients()->attach($ing[$item['n']], [
+                    'id' => \Illuminate\Support\Str::uuid(),
                     'amount_needed' => $item['a']
                 ]);
             }

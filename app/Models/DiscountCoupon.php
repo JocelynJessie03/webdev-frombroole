@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\Syncable;
+
 use Illuminate\Database\Eloquent\Model;
 
 class DiscountCoupon extends Model
 {
+    use Syncable;
+
     protected $fillable = [
         'code',
         'description',

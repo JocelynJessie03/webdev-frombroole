@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\Syncable;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Task extends Model
 {
+    use Syncable;
+
     protected $fillable = [
         'title',
         'description',

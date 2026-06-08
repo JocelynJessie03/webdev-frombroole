@@ -171,6 +171,7 @@ class OrderItemSeeder extends Seeder
 
                         // BARIS DI BAWAH INI SUDAH BERSIH DARI KOLOM 'product_name'
                         $insertData[] = [
+                            'id'                => \Illuminate\Support\Str::uuid(),
                             'order_id'          => $order->id, 
                             'product_id'        => $productId,
                             'quantity'          => $item['q'],

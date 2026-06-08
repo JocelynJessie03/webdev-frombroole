@@ -1093,7 +1093,7 @@
                                 type="button"
                                 class="btn-add {{ !$isSoldOut ? 'available' : 'unavailable' }}"
                                 {{ $isSoldOut ? 'disabled' : '' }}
-                                onclick="addToCart({{ $product->id }}, '{{ addslashes($product->pro_name) }}', {{ $product->pro_price }}, {{ $product->calculated_stock }}, {{ $isDrink ? 'true' : 'false' }}, '{{ $product->pro_image }}')"
+                                onclick="addToCart('{{ $product->id }}', '{{ addslashes($product->pro_name) }}', {{ $product->pro_price }}, {{ $product->calculated_stock }}, {{ $isDrink ? 'true' : 'false' }}, '{{ $product->pro_image }}')"
                                 aria-label="Add {{ $product->pro_name }} to cart"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">

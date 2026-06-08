@@ -22,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Eksklusi CSRF milik kamu tetap di sini
         $middleware->validateCsrfTokens(except: [
             'login',
+            'api/system/sync/*',
         ]);
 
         // ==========================================

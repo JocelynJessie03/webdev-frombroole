@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('admins', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
@@ -20,6 +20,8 @@ return new class extends Migration
             $table->enum('role', ['admin', 'super_admin'])->default('admin');
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
+            $table->timestamp('synced_at')->nullable();
         });
     }
 

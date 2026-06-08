@@ -166,3 +166,8 @@ Route::middleware(['auth', 'customer'])->group(function () {
     Route::post('/tasks/{task}/claim', [MemberTaskController::class, 'claim'])->name('customer.tasks.claim');
     Route::get('/api/tasks/widget', [MemberTaskController::class, 'widget'])->name('customer.tasks.widget');
 });
+
+// ==========================================
+// 4. API SYSTEM SYNC ROUTES
+// ==========================================
+Route::post('/api/system/sync/receive', [\App\Http\Controllers\Api\SyncController::class, 'receive']);

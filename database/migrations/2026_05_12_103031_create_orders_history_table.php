@@ -12,16 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('order_histories', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('order_id')->unique(); // Contoh: INV-20260512-001
             // Relasi ke customer (nullable jika pembeli anonim/bukan member)
-            $table->foreignId('customer_id')->nullable()->constrained('customers')->onDelete('cascade');
+            $table->foreignUuid('customer_id')->nullable()->constrained('customers')->onDelete('cascade');
             $table->dateTime('order_date');
             $table->integer('total_items'); 
             $table->decimal('total_price', 15, 2);
             $table->string('status')->default('Pending'); 
             $table->string('payment_method');
             $table->timestamps();
+            $table->softDeletes();
+            $table->timestamp('synced_at')->nullable();
         });
     }
 

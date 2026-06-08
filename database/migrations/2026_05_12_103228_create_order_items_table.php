@@ -12,12 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('order_items', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('order_id')->constrained('order_histories')->onDelete('cascade');
-            $table->foreignId('product_id')->constrained('products');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('order_id')->constrained('order_histories')->onDelete('cascade');
+            $table->foreignUuid('product_id')->constrained('products');
             $table->integer('quantity');
             $table->decimal('price_at_purchase', 15, 2); // Harga saat dibeli
             $table->timestamps();
+            $table->softDeletes();
+            $table->timestamp('synced_at')->nullable();
             $table->integer('sugar_level')->default(100); // Tambahan kolom untuk tingkat gula
         });
     }

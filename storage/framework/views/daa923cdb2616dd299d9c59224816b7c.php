@@ -1,126 +1,128 @@
-@extends('partials.sidebar')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 
 <div class="flex gap-6">
 
-    {{-- LEFT PANEL: PRODUCTS --}}
+    
     <div class="flex-1">
 
-        {{-- SEARCH BAR --}}
+        
         <div class="mb-6 relative">
             <input type="text" id="search-product" placeholder="Search products..." 
                    class="w-full border border-gray-200 rounded-full px-6 py-4 outline-none focus:border-[#7b0000] shadow-sm font-plain text-gray-600 pl-12 transition-all">
             
-            {{-- Icon Kaca Pembesar --}}
+            
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 absolute left-4 top-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
         </div>
 
-        {{-- CATEGORY FILTER --}}
+        
         <div class="flex gap-4 mb-8 overflow-x-auto pb-2">
-            <a href="{{ route('pos') }}"
-               class="{{ !request('category') ? 'bg-[#7b0000] text-white' : 'bg-white border border-gray-200' }} px-7 py-3 rounded-full text-sm font-bold whitespace-nowrap transition">
+            <a href="<?php echo e(route('pos')); ?>"
+               class="<?php echo e(!request('category') ? 'bg-[#7b0000] text-white' : 'bg-white border border-gray-200'); ?> px-7 py-3 rounded-full text-sm font-bold whitespace-nowrap transition">
                 All Products
             </a>
 
-            @foreach($categories as $category)
-                <a href="{{ route('pos', ['category' => $category->id]) }}"
-                   class="{{ request('category') == $category->id ? 'bg-[#7b0000] text-white' : 'bg-white border border-gray-200' }} px-7 py-3 rounded-full text-sm whitespace-nowrap transition hover:border-[#7b0000]">
-                    {{ $category->category_name }}
+            <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <a href="<?php echo e(route('pos', ['category' => $category->id])); ?>"
+                   class="<?php echo e(request('category') == $category->id ? 'bg-[#7b0000] text-white' : 'bg-white border border-gray-200'); ?> px-7 py-3 rounded-full text-sm whitespace-nowrap transition hover:border-[#7b0000]">
+                    <?php echo e($category->category_name); ?>
+
                 </a>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
 
-        {{-- PRODUCT GRID --}}
+        
         <div class="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6" id="product-grid">
-            @foreach($products as $product)
+            <?php $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 
-                {{-- Cek apakah produk ini kategori minuman untuk memunculkan Sugar Level --}}
-                @php
+                
+                <?php
                     $isDrink = (stripos($product->category->category_name, 'drink') !== false || stripos($product->category->category_name, 'minuman') !== false);
-                @endphp
+                ?>
 
                 <div class="product-card bg-white rounded-[30px] overflow-hidden border border-gray-200 shadow-sm flex flex-col justify-between" 
-                     data-name="{{ strtolower($product->pro_name) }}">
+                     data-name="<?php echo e(strtolower($product->pro_name)); ?>">
                     
                     <div>
-                      {{-- IMAGE & BADGE STATUS --}}
+                      
                         <div class="relative h-[220px] bg-gray-100 overflow-hidden">
                             <div class="flex w-full h-full overflow-x-auto snap-x snap-mandatory scrollbar-hide">
                                 <div class="min-w-full h-full snap-center">
-                                    @if($product->pro_image)
-                                        <img src="{{ asset('products/' . rawurlencode($product->pro_image)) }}" class="w-full h-full object-cover">
-                                    @else
+                                    <?php if($product->pro_image): ?>
+                                        <img src="<?php echo e(asset('products/' . rawurlencode($product->pro_image))); ?>" class="w-full h-full object-cover">
+                                    <?php else: ?>
                                         <div class="flex items-center justify-center h-full text-gray-400 font-bold text-xs">NO IMAGE</div>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                             </div>
 
-                            @if($product->calculated_stock > 0)
+                            <?php if($product->calculated_stock > 0): ?>
                                 <div class="absolute top-3 right-3 bg-[#eaf8ef] text-green-700 text-[11px] font-bold px-4 py-2 rounded-full z-10">Available</div>
-                            @else
+                            <?php else: ?>
                                 <div class="absolute top-3 right-3 bg-red-100 text-red-600 text-[11px] font-bold px-4 py-2 rounded-full z-10">Out of Stock</div>
-                            @endif
+                            <?php endif; ?>
                         </div>
 
-                        {{-- CONTENT INFO --}}
+                        
                         <div class="p-5 pb-0">
                             <p class="uppercase tracking-[3px] text-[10px] text-gray-400 font-bold mb-2">
-                                {{ $product->category->category_name }}
+                                <?php echo e($product->category->category_name); ?>
+
                             </p>
 
                             <h3 class="text-[18px] font-black leading-tight mb-2 min-h-[45px]">
-                                {{ $product->pro_name }}
+                                <?php echo e($product->pro_name); ?>
+
                             </h3>
 
                             <div class="mb-4">
-                                @if($product->calculated_stock > 5)
-                                    <span class="text-xs font-bold text-gray-500 bg-gray-100 px-3 py-1 rounded-md">Stock: {{ $product->calculated_stock }} pcs</span>
-                                @elseif($product->calculated_stock <= 5 && $product->calculated_stock > 0)
-                                    <span class="text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded-md animate-pulse">Low Stock: {{ $product->calculated_stock }} pcs Left</span>
-                                @else
+                                <?php if($product->calculated_stock > 5): ?>
+                                    <span class="text-xs font-bold text-gray-500 bg-gray-100 px-3 py-1 rounded-md">Stock: <?php echo e($product->calculated_stock); ?> pcs</span>
+                                <?php elseif($product->calculated_stock <= 5 && $product->calculated_stock > 0): ?>
+                                    <span class="text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded-md animate-pulse">Low Stock: <?php echo e($product->calculated_stock); ?> pcs Left</span>
+                                <?php else: ?>
                                     <span class="text-xs font-bold text-red-600 bg-red-50 px-3 py-1 rounded-md">Sold Out</span>
-                                @endif
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
 
-                    {{-- PRICE & BUTTON ADD --}}
+                    
                     <div class="p-5 pt-0">
                         <div class="flex justify-between items-end mb-2">
                             <p class="text-[#7b0000] text-[20px] font-black">
-                                Rp {{ number_format($product->pro_price, 0, ',', '.') }}
+                                Rp <?php echo e(number_format($product->pro_price, 0, ',', '.')); ?>
+
                             </p>
                         </div>
 
-                        {{-- TAMBAHAN: DROPDOWN SUGAR LEVEL JIKA MINUMAN --}}
-                        @if($isDrink)
+                        
+                        <?php if($isDrink): ?>
                             <div class="mb-3">
-                                <select id="sugar-{{ $product->id }}" class="w-full text-xs font-bold p-2 rounded-lg border border-gray-200 outline-none focus:border-[#7b0000] text-gray-600">
+                                <select id="sugar-<?php echo e($product->id); ?>" class="w-full text-xs font-bold p-2 rounded-lg border border-gray-200 outline-none focus:border-[#7b0000] text-gray-600">
                                     <option value="100">Normal Sugar (100%)</option>
                                     <option value="50">Less Sugar (50%)</option>
                                     <option value="0">No Sugar (0%)</option>
                                 </select>
                             </div>
-                        @endif
+                        <?php endif; ?>
 
-                        {{-- BUTTON ADD TO ORDER (Parameter JS disesuaikan) --}}
+                        
                         <button
                             type="button"
-                            onclick="addToCart('{{ $product->id }}', '{{ addslashes($product->pro_name) }}', {{ $product->pro_price }}, {{ $product->calculated_stock }}, {{ $isDrink ? 'true' : 'false' }})"
-                            @if($product->calculated_stock <= 0) disabled @endif
+                            onclick="addToCart('<?php echo e($product->id); ?>', '<?php echo e(addslashes($product->pro_name)); ?>', <?php echo e($product->pro_price); ?>, <?php echo e($product->calculated_stock); ?>, <?php echo e($isDrink ? 'true' : 'false'); ?>)"
+                            <?php if($product->calculated_stock <= 0): ?> disabled <?php endif; ?>
                             class="w-full mt-2 py-3 rounded-2xl text-[11px] font-black transition-all
-                            {{ $product->calculated_stock > 0 
+                            <?php echo e($product->calculated_stock > 0 
                                 ? 'bg-[#f7f5f3] text-black hover:bg-[#7b0000] hover:text-white cursor-pointer' 
-                                : 'bg-gray-100 text-gray-400 cursor-not-allowed' }}">
+                                : 'bg-gray-100 text-gray-400 cursor-not-allowed'); ?>">
                             ADD TO ORDER
                         </button>
                     </div>
 
                 </div>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
         
         <div id="no-product-msg" class="hidden text-center text-gray-400 font-bold mt-10">
@@ -129,7 +131,7 @@
         
     </div>
 
-    {{-- RIGHT PANEL: CURRENT ORDER --}}
+    
     <div class="w-[320px] bg-white rounded-[30px] border border-gray-200 shadow-sm p-6 h-fit sticky top-5">
         
         <div class="mb-8">
@@ -154,8 +156,8 @@
             </div>
         </div>
 
-        <form action="{{ route('checkout.preview') }}" method="POST" onsubmit="return validateCheckout()">
-            @csrf
+        <form action="<?php echo e(route('checkout.preview')); ?>" method="POST" onsubmit="return validateCheckout()">
+            <?php echo csrf_field(); ?>
             <input type="hidden" name="cart" id="cart-input">
             <button type="submit" id="checkout-btn" disabled
                     class="w-full bg-gray-300 text-gray-500 cursor-not-allowed py-4 rounded-2xl font-black text-lg mt-8 transition-all">
@@ -339,4 +341,5 @@ function renderCart()
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 </style>
 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('partials.sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Herd\webdev-frombroole\resources\views/pos.blade.php ENDPATH**/ ?>

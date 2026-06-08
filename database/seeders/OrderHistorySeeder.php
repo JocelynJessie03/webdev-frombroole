@@ -139,6 +139,12 @@ class OrderHistorySeeder extends Seeder
             ['customer_id' => 30, 'order_date' => now()->subDays(2), 'total_items' => 2, 'total_price' => 70000, 'payment_method' => 'Cash', 'status' => 'Complete'],
         ];
 
+        $customerIds = \App\Models\Customer::orderBy('created_at')->pluck('id')->toArray();
+        foreach ($ordersData as &$oData) {
+            $index = $oData['customer_id'] - 1;
+            $oData['customer_id'] = $customerIds[$index] ?? $customerIds[0];
+        }
+
         // LOGIKA BARU: Urutkan data berdasarkan 'order_date' secara Ascending (Lama ke Baru)
         usort($ordersData, function ($a, $b) {
             return $a['order_date'] <=> $b['order_date'];

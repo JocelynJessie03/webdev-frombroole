@@ -9,14 +9,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('pro_ID')->unique();
             $table->string('pro_name');
             $table->text('pro_description')->nullable();
             $table->bigInteger('pro_price');
             // Hapus pro_stock/pro_currstock dari sini karena stok dihitung dari bahan baku
             $table->string('pro_image')->nullable(); // Kolom image sudah masuk di sini
-            $table->foreignId('category_id')->constrained()->onDelete('cascade'); // Menambahkan foreign key untuk kategori
+            $table->foreignUuid('category_id')->constrained()->onDelete('cascade'); // Menambahkan foreign key untuk kategori
             $table->boolean('pro_delete')->default(false); // Kolom untuk soft delete manual
             $table->softDeletes(); // Menambahkan soft deletes
 

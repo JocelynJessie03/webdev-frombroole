@@ -46,6 +46,7 @@ class AppServiceProvider extends ServiceProvider
 
                 if (!$exists) {
                     DB::table('notifications')->insert([
+                        'id' => \Illuminate\Support\Str::uuid(),
                         'title'      => $title,
                         'message'    => $message,
                         'type'       => 'stock',
@@ -73,6 +74,7 @@ class AppServiceProvider extends ServiceProvider
 
             if (!$exists) {
                 DB::table('notifications')->insert([
+                        'id' => \Illuminate\Support\Str::uuid(),
                     'title'      => $title,
                     'message'    => $message,
                     'type'       => 'stock',

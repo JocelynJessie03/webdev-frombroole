@@ -72,7 +72,7 @@ class PosController extends Controller
 
             $order = OrderHistory::create([
                 'order_id' => 'INV-' . now()->format('YmdHis'),
-                'customer_id' => 1,
+                'customer_id' => null,
                 'order_date' => now(),
                 'total_items' => $totalItems,
                 'total_price' => $total,
@@ -208,6 +208,7 @@ class PosController extends Controller
                             $ingredient->save();
 
                             DB::table('ingredient_histories')->insert([
+                                'id'            => \Illuminate\Support\Str::uuid(),
                                 'ingredient_id' => $ingredient->id,
                                 'amount'        => $totalPotongan,
                                 'type'          => 'out',
@@ -248,9 +249,10 @@ class PosController extends Controller
                 }
 
                 DB::table('notifications')->insert([
-                    'title' => 'New Order Received (Cash)',
+                    'id'      => \Illuminate\Support\Str::uuid(),
+                    'title'   => 'New Order Received (Cash)',
                     'message' => 'Order ' . $orderId . ' has been successfully generated with total payment of Rp ' . number_format($total, 0, ',', '.'),
-                    'type' => 'order',
+                    'type'    => 'order',
                     'is_read' => false,
                     'created_at' => now(),
                     'updated_at' => now()
@@ -348,6 +350,7 @@ class PosController extends Controller
                         $ingredient->save();
 
                         DB::table('ingredient_histories')->insert([
+                            'id'            => \Illuminate\Support\Str::uuid(),
                             'ingredient_id' => $ingredient->id,
                             'amount'        => $totalPotongan,
                             'type'          => 'out',

@@ -19,7 +19,7 @@ class AdminTaskController extends Controller
             'min_purchases_required' => 'nullable|integer|min:1',
             'order_count' => 'nullable|integer|min:1',
             'product_ids' => 'nullable|array',
-            'product_ids.*' => 'integer|exists:products,id',
+            'product_ids.*' => 'string|exists:products,id',
         ]);
 
         $task = Task::create([
@@ -35,7 +35,7 @@ class AdminTaskController extends Controller
 
         // If product-specific, attach products
         if ($request->task_type === 'product_specific' && $request->product_ids) {
-            $task->products()->sync($request->product_ids);
+            $syncData = []; if($request->product_ids){ foreach ($request->product_ids as $pId) { $syncData[$pId] = ['id' => \Illuminate\Support\Str::uuid()]; } } $task->products()->sync($syncData);
         }
 
         $taskType = $request->task_type === 'general' ? 'General' : 'Product-Specific';

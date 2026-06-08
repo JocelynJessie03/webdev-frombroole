@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\Syncable;
+
 use Illuminate\Foundation\Auth\User as Authenticatable; // Agar bisa login
 use Illuminate\Notifications\Notifiable;
 
 class Admin extends Authenticatable
 {
+    use Syncable;
+
     use Notifiable;
 
     protected $fillable = [

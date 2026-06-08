@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
             Schema::create('customers', function (Blueprint $table) {
-        $table->id();
+        $table->uuid('id')->primary();
         $table->string('customer_ID')->unique(); // Contoh: CUST-001
         $table->string('customer_name');
         $table->string('email')->unique();
@@ -23,6 +23,8 @@ return new class extends Migration
         $table->integer('progress_percentage')->default(15); 
         $table->enum('tier', ['Bronze', 'Silver', 'Gold'])->default('Bronze');
         $table->timestamps();
+            $table->softDeletes();
+            $table->timestamp('synced_at')->nullable();
         });
     }
     /**
