@@ -1,7 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth overflow-x-hidden">
 <head>
-    <html lang="en" data-theme="light">
     <script>
         (function(){ document.documentElement.setAttribute('data-theme', localStorage.getItem('frombroole_theme') || 'light'); })();
     </script>
@@ -138,7 +137,7 @@
     <title>From Broole</title>
 </head>
 
-<body class="bg-[#F8F5F2] text-[#3D3833]">
+<body class="bg-[#F8F5F2] text-[#3D3833] overflow-x-hidden w-full relative">
 
 <div x-data="{ activeTab: 'home' }" class="min-h-screen">
 

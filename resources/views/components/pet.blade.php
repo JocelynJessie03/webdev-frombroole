@@ -130,7 +130,7 @@
 </div>
 
 <!-- DOG -->
-<div id="virtual-dog" class="virtual-pet pet-idle">
+<div id="virtual-dog" class="virtual-pet pet-idle hidden sm:block">
     <svg class="pet-svg" viewBox="0 0 65 50">
         <path class="dog-tail dog-color-main" d="M 12 25 Q 5 15 15 5" fill="none" stroke-width="5" stroke-linecap="round" />
         <line class="dog-leg dog-leg-2 dog-color-back" x1="18" y1="30" x2="18" y2="45" stroke-width="5" stroke-linecap="round" style="transform-origin: 18px 30px;" />
@@ -294,8 +294,10 @@ document.addEventListener("DOMContentLoaded", function() {
         if (cat.fightCooldown > 0) cat.fightCooldown--;
         if (dog.fightCooldown > 0) dog.fightCooldown--;
 
+        const isDogActive = window.innerWidth >= 640;
+
         // Collision Detection for Fighting
-        if (cat.state !== 'fighting' && dog.state !== 'fighting' && !cat.isDragging && !dog.isDragging && cat.fightCooldown <= 0 && dog.fightCooldown <= 0) {
+        if (isDogActive && cat.state !== 'fighting' && dog.state !== 'fighting' && !cat.isDragging && !dog.isDragging && cat.fightCooldown <= 0 && dog.fightCooldown <= 0) {
             let dx = cat.x - dog.x;
             let dy = cat.y - dog.y;
             let dist = Math.sqrt(dx*dx + dy*dy);
@@ -317,6 +319,8 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         pets.forEach(pet => {
+            if (pet.id === 'virtual-dog' && !isDogActive) return;
+            
             if (pet.state === 'fighting') {
                 pet.fightTimer--;
                 

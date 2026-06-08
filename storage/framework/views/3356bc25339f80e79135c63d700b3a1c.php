@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>" class="scroll-smooth overflow-x-hidden">
 <head>
     <script>
     (function(){ document.documentElement.setAttribute('data-theme', localStorage.getItem('frombroole_theme') || 'light'); })();
@@ -1087,7 +1087,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
     <title>From Broole</title>
 </head>
 
-<body class="bg-[#F8F5F2] text-[#3D3833]">
+<body class="bg-[#F8F5F2] font-sans antialiased text-[#3D3833] overflow-x-hidden w-full relative">
 
     <!-- Global Modal Peringatan Login -->
     <div class="login-modal-overlay" id="globalLoginModal" onclick="if(event.target===this) closeGlobalLoginModal()">
@@ -1353,7 +1353,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                     
                     <button
                         onclick="dmToggle()"
-                        class="group flex h-10 w-10 items-center justify-center rounded-[10px] border border-[#3D3833]/10 bg-white text-[#7A6E68] transition-all duration-200 hover:-translate-y-px hover:border-[#8C1717]/30 hover:shadow-[0_4px_12px_rgba(140,23,23,0.1)]"
+                        class="group hidden sm:flex h-10 w-10 items-center justify-center rounded-[10px] border border-[#3D3833]/10 bg-white text-[#7A6E68] transition-all duration-200 hover:-translate-y-px hover:border-[#8C1717]/30 hover:shadow-[0_4px_12px_rgba(140,23,23,0.1)]"
                         aria-label="Toggle dark/light mode"
                         title="Toggle Dark Mode"
                     >
@@ -1589,6 +1589,26 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
                         <a href="<?php echo e(route('customer.contact')); ?>" class="font-semibold text-[#7A6E68]">
                             Contact
                         </a>
+
+                        <button onclick="dmToggle()" class="font-semibold text-[#7A6E68] text-left flex items-center gap-2 group">
+                            <!-- Moon -->
+                            <svg class="dm-icon-moon w-5 h-5 transition-colors" viewBox="0 0 24 24" fill="none">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <!-- Sun -->
+                            <svg class="dm-icon-sun w-5 h-5 transition-colors" viewBox="0 0 24 24" fill="none">
+                                <circle cx="12" cy="12" r="5" fill="currentColor" stroke="currentColor" stroke-width="1.5"/>
+                                <line x1="12" y1="1"  x2="12" y2="4"  stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="12" y1="20" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="1"  y1="12" x2="4"  y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="20" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="4.22"  y1="4.22"  x2="6.34"  y2="6.34"  stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="17.66" y1="17.66" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="4.22"  y1="19.78" x2="6.34"  y2="17.66" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <line x1="17.66" y1="6.34"  x2="19.78" y2="4.22"  stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <span class="group-hover:text-[#8C1717] transition-colors">Toggle Dark Mode</span>
+                        </button>
 
                         
                         <a href="/cart" class="font-semibold text-[#8C1717] flex items-center gap-2">

@@ -1,6 +1,7 @@
 <div
     x-data="chatWidget()"
-    class="fixed bottom-8 md:bottom-10 right-4 md:right-8 z-[9999]"
+    class="fixed z-[9999]"
+    style="bottom: 2.5rem; right: 2rem;"
 >
 
     
@@ -42,7 +43,7 @@
     absolute
     bottom-20
     right-0
-    w-[calc(100vw-24px)]
+    w-[calc(100vw-48px)]
     max-w-[390px]
 
     h-[75vh]
