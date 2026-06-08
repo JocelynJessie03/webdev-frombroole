@@ -1292,54 +1292,7 @@
 }());
 </script>
 
-<script>
-    // ── 3D Tilt Effect for Product Cards ──
-    document.addEventListener('DOMContentLoaded', function() {
-        document.body.addEventListener('mousemove', function(e) {
-            const card = e.target.closest('.product-card');
-            if (card) {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                
-                // Fixed math so the card tilts TOWARDS the mouse
-                const rotateX = ((y - centerY) / centerY) * 15; 
-                const rotateY = ((x - centerX) / centerX) * -15;
-                
-                card.style.transform = `perspective(1000px) translateY(-6px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-                card.style.transformStyle = 'preserve-3d';
-                card.style.transition = 'transform 0.1s ease-out, box-shadow 0.2s ease, border-color 0.2s ease';
-                card.style.zIndex = '10';
 
-                // Reverse the tilt for the image so it stays visually flat but pops out in 3D!
-                const imgWrap = card.querySelector('.card-image-wrap');
-                if (imgWrap) {
-                    imgWrap.style.transform = `translateZ(50px) rotateX(${-rotateX}deg) rotateY(${-rotateY}deg)`;
-                    imgWrap.style.transition = 'transform 0.1s ease-out';
-                }
-            }
-        });
-
-        document.body.addEventListener('mouseout', function(e) {
-            const card = e.target.closest('.product-card');
-            if (card && !card.contains(e.relatedTarget)) {
-                // Reset card transform
-                card.style.transform = '';
-                card.style.transition = 'transform 0.2s ease-out, box-shadow 0.2s ease, border-color 0.2s ease';
-                card.style.zIndex = '';
-                
-                const imgWrap = card.querySelector('.card-image-wrap');
-                if (imgWrap) {
-                    imgWrap.style.transform = '';
-                    imgWrap.style.transition = 'transform 0.2s ease-out';
-                }
-            }
-        });
-    });
-</script>
 <?php echo $__env->make('layouts.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Herd\webdev-frombroole\resources\views/customer/shop.blade.php ENDPATH**/ ?>

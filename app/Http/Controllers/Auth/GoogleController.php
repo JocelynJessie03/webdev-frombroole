@@ -37,7 +37,6 @@ class GoogleController extends Controller
             'name' => $googleName,
             'email' => $googleEmail,
             'google_id' => $googleId,
-            'avatar' => $googleAvatar,
             'password' => bcrypt('google-login'),
             'role' => $role,
         ]);
@@ -57,8 +56,7 @@ class GoogleController extends Controller
     } else {
         if (!$user->google_id) {
             $user->update([
-                'google_id' => $googleId,
-                'avatar' => $googleAvatar ?? $user->avatar
+                'google_id' => $googleId
             ]);
         }
     }

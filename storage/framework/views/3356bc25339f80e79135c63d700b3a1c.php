@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>" class="scroll-smooth overflow-x-hidden">
+<html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>" class="scroll-smooth overflow-x-clip">
 <head>
     <script>
     (function(){ document.documentElement.setAttribute('data-theme', localStorage.getItem('frombroole_theme') || 'light'); })();
@@ -602,9 +602,28 @@
             transform: translate(-50%, -50%);
             pointer-events: none;
             z-index: 999999;
+            transition: width 0.2s ease-out, height 0.2s ease-out, background-color 0.2s ease-out, border 0.2s ease-out;
+            box-sizing: border-box;
         }
         [data-theme="dark"] #custom-cursor-dot {
             background-color: var(--brand);
+        }
+
+        /* CURSOR HOVER STATE */
+        body.cursor-hover #custom-cursor-dot {
+            width: 28px;
+            height: 28px;
+            background-color: transparent !important;
+            border: none;
+            border-radius: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D4AF37' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='17' y1='17' x2='7' y2='7'/%3E%3Cpolyline points='17 7 7 7 7 17'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        [data-theme="dark"] body.cursor-hover #custom-cursor-dot {
+            border: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F5C842' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='17' y1='17' x2='7' y2='7'/%3E%3Cpolyline points='17 7 7 7 7 17'/%3E%3C/svg%3E");
         }
         #custom-cursor-glow {
             display: block;
@@ -1087,7 +1106,7 @@ href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min
     <title>From Broole</title>
 </head>
 
-<body class="bg-[#F8F5F2] font-sans antialiased text-[#3D3833] overflow-x-hidden w-full relative">
+<body class="bg-[#F8F5F2] font-sans antialiased text-[#3D3833] overflow-x-clip w-full relative">
 
     <!-- Global Modal Peringatan Login -->
     <div class="login-modal-overlay" id="globalLoginModal" onclick="if(event.target===this) closeGlobalLoginModal()">

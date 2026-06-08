@@ -251,28 +251,31 @@ class="pb-20"
         <div class="relative flex items-center justify-center min-h-[500px] lg:min-h-[650px] pt-10 lg:pt-0" data-sr-d>
 
             
-            <div class="relative z-30 flex flex-col items-center w-full max-w-[600px] overflow-hidden cursor-grab active:cursor-grabbing py-8">
+            <div class="relative z-30 flex flex-col items-center w-full max-w-[600px] cursor-grab active:cursor-grabbing py-8">
 
-                <div class="overflow-hidden w-full relative">
-                    <div 
-                        class="flex transition-transform duration-700 ease-out w-full"
-                        :style="`transform: translateX(-${currentSlide * 100}%)`"
+                <div class="w-full relative flex justify-center items-center">
+                    
+                    <img
+                        :src="desserts[0].image"
+                        class="w-[280px] sm:w-[360px] lg:w-[600px] object-contain opacity-0 pointer-events-none"
+                        aria-hidden="true"
                     >
-                        <template x-for="(dessert, index) in desserts" :key="index">
-                            <div class="w-full flex-shrink-0 flex justify-center items-center"
-                                @mousemove="handleImgMove($event)"
-                                @mouseleave="handleImgLeave()"
+                    
+                    <template x-for="(dessert, index) in desserts" :key="index">
+                        <div class="absolute inset-0 flex justify-center items-center transition-all duration-700 ease-in-out"
+                            :class="currentSlide === index ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'"
+                            @mousemove="currentSlide === index ? handleImgMove($event) : null"
+                            @mouseleave="currentSlide === index ? handleImgLeave() : null"
+                        >
+                            <img
+                                :src="dessert.image"
+                                :alt="dessert.name"
+                                class="w-[280px] sm:w-[360px] lg:w-[600px] object-contain drop-shadow-[0_30px_50px_rgba(0,0,0,0.15)] hero-img-parallax transition-transform duration-700 ease-out"
+                                :class="currentSlide === index ? 'scale-100' : 'scale-90'"
+                                :style="currentSlide === index ? `transform: translate(${imgX}px, ${imgY}px) scale(1)` : ''"
                             >
-                                <img
-                                    :src="dessert.image"
-                                    :alt="dessert.name"
-                                    class="w-[280px] sm:w-[360px] lg:w-[600px] object-contain drop-shadow-[0_30px_50px_rgba(0,0,0,0.15)] hero-img-parallax"
-                                    :class="currentSlide === index ? 'scale-100 opacity-100' : 'scale-90 opacity-40'"
-                                    :style="currentSlide === index ? `transform: translate(${imgX}px, ${imgY}px) scale(1)` : ''"
-                                >
-                            </div>
-                        </template>
-                    </div>
+                        </div>
+                    </template>
                 </div>
 
                 
@@ -576,14 +579,14 @@ items-center
         </p>
 
         
-        <div class="grid grid-cols-3 gap-5 mt-12">
+        <div class="grid grid-cols-3 gap-2 sm:gap-5 mt-12">
 
             <div
             class="
             bg-white/80
             backdrop-blur
             rounded-[24px]
-            p-5
+            p-2 sm:p-5
             border
             border-[#8C1717]/10
             shadow-sm
@@ -592,6 +595,8 @@ items-center
             transition-all
             duration-500
             text-center
+            aspect-square
+            flex flex-col justify-center items-center
             "
             >
                 <p class="text-3xl font-black text-[#8C1717]">
@@ -608,7 +613,7 @@ items-center
             bg-white/80
             backdrop-blur
             rounded-[24px]
-            p-5
+            p-2 sm:p-5
             border
             border-[#8C1717]/10
             shadow-sm
@@ -617,6 +622,8 @@ items-center
             transition-all
             duration-500
             text-center
+            aspect-square
+            flex flex-col justify-center items-center
             "
             >
                 <p class="text-3xl font-black text-[#8C1717]">
@@ -633,7 +640,7 @@ items-center
             bg-white/80
             backdrop-blur
             rounded-[24px]
-            p-5
+            p-2 sm:p-5
             border
             border-[#8C1717]/10
             shadow-sm
@@ -642,13 +649,15 @@ items-center
             transition-all
             duration-500
             text-center
+            aspect-square
+            flex flex-col justify-center items-center
             "
             >
                 <p class="text-3xl font-black text-[#8C1717]">
                     4.9★
                 </p>
 
-                <p class="text-[10px] uppercase tracking-[0.15em] font-bold text-[#655F5A] mt-2">
+                <p class="text-[10px] uppercase tracking-[0.15em] font-bold text-[#655F5A] mt-2 text-center">
                     Customer Rating
                 </p>
             </div>

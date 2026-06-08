@@ -79,8 +79,8 @@ class ShopController extends Controller
 
     $sortedProducts = $inStock->merge($outOfStock);
 
-    // 7. Paginate (12 per page) & keep query strings manually
-    $perPage = 12;
+    // 7. Paginate (8 per page) & keep query strings manually
+    $perPage = 8;
     $page = \Illuminate\Pagination\Paginator::resolveCurrentPage() ?: 1;
 
     $products = new \Illuminate\Pagination\LengthAwarePaginator(
