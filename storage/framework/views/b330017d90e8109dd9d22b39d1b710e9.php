@@ -110,6 +110,12 @@
         0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; }
         100% { transform: translate(var(--tx), var(--ty)) scale(0) rotate(180deg); opacity: 0; }
     }
+
+    @media (max-width: 639px) {
+        #virtual-dog {
+            display: none !important;
+        }
+    }
 </style>
 
 <!-- CAT -->
@@ -130,7 +136,7 @@
 </div>
 
 <!-- DOG -->
-<div id="virtual-dog" class="virtual-pet pet-idle hidden sm:block">
+<div id="virtual-dog" class="virtual-pet pet-idle">
     <svg class="pet-svg" viewBox="0 0 65 50">
         <path class="dog-tail dog-color-main" d="M 12 25 Q 5 15 15 5" fill="none" stroke-width="5" stroke-linecap="round" />
         <line class="dog-leg dog-leg-2 dog-color-back" x1="18" y1="30" x2="18" y2="45" stroke-width="5" stroke-linecap="round" style="transform-origin: 18px 30px;" />
