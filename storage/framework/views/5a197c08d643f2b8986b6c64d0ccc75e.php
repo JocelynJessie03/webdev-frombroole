@@ -177,7 +177,7 @@ class="pb-20"
     </div>
 
     
-    <div class="absolute right-[18%] top-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#F6D8B8]/25 blur-3xl rounded-full z-0"></div>
+    <div class="absolute top-1/2 w-[500px] h-[500px] bg-[#F6D8B8]/25 blur-3xl rounded-full z-0" style="right: 14%; transform: translateY(-65%);"></div>
 
     
     <template x-for="(ing,index) in desserts[currentSlide].ingredients" :key="index">
