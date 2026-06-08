@@ -6,6 +6,8 @@ use App\Models\OrderHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderCompleteMail;
 
 class OrderHistoryController extends Controller
 {
@@ -137,6 +139,10 @@ class OrderHistoryController extends Controller
 
 
     $order->save();
+
+    if ($order->customer && $order->customer->email) {
+        Mail::to($order->customer->email)->send(new OrderCompleteMail($order));
+    }
 
     return redirect()
         ->back()

@@ -138,10 +138,10 @@
 
         <div class="content">
             <div class="order-meta">
-                <p><strong>Order ID:</strong> <span>{{ $order->order_id }}</span></p>
-                <p><strong>Date:</strong> <span>{{ \Carbon\Carbon::parse($order->order_date)->format('d M Y, H:i') }}</span></p>
-                <p><strong>Payment Status:</strong> <span>{{ $order->payment_status }}</span></p>
-                <p><strong>Payment Method:</strong> <span>{{ $order->payment_method }}</span></p>
+                <p><strong>Order ID:</strong> <span><?php echo e($order->order_id); ?></span></p>
+                <p><strong>Date:</strong> <span><?php echo e(\Carbon\Carbon::parse($order->order_date)->format('d M Y, H:i')); ?></span></p>
+                <p><strong>Payment Status:</strong> <span><?php echo e($order->payment_status); ?></span></p>
+                <p><strong>Payment Method:</strong> <span><?php echo e($order->payment_method); ?></span></p>
             </div>
 
             <div class="section-title">Order Summary</div>
@@ -156,46 +156,47 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($order->items as $item)
+                    <?php $__currentLoopData = $order->items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <tr>
                             <td>
-                                <div class="product-name">{{ $item->product->pro_name ?? 'Unknown Product' }}</div>
-                                @if($item->sugar_level)
-                                    <div class="product-meta">Sugar: {{ $item->sugar_level }}%</div>
-                                @endif
+                                <div class="product-name"><?php echo e($item->product->pro_name ?? 'Unknown Product'); ?></div>
+                                <?php if($item->sugar_level): ?>
+                                    <div class="product-meta">Sugar: <?php echo e($item->sugar_level); ?>%</div>
+                                <?php endif; ?>
                             </td>
-                            <td class="right">{{ $item->quantity }}</td>
-                            <td class="right">Rp {{ number_format($item->price_at_purchase, 0, ',', '.') }}</td>
-                            <td class="right">Rp {{ number_format($item->quantity * $item->price_at_purchase, 0, ',', '.') }}</td>
+                            <td class="right"><?php echo e($item->quantity); ?></td>
+                            <td class="right">Rp <?php echo e(number_format($item->price_at_purchase, 0, ',', '.')); ?></td>
+                            <td class="right">Rp <?php echo e(number_format($item->quantity * $item->price_at_purchase, 0, ',', '.')); ?></td>
                         </tr>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </tbody>
             </table>
 
             <table class="totals">
-                @if($order->points_used > 0)
+                <?php if($order->points_used > 0): ?>
                     <tr>
                         <td class="totals-label">Points Used</td>
-                        <td style="color: #10b981; font-weight: 600;">- Rp {{ number_format($order->points_used, 0, ',', '.') }}</td>
+                        <td style="color: #10b981; font-weight: 600;">- Rp <?php echo e(number_format($order->points_used, 0, ',', '.')); ?></td>
                     </tr>
-                @endif
-                @if($order->promo_code)
+                <?php endif; ?>
+                <?php if($order->promo_code): ?>
                     <tr>
                         <td class="totals-label">Promo Applied</td>
-                        <td style="font-weight: 600; color: #111827;">{{ $order->promo_code }}</td>
+                        <td style="font-weight: 600; color: #111827;"><?php echo e($order->promo_code); ?></td>
                     </tr>
-                @endif
+                <?php endif; ?>
                 <tr>
                     <td class="totals-label" style="font-weight: 600; color: #111827;">Total Paid</td>
-                    <td class="grand-total">Rp {{ number_format($order->total_price, 0, ',', '.') }}</td>
+                    <td class="grand-total">Rp <?php echo e(number_format($order->total_price, 0, ',', '.')); ?></td>
                 </tr>
             </table>
         </div>
 
         <div class="footer">
             <p>If you have any questions about your order, please contact our support.</p>
-            <p>&copy; {{ date('Y') }} From Broolé. All rights reserved.</p>
+            <p>&copy; <?php echo e(date('Y')); ?> From Broolé. All rights reserved.</p>
         </div>
     </div>
 </body>
 </html>
+<?php /**PATH D:\Herd\webdev-frombroole\resources\views/emails/order_receipt.blade.php ENDPATH**/ ?>
