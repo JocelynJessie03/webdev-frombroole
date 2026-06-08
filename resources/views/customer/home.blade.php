@@ -278,7 +278,7 @@ class="pb-20"
                 </div>
 
                 {{-- INFO --}}
-                <div class="relative text-center max-w-[380px] -mt-12 lg:-mt-40 pointer-events-none">
+                <div class="relative text-center max-w-[380px] -mt-4 lg:-mt-10 pointer-events-none">
                     <span
                         x-text="desserts[currentSlide].tagline"
                         class="font-black uppercase tracking-[0.3em] text-[#8C1717] text-xs"
