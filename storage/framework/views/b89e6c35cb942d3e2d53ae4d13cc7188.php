@@ -1,7 +1,6 @@
 <div
     x-data="chatWidget()"
-    class="fixed z-[9999]"
-    style="bottom: 2.5rem; right: 2rem;"
+    class="fixed z-[9999] bottom-4 right-4 md:bottom-8 md:right-8"
 >
 
     
@@ -9,13 +8,13 @@
         :class="open ? 'scale-0 opacity-0' : 'scale-100 opacity-100'"
         @click="open = true"
         class="
-        w-16 h-16
+        w-14 h-14 md:w-16 md:h-16
         rounded-full
         bg-gradient-to-br from-[#8B0F17] to-[#B41520]
         text-white
         shadow-[0_20px_40px_rgba(139,15,23,0.35)]
         flex items-center justify-center
-        text-2xl
+        text-xl md:text-2xl
         hover:scale-105
         transition
         "
@@ -40,12 +39,14 @@
     @click.outside="open = false"
 
     class="
-    absolute
+    fixed
     bottom-20
-    right-0
-    w-[calc(100vw-48px)]
-    max-w-[390px]
-
+    md:bottom-[6.5rem]
+    right-4
+    left-4
+    md:left-auto
+    md:right-8
+    md:w-[390px]
     h-[75vh]
     max-h-[720px]
     bg-white
