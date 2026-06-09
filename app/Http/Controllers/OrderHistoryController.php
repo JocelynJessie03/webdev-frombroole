@@ -18,6 +18,14 @@ class OrderHistoryController extends Controller
             'items.product'
         ]);
 
+        // Hide abandoned / unpaid web checkouts
+        if (Schema::hasColumn('order_histories', 'payment_status')) {
+            $query->where(function($q) {
+                $q->where('payment_status', '!=', 'UNPAID')
+                  ->orWhereNull('payment_status');
+            });
+        }
+
 
         if ($request->filled('search')) {
 
@@ -90,20 +98,28 @@ class OrderHistoryController extends Controller
         }
 
 
+        $baseStatsQuery = DB::table('order_histories');
+        if (Schema::hasColumn('order_histories', 'payment_status')) {
+            $baseStatsQuery->where(function($q) {
+                $q->where('payment_status', '!=', 'UNPAID')
+                  ->orWhereNull('payment_status');
+            });
+        }
+
         $stats = [
 
-            'total' => DB::table('order_histories')
+            'total' => (clone $baseStatsQuery)
                 ->count(),
 
-            'completed' => DB::table('order_histories')
+            'completed' => (clone $baseStatsQuery)
                 ->where('status', 'Complete')
                 ->count(),
 
-            'pending' => DB::table('order_histories')
+            'pending' => (clone $baseStatsQuery)
                 ->where('status', 'Pending')
                 ->count(),
 
-            'cancelled' => DB::table('order_histories')
+            'cancelled' => (clone $baseStatsQuery)
                 ->where('status', 'Cancelled')
                 ->count(),
 
