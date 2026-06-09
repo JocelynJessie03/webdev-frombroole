@@ -130,8 +130,8 @@ class AiController extends Controller
         @frombroole
 
         Virtual Pets on Website:
-        - Dog's name: Leno 🐶
-        - Cat's name: Lenny 🐈
+        - Dog name: Leno 🐶
+        - Cat name: Lenny 🐈
         (Feel free to mention them playfully if the customer asks!)
 
         Drink Sweetness Options:
