@@ -59,4 +59,65 @@ class SyncController extends Controller
             return response()->json(['error' => 'Sync failed: ' . $e->getMessage()], 500);
         }
     }
+    public function export(Request $request)
+    {
+        $token = $request->header('Authorization');
+        $expectedToken = 'Bearer ' . env('SYNC_API_KEY', 'default-secret-key');
+        
+        if ($token !== $expectedToken) {
+            return response()->json(['error' => 'Unauthorized. Invalid SYNC_API_KEY'], 401);
+        }
+
+        $syncableTables = [
+            'users', 'categories', 'products', 'ingredients', 'ingredient_product',
+            'customers', 'order_histories', 'order_items', 'admins', 
+            'ingredient_histories', 'notifications', 'tasks', 'discount_coupons', 
+            'task_product', 'contact_messages', 'coupon_usages'
+        ];
+
+        $payload = [];
+        foreach ($syncableTables as $table) {
+            if (!Schema::hasTable($table)) continue;
+
+            $unsyncedRecords = DB::table($table)->whereNull('synced_at')->get();
+
+            if ($unsyncedRecords->isNotEmpty()) {
+                $payload[$table] = $unsyncedRecords->map(function($record) {
+                    return (array) $record;
+                })->toArray();
+            }
+        }
+
+        return response()->json(['status' => 'success', 'data' => $payload]);
+    }
+
+    public function markSynced(Request $request)
+    {
+        $token = $request->header('Authorization');
+        $expectedToken = 'Bearer ' . env('SYNC_API_KEY', 'default-secret-key');
+        
+        if ($token !== $expectedToken) {
+            return response()->json(['error' => 'Unauthorized. Invalid SYNC_API_KEY'], 401);
+        }
+
+        $syncedIds = $request->input('synced_ids');
+        if (!is_array($syncedIds)) {
+            return response()->json(['error' => 'Invalid payload format'], 400);
+        }
+
+        DB::beginTransaction();
+        try {
+            foreach ($syncedIds as $table => $ids) {
+                if (Schema::hasTable($table) && !empty($ids)) {
+                    DB::table($table)->whereIn('id', $ids)->update(['synced_at' => now()]);
+                }
+            }
+            DB::commit();
+            return response()->json(['status' => 'success', 'message' => 'Records marked as synced.']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Sync Mark Error: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to mark records: ' . $e->getMessage()], 500);
+        }
+    }
 }

@@ -171,3 +171,5 @@ Route::middleware(['auth', 'customer'])->group(function () {
 // 4. API SYSTEM SYNC ROUTES
 // ==========================================
 Route::post('/api/system/sync/receive', [\App\Http\Controllers\Api\SyncController::class, 'receive']);
+Route::post('/api/system/sync/export', [\App\Http\Controllers\Api\SyncController::class, 'export']);
+Route::post('/api/system/sync/mark-synced', [\App\Http\Controllers\Api\SyncController::class, 'markSynced']);
