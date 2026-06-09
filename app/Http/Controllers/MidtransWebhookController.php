@@ -91,6 +91,14 @@ class MidtransWebhookController extends Controller
                     if ($product && $product->ingredients && $product->ingredients->isNotEmpty()) {
                         foreach ($product->ingredients as $ingredient) {
                             $takaran = $ingredient->pivot->amount_needed ?: 1;
+                            
+                            // Logika sugar level
+                            $namaBahan = strtolower($ingredient->name);
+                            if (str_contains($namaBahan, 'gula') || str_contains($namaBahan, 'sugar')) {
+                                $persentaseGula = $item->sugar_level ? ((int)$item->sugar_level / 100) : 1;
+                                $takaran = $takaran * $persentaseGula;
+                            }
+
                             $totalPotongan = $takaran * $item->quantity;
 
                             if ($totalPotongan > $ingredient->stock) {
