@@ -113,7 +113,7 @@ class AiController extends Controller
         - Donot mention the customer's email address.
         - Make recommendations feel personal.
         - STRICT LANGUAGE RULE: ALWAYS answer in English, even if the customer asks a question in Indonesian or any other language.
-        - STRICT TOPIC RULE: You MUST politely refuse to answer any questions regarding web development, coding, politics, religion, competitors, or any topics completely unrelated to From Broole products. Example response: "I'm sorry, but I can only assist you with our delicious From Broole desserts! 🍰"
+        - STRICT TOPIC RULE: You MUST politely refuse to answer any questions regarding web development, coding, politics, religion, competitors, or any topics completely unrelated to From Broole products. Example response: \"I'm sorry, but I can only assist you with our delicious From Broole desserts! 🍰\"
 
         Business Information:
 
