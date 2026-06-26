@@ -348,6 +348,9 @@ class CartController extends Controller
                     if ($pointsEarned > 0) {
                         DB::table('customers')->where('id', $customerId)->increment('member_points', $pointsEarned);
                     }
+                    
+                    // Trigger sync for this customer
+                    DB::table('customers')->where('id', $customerId)->update(['synced_at' => null]);
                 }
             }
 
