@@ -28,21 +28,21 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('guest')->group(function () {
     // Login
     Route::view('/login', 'login')->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 
     // Register & OTP
     Route::view('/register', 'register')->name('register');
-    Route::post('/register/send-otp', [AuthController::class, 'sendOtp']);
+    Route::post('/register/send-otp', [AuthController::class, 'sendOtp'])->middleware('throttle:3,1');
     Route::view('/verify-otp', 'verify-otp')->name('verify-otp');
-    Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
-    Route::post('/resend-otp', [AuthController::class, 'resendOtp']);
+    Route::post('/verify-otp', [AuthController::class, 'verifyOtp'])->middleware('throttle:5,1');
+    Route::post('/resend-otp', [AuthController::class, 'resendOtp'])->middleware('throttle:3,1');
 
     // Forgot Password
     Route::view('/forgot-password', 'forgot-password');
-    Route::post('/forgot-password/send-otp', [AuthController::class, 'sendForgotOtp']);
+    Route::post('/forgot-password/send-otp', [AuthController::class, 'sendForgotOtp'])->middleware('throttle:3,1');
     Route::view('/verify-reset-otp', 'verify-reset-otp');
-    Route::post('/verify-reset-otp', [AuthController::class, 'verifyResetOtp']);
-    Route::post('/resend-reset-otp', [AuthController::class, 'resendResetOtp']);
+    Route::post('/verify-reset-otp', [AuthController::class, 'verifyResetOtp'])->middleware('throttle:5,1');
+    Route::post('/resend-reset-otp', [AuthController::class, 'resendResetOtp'])->middleware('throttle:3,1');
     Route::view('/new-password', 'new-password');
     Route::post('/new-password', [AuthController::class, 'updatePassword']);
 
@@ -139,7 +139,7 @@ Route::middleware([])->group(function () {
     Route::post('/validate-coupon', [CartController::class, 'validateCoupon'])->name('customer.validate-coupon');
     
     // AI Chat
-    Route::post('/ai-chat', [AiController::class, 'chat']);
+    Route::post('/ai-chat', [AiController::class, 'chat'])->middleware('throttle:20,1');
 });
 
 // --- PROTECTED ROUTES (Hanya Customer Login) ---

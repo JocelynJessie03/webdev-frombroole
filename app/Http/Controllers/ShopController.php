@@ -34,7 +34,7 @@ class ShopController extends Controller
 
     // 3. Live Search Filter
     if ($request->filled('search')) {
-        $search = $request->search;
+        $search = str_replace(['%', '_'], ['\%', '\_'], $request->search);
         $query->where(function ($q) use ($search) {
             $q->where('pro_name', 'LIKE', "%{$search}%")
               ->orWhere('pro_description', 'LIKE', "%{$search}%");

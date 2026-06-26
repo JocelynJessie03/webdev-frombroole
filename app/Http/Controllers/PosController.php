@@ -63,7 +63,8 @@ class PosController extends Controller
             $totalItems = 0;
 
             foreach ($cart as $item) {
-                $subtotal += $item['price'] * $item['qty'];
+                $productPrice = Product::findOrFail($item['id'])->pro_price;
+                $subtotal += $productPrice * $item['qty'];
                 $totalItems += $item['qty'];
             }
 
@@ -81,12 +82,13 @@ class PosController extends Controller
 
             foreach ($cart as $item) {
 
+                $productPrice = Product::findOrFail($item['id'])->pro_price;
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $item['id'],
                     'quantity' => $item['qty'],
                     'sugar_level' => $item['sugarLevel'],
-                    'price_at_purchase' => $item['price']
+                    'price_at_purchase' => $productPrice
                 ]);
             }
 
@@ -100,7 +102,8 @@ class PosController extends Controller
 
             DB::rollback();
 
-            return back()->with('error', $e->getMessage());
+            Log::error('POS Checkout failed: ' . $e->getMessage());
+            return back()->with('error', 'An unexpected error occurred during checkout.');
         }
     }
  
@@ -123,12 +126,13 @@ class PosController extends Controller
         $item_details = [];
 
         foreach ($cart as $item) {
-            $subtotal += $item['price'] * $item['qty'];
+            $productPrice = Product::findOrFail($item['id'])->pro_price;
+            $subtotal += $productPrice * $item['qty'];
             $totalItems += $item['qty'];
 
             $item_details[] = [
                 'id' => $item['id'],
-                'price' => (int) $item['price'],
+                'price' => (int) $productPrice,
                 'quantity' => $item['qty'],
                 'name' => substr($item['name'], 0, 50),
             ];
@@ -178,11 +182,12 @@ class PosController extends Controller
                 ]);
 
                 foreach ($cart as $item) {
+                    $productPrice = Product::findOrFail($item['id'])->pro_price;
                     OrderItem::create([
                         'order_id' => $order->id,
                         'product_id' => $item['id'],
                         'quantity' => $item['qty'],
-                        'price_at_purchase' => $item['price'],
+                        'price_at_purchase' => $productPrice,
                         'sugar_level' => $item['sugarLevel']
                     ]);
 
@@ -323,11 +328,12 @@ class PosController extends Controller
             ]);
 
             foreach ($cart as $item) {
+                $productPrice = Product::findOrFail($item['id'])->pro_price;
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $item['id'],
                     'quantity' => $item['qty'],
-                    'price_at_purchase' => $item['price'],
+                    'price_at_purchase' => $productPrice,
                     'sugar_level' => $item['sugarLevel']
                 ]);
 

@@ -171,7 +171,7 @@ class DashboardController extends Controller
     */
     public function apiSearch(Request $request)
     {
-        $query = $request->get('query');
+        $query = str_replace(['%', '_'], ['\%', '\_'], $request->get('query'));
 
         return response()->json([
             'products' => DB::table('products')->where('pro_name', 'LIKE', "%{$query}%")->take(5)->get(),

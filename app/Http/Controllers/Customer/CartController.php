@@ -123,7 +123,7 @@ class CartController extends Controller
                     return response()->json(['success' => false, 'errors' => ['You have already used this coupon.']], 422);
                 }
 
-                $discountAmount = round($subtotal * (floatval($validated['discount']) / 100));
+                $discountAmount = round($subtotal * (floatval($coupon->discount_value) / 100));
                 $couponApplied = $coupon->code;
             }
         }
@@ -227,8 +227,8 @@ class CartController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
-            // Menambahkan error message $e->getMessage() agar jika gagal lagi, kamu bisa lihat alasannya di fitur Inspect Element > Network
-            return response()->json(['success' => false, 'errors' => ['Checkout failed: ' . $e->getMessage()]], 500);
+            Log::error('Checkout failed: ' . $e->getMessage());
+            return response()->json(['success' => false, 'errors' => ['An unexpected error occurred during checkout. Please try again.']], 500);
         }
     }
 
@@ -238,7 +238,10 @@ class CartController extends Controller
      */
     public function paymentSuccess($id)
     {
-        $order = OrderHistory::with('items')->find($id);
+        $user = Auth::user();
+        $customer = DB::table('customers')->where('email', $user->email)->first();
+
+        $order = OrderHistory::with('items')->where('id', $id)->where('customer_id', $customer->id)->first();
 
         if (!$order) {
             return redirect()->route('customer.history')->with('error', 'Order not found.');
@@ -386,7 +389,10 @@ class CartController extends Controller
      */
     public function paymentCancel($id)
     {
-        $order = OrderHistory::find($id);
+        $user = Auth::user();
+        $customer = DB::table('customers')->where('email', $user->email)->first();
+
+        $order = OrderHistory::where('id', $id)->where('customer_id', $customer->id)->first();
 
         if ($order && $order->payment_status === 'UNPAID') {
             // Hapus item pesanan dan order history

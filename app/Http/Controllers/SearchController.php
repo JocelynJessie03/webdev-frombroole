@@ -10,7 +10,7 @@ class SearchController extends Controller
 {
     public function search(Request $request)
     {
-        $query = $request->input('query');
+        $query = str_replace(['%', '_'], ['\%', '\_'], $request->input('query'));
 
         $products = Product::with('category')
             ->where('pro_name', 'like', "%{$query}%")

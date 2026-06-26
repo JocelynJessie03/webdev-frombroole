@@ -73,7 +73,7 @@ public function sendForgotOtp(Request $request)
         'email.exists' => 'No account found with this email.',
     ]);
 
-    $otp = rand(100000, 999999);
+    $otp = random_int(100000, 999999);
 
     // EmailOtp::where('email', '=', $request->email, 'and')->delete();
     EmailOtp::query()
@@ -182,7 +182,7 @@ public function resetPassword(Request $request)
         'password.regex' => 'Password must contain at least one number.',
     ]);
 
-    $otp = rand(100000, 999999);
+    $otp = random_int(100000, 999999);
 
     EmailOtp::query()
     ->where('email', $validated['email'])
@@ -192,7 +192,7 @@ public function resetPassword(Request $request)
         'name' => $validated['name'],
         'email' => $validated['email'],
         'phone' => $validated['phone'],
-        'password' => $validated['password'],
+        'password' => Hash::make($validated['password']),
         'otp' => $otp,
         'expires_at' => now()->addMinutes(5),
     ]);
@@ -368,7 +368,7 @@ public function resendOtp(Request $request)
         ]);
     }
 
-    $otp = rand(100000, 999999);
+    $otp = random_int(100000, 999999);
 
     // $record = EmailOtp::where('email', '=', $email, 'and')->first();
     $record = EmailOtp::query()
@@ -405,7 +405,7 @@ public function resendResetOtp()
         ]);
     }
 
-    $otp = rand(100000, 999999);
+    $otp = random_int(100000, 999999);
 
     $record = EmailOtp::query()
     ->where('email', $email)

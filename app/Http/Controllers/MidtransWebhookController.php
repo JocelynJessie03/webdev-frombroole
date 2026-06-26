@@ -24,40 +24,29 @@ class MidtransWebhookController extends Controller
 
         // Verify Midtrans signature
         $serverKey = config('midtrans.server_key');
-        $isProduction = config('midtrans.is_production', false);
         
-        if ($signatureKey && $serverKey && $isProduction) {
-            // Midtrans signature format: sha512(order_id + status_code + gross_amount + server_key)
-            $expectedSignature = hash('sha512',
-                $orderId .
-                ($payload['status_code'] ?? '') .
-                ($payload['gross_amount'] ?? '') .
-                $serverKey
-            );
-
-            if ($signatureKey !== $expectedSignature) {
-                Log::warning('Midtrans signature mismatch', [
-                    'expected' => $expectedSignature,
-                    'received' => $signatureKey,
-                    'order_id' => $orderId,
-                    'status_code' => $payload['status_code'] ?? null,
-                    'gross_amount' => $payload['gross_amount'] ?? null
-                ]);
-                return response()->json(['message' => 'Invalid signature'], 403);
-            }
-        } elseif ($signatureKey && !$isProduction) {
-            Log::info('Midtrans webhook signature skipped (development mode)', ['order_id' => $orderId]);
-        }
-
-        // If no signature key in development, proceed anyway
-        if (!$signatureKey && $isProduction) {
-            Log::warning('Midtrans webhook missing signature in production', ['order_id' => $orderId]);
+        if (!$signatureKey) {
+            Log::warning('Midtrans webhook missing signature', ['order_id' => $orderId]);
             return response()->json(['message' => 'Signature key missing'], 403);
         }
 
-        // In development without signature, still process
-        if (!$signatureKey && !$isProduction) {
-            Log::info('Processing webhook without signature (development)', ['order_id' => $orderId]);
+        // Midtrans signature format: sha512(order_id + status_code + gross_amount + server_key)
+        $expectedSignature = hash('sha512',
+            $orderId .
+            ($payload['status_code'] ?? '') .
+            ($payload['gross_amount'] ?? '') .
+            $serverKey
+        );
+
+        if (!hash_equals($expectedSignature, $signatureKey)) {
+            Log::warning('Midtrans signature mismatch', [
+                'expected' => $expectedSignature,
+                'received' => $signatureKey,
+                'order_id' => $orderId,
+                'status_code' => $payload['status_code'] ?? null,
+                'gross_amount' => $payload['gross_amount'] ?? null
+            ]);
+            return response()->json(['message' => 'Invalid signature'], 403);
         }
 
         $order = OrderHistory::with('items')->where('order_id', $orderId)->first();
@@ -201,7 +190,8 @@ class MidtransWebhookController extends Controller
 
             } catch (\Exception $e) {
                 DB::rollback();
-                return response()->json(['message' => 'Error processing webhook: ' . $e->getMessage()], 500);
+                Log::error('Webhook processing failed: ' . $e->getMessage());
+                return response()->json(['message' => 'Error processing webhook.'], 500);
             }
         }
 

@@ -89,10 +89,15 @@ class User extends Authenticatable
             return $this->attributes[$key] ?? null;
         }
 
-        // If not, try to get from the associated customer
-        $customer = Customer::Query()->where('email', $this->email)->first();
-        if ($customer && isset($customer->$key)) {
-            return $customer->$key;
+        // Whitelist safe customer keys to prevent unintended data exposure
+        $allowedCustomerKeys = ['customer_name', 'phone', 'total_spend', 'member_points', 'tier', 'progress_percentage', 'customer_ID'];
+
+        // If not, try to get from the associated customer securely
+        if (in_array($key, $allowedCustomerKeys)) {
+            $customer = $this->customer;
+            if ($customer && isset($customer->$key)) {
+                return $customer->$key;
+            }
         }
 
         return null;
